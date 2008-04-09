@@ -35,20 +35,74 @@
 # Creado por Mariano M. Chouza | Creado el 9 de abril de 2008
 #=============================================================================
 
+# FIXME: Reformular estructura para el procesamiento por línea y los warnings
+
 import os
 import sys
 
-# Procesa archivos fuente
-def srcFileProcess(filePath):
+# La cantidad de espacios que se considera que vale un TAB
+TAB_SIZE = 4
 
-    # FIXME: SOLO IMPRIMO EL NOMBRE
-    print '\tsrcFileProcess: %s' % filePath
+# Cantidad de advertencias antes de suprimir
+MAX_WARNING_COUNT = 3
+
+# Tamaño de línea máximo
+MAX_LINE_SIZE = 80
+
+# Da un aviso
+def warn(msg, wc):
+    
+    # Si no se "cansó" de dar avisos, lo muestro
+    if wc <= MAX_WARNING_COUNT:
+        print msg
+
+    # Si está en el límite, aviso
+    if wc == MAX_WARNING_COUNT:
+        print '(Posteriores advertencias serán omitidas.)'
+
+
+# Reviso un archivo fuente en general
+def checkSrcFile(fileName):
+
+    # Cantidad de avisos dados
+    warningCount = 0
+
+    # Contador de líneas
+    lineNumber = 1
+
+    # Para todas las líneas
+    for line in file(fileName):
+
+        # Avanza el número de línea
+        lineNumber += 1
+
+        # Reemplazo los tabs por TAB_SIZE espacios
+        line = line.replace('\t', ' ' * TAB_SIZE)
+
+        # Veo que la longitud sea menor o igual a lo establecido
+        if len(line) > MAX_LINE_SIZE:
+            warn('La línea %d tiene más de %d caracteres.' %
+                 (lineNumber, MAX_LINE_SIZE),
+                 warningCount)
+            warningCount += 1
+
+# Reviso un archivo fuente C++
+def checkCppSrcFile(fileName):
+
+    # Es un archivo de código fuente, así que lo reviso primero como tal
+    checkSrcFile(fileName)
+
+# Reviso un archivo header de C++
+def checkCppHdrFile(fileName):
+
+    # Es un archivo de código fuente, así que lo reviso primero como tal
+    checkSrcFile(fileName)
 
 # Extensiones a procesar y con qué hacerlo
 fileTypeDispatch =\
 {
-    'cpp': srcFileProcess,
-    'h':   srcFileProcess
+    'cpp': checkCppSrcFile,
+    'h':   checkCppHdrFile
 }
 
 # Revisa un directorio
