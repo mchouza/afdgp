@@ -30,23 +30,10 @@
 //
 
 //=============================================================================
-// main.cpp
+// profiling.cpp
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 8 de abril de 2008
+// Creado por Mariano M. Chouza | Agregado a AFDGP el 8 de abril de 2008
 //=============================================================================
 
-#include "module_library.h"
-#include <iostream>
-
-int main(int argc, char* argv[])
-{
-	using std::cout;
-	using Util::ModuleLibrary;
-
-	ModuleLibrary lib("../debug");
-
-	lib.dump(cout);
-	
-	// OK
-	return 0;
-}
+#define MY_PROFILER_STORAGE
+#include "profiling.h"

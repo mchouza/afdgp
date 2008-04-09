@@ -30,23 +30,28 @@
 //
 
 //=============================================================================
-// main.cpp
+// evalmodule.h
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 8 de abril de 2008
+// Creado por Mariano M. Chouza | Agregado a AFDGP el 8 de abril de 2008
 //=============================================================================
 
-#include "module_library.h"
-#include <iostream>
+#ifndef EVALMODULE_H
+#define EVALMODULE_H
 
-int main(int argc, char* argv[])
+#include "module.h"
+#include <genome.h>
+
+/// Base abstracta de las clases de los módulos de evaluación
+class MODULE_API EvalModule : public Module
 {
-	using std::cout;
-	using Util::ModuleLibrary;
+public:
+	/// Evalúa un genoma dando un valor en el rango entre 0 y 1
+	/// 0 corresponde a inválido o totalmente inadecuado
+	/// 1 corresponde a adecuación perfecta
+	virtual double evaluateGenome(const TGenome& genome) const = 0;
 
-	ModuleLibrary lib("../debug");
+	/// Muestra un individuo en una forma útil para su aplicación
+	virtual void showIndiv(std::ostream& os, const TGenome& genome) const = 0;
+};
 
-	lib.dump(cout);
-	
-	// OK
-	return 0;
-}
+#endif

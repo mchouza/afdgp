@@ -3,6 +3,22 @@ Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "afdgp", "afdgp\afdgp.vcproj", "{3A093EF9-7C69-4B7E-897B-67023493267E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mod_eval_panfilter", "mod_eval_panfilter\mod_eval_panfilter.vcproj", "{81A5C830-937B-4B89-BC7C-B992CA0B40BA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{EDEC7360-11C0-489B-98A0-F8E62A55A735}"
+	ProjectSection(SolutionItems) = preProject
+		common\evalmodule.h = common\evalmodule.h
+		common\genome.h = common\genome.h
+		common\high_resolution_timer.hpp = common\high_resolution_timer.hpp
+		common\i_mod_spice.h = common\i_mod_spice.h
+		common\module.h = common\module.h
+		common\ops_module.h = common\ops_module.h
+		common\panf_genome.h = common\panf_genome.h
+		common\profiler.hpp = common\profiler.hpp
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mod_genops_panfilter", "mod_genops_panfilter\mod_genops_panfilter.vcproj", "{2D646185-FB82-41F5-A34B-FAF6C3C1A6D4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -13,6 +29,14 @@ Global
 		{3A093EF9-7C69-4B7E-897B-67023493267E}.Debug|Win32.Build.0 = Debug|Win32
 		{3A093EF9-7C69-4B7E-897B-67023493267E}.Release|Win32.ActiveCfg = Release|Win32
 		{3A093EF9-7C69-4B7E-897B-67023493267E}.Release|Win32.Build.0 = Release|Win32
+		{81A5C830-937B-4B89-BC7C-B992CA0B40BA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{81A5C830-937B-4B89-BC7C-B992CA0B40BA}.Debug|Win32.Build.0 = Debug|Win32
+		{81A5C830-937B-4B89-BC7C-B992CA0B40BA}.Release|Win32.ActiveCfg = Release|Win32
+		{81A5C830-937B-4B89-BC7C-B992CA0B40BA}.Release|Win32.Build.0 = Release|Win32
+		{2D646185-FB82-41F5-A34B-FAF6C3C1A6D4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2D646185-FB82-41F5-A34B-FAF6C3C1A6D4}.Debug|Win32.Build.0 = Debug|Win32
+		{2D646185-FB82-41F5-A34B-FAF6C3C1A6D4}.Release|Win32.ActiveCfg = Release|Win32
+		{2D646185-FB82-41F5-A34B-FAF6C3C1A6D4}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

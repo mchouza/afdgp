@@ -30,23 +30,42 @@
 //
 
 //=============================================================================
-// main.cpp
+// component_value_transl.h
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 8 de abril de 2008
+// Creado por Mariano M. Chouza | Agregado a AFDGP el 8 de abril de 2008
 //=============================================================================
 
-#include "module_library.h"
-#include <iostream>
+#ifndef COMPONENT_VALUE_TRANSL_H
+#define COMPONENT_VALUE_TRANSL_H
 
-int main(int argc, char* argv[])
+/// Clase encargada de traducir un entero representando una posición en una
+/// serie de valores de componentes al valor efectivo
+class ComponentValueTransl
 {
-	using std::cout;
-	using Util::ModuleLibrary;
+public:
+	/// Construye una instancia en base a una tolerancia en partes por mil
+	/// dada
+	ComponentValueTransl(int tolerance);
 
-	ModuleLibrary lib("../debug");
+	/// Devuelve el valor del componente en base a un índice teniendo
+	/// en cuenta la tolerancia previamente establecida
+	double getComponentValue(unsigned index) const;
 
-	lib.dump(cout);
-	
-	// OK
-	return 0;
-}
+	/// Obtengo el máximo índice para la tolerancia establecida
+	int getMaxIndex() const;
+
+private:
+	/// Tolerancia
+	int tolerance_;
+
+	/// Puntero indicando la tabla utilizada
+	int* table_;
+
+	/// Cantidad de valores por década que tiene la tabla utilizada
+	int valuesPerDec_;
+
+	/// Cantidad de décadas soportada
+	int cantDec_;
+};
+
+#endif

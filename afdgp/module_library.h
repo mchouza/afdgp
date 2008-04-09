@@ -30,23 +30,53 @@
 //
 
 //=============================================================================
-// main.cpp
+// module_library.h
 //-----------------------------------------------------------------------------
 // Creado por Mariano M. Chouza | Creado el 8 de abril de 2008
 //=============================================================================
 
-#include "module_library.h"
-#include <iostream>
+#ifndef MODULE_LIBRARY_H
+#define MODULE_LIBRARY_H
 
-int main(int argc, char* argv[])
+#include "module.h"
+#include "util_fwd.h"
+#include <boost/shared_ptr.hpp>
+#include <map>
+#include <string>
+
+namespace Util
 {
-	using std::cout;
-	using Util::ModuleLibrary;
+	/// Maneja el conjunto de módulos asignado a la aplicación
+	class ModuleLibrary
+	{
+		/// Tipo del contenedor de bibliotecas compartidas 
+		typedef 
+			std::map<std::string, boost::shared_ptr<OSDep::ISharedLibrary> >
+			TShLibContainer;
+		
+		/// Contenedor de bibliotecas compartidas indexado por nombre de módulo
+		TShLibContainer shLibs_;
+		
+		/// Tipo del contenedor de módulos
+		typedef std::map<std::string, boost::shared_ptr<Module> >
+			TModuleContainer;
+		
+		/// Contenedor de módulos indexados por nombre
+		TModuleContainer modules_;
 
-	ModuleLibrary lib("../debug");
+		/// Intenta cargar un módulo
+		void tryToLoad(const std::string& modulePath);
 
-	lib.dump(cout);
-	
-	// OK
-	return 0;
+	public:
+		/// Construye a partir de un path de directorio
+		ModuleLibrary(const std::string& path);
+
+		/// Obtiene un módulo según el nombre
+		boost::shared_ptr<Module> getModuleByName(const std::string& name);
+
+		/// Muestra los módulos cargados con sus correspondientes versiones
+		void dump(std::ostream& out) const;
+	};
 }
+
+#endif

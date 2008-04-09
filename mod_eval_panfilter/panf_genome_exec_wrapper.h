@@ -30,23 +30,61 @@
 //
 
 //=============================================================================
-// main.cpp
+// panf_genome_exec_wrapper.h
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 8 de abril de 2008
+// Creado por Mariano M. Chouza | Agregado a AFDGP el 8 de abril de 2008
 //=============================================================================
 
-#include "module_library.h"
-#include <iostream>
+#ifndef PANF_GENOME_WRAPPER_H
+#define PANF_GENOME_WRAPPER_H
 
-int main(int argc, char* argv[])
+#include "writing_head.h"
+#include <evalmodule.h>
+
+/// Actua como un "wrapper" del genoma, permitiendo su ejecución sobre el
+/// embrión
+class PANFGenomeExecWrapper
 {
-	using std::cout;
-	using Util::ModuleLibrary;
+public:
+	/// Constructor
+	PANFGenomeExecWrapper(const TGenome& genome) :
+	  genome_(genome)
+	{
+	}
 
-	ModuleLibrary lib("../debug");
+	/// Ejecuta el genoma. Aplica los efectos de la ejecución sobre un
+	/// conjunto de cabezas de escritura.
+	void execute(std::list<WritingHead>& writingHeads,
+		const ComponentNamer& embryoCompNamer,
+		const ComponentValueTransl& transl) const;
 
-	lib.dump(cout);
-	
-	// OK
-	return 0;
-}
+protected:
+	/// Ejecuta una parte del genoma encargada de constinuar la construcción
+	/// en forma recursiva
+	static void recExecuteCC(TGenomeConstIterator& itBegin,
+		TGenomeConstIterator itEnd,
+		std::list<WritingHead>& writingHeads,
+		std::list<WritingHead>::iterator itWHL,
+		ComponentNamer& compNamer,
+		const ComponentValueTransl& transl,
+		bool onlyCheck = false);
+
+	/// Ejecuta una parte del genoma destinada a determinar un tipo de
+	/// componente
+	static EComponentType recExecuteCT(TGenomeConstIterator& itBegin,
+		TGenomeConstIterator itEnd,
+		bool onlyCheck = false);
+
+	/// Ejecuta una parte del genoma destinada a determinar un valor del
+	/// componente
+	static double recExecuteVal(TGenomeConstIterator& itBegin,
+		TGenomeConstIterator itEnd,
+		const ComponentValueTransl& transl,
+		bool onlyCheck = false);
+
+private:
+	/// Referencia al genoma original
+	const TGenome& genome_;
+};
+
+#endif

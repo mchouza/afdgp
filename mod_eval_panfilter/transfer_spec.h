@@ -30,23 +30,32 @@
 //
 
 //=============================================================================
-// main.cpp
+// transfer_spec.h
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 8 de abril de 2008
+// Creado por Mariano M. Chouza | Agregado a AFDGP el 8 de abril de 2008
 //=============================================================================
 
-#include "module_library.h"
-#include <iostream>
+#ifndef TRANSFER_SPEC_H
+#define TRANSFER_SPEC_H
 
-int main(int argc, char* argv[])
+#include <string>
+#include <utility>
+#include <vector>
+
+/// Especifica la forma de la transferencia que se desea
+class TransferSpec
 {
-	using std::cout;
-	using Util::ModuleLibrary;
+public:
+	/// Constructor a partir de una cadena
+	TransferSpec(const std::string& sTS);
 
-	ModuleLibrary lib("../debug");
+	/// Nos da el valor deseado del módulo de la transferencia para una
+	/// frecuencia dada
+	double operator()(double freq) const;
 
-	lib.dump(cout);
-	
-	// OK
-	return 0;
-}
+private:
+	/// Vector con los pares frecuencia - voltaje
+	std::vector<std::pair<double, double> > freqVoltage_;
+};
+
+#endif

@@ -30,23 +30,53 @@
 //
 
 //=============================================================================
-// main.cpp
+// individual.h
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 8 de abril de 2008
+// Creado por Mariano M. Chouza | Agregado a AFDGP el 8 de abril de 2008
 //=============================================================================
 
-#include "module_library.h"
-#include <iostream>
+#ifndef INDIVIDUAL_H
+#define INDIVIDUAL_H
 
-int main(int argc, char* argv[])
+#include "writing_head.h"
+
+/// Clase de los individuos a evaluar
+class Individual
 {
-	using std::cout;
-	using Util::ModuleLibrary;
-
-	ModuleLibrary lib("../debug");
-
-	lib.dump(cout);
+public:
+	/// Constructor sin parámetros
+	Individual() {}
 	
-	// OK
-	return 0;
-}
+	/// Constructor de copia
+	Individual(const Individual& indiv);
+
+	/// Constructor a partir de una netlist
+	Individual(std::istream& is);
+
+	/// Transforma al individuo en una netlist
+	void convertToNetlist(std::ostream& os, bool showProbe = true) const;
+
+	/// Renumera los vértices
+	void reenumerateVertices();
+
+	/// Limpia al individuo para que el SPICE pueda procesarlo
+	void spiceCleanUp();
+
+	/// Devuelve el nodo que tiene una probe
+	unsigned getProbedNode() const;
+
+	/// Obtiene las "cabezas de escritura"
+	std::list<WritingHead>& getWritingHeads()
+	{ return writingHeads_; }
+
+private:
+	/// Datos del individuo, básicamente un grafo dirigido que representa
+	/// la netlist
+	TDigraph netlist_;
+
+	/// "Cabezas de escritura" del individuo. Solo se utilizan durante el
+	/// desarrollo.
+	std::list<WritingHead> writingHeads_;
+};
+
+#endif

@@ -30,23 +30,14 @@
 //
 
 //=============================================================================
-// main.cpp
+// exceptions_panf.h
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 8 de abril de 2008
+// Creado por Mariano M. Chouza | Agregado a AFDGP el 8 de abril de 2008
 //=============================================================================
 
-#include "module_library.h"
-#include <iostream>
+#ifndef EXCEPTIONS_PANF_H
+#define EXCEPTIONS_PANF_H
 
-int main(int argc, char* argv[])
-{
-	using std::cout;
-	using Util::ModuleLibrary;
+#include <evalmodule.h>
 
-	ModuleLibrary lib("../debug");
-
-	lib.dump(cout);
-	
-	// OK
-	return 0;
-}
+#endif

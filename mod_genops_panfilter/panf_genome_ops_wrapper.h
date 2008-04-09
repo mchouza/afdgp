@@ -30,23 +30,50 @@
 //
 
 //=============================================================================
-// main.cpp
+// panf_genome_ops_wrapper.h
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 8 de abril de 2008
+// Creado por Mariano M. Chouza | Agregado a NGPD el 6 de abril de 2008
 //=============================================================================
 
-#include "module_library.h"
-#include <iostream>
+#ifndef PANF_GENOME_OPS_WRAPPER_H
+#define PANF_GENOME_OPS_WRAPPER_H
 
-int main(int argc, char* argv[])
+#include <genome.h>
+
+/// Actua como un "wrapper" del genoma, permitiendo la realización de 
+/// operaciones sobre el mismo así como su serialización
+class PANFGenomeOpsWrapper
 {
-	using std::cout;
-	using Util::ModuleLibrary;
+public:
+	/// Constructor a partir de un genoma
+	PANFGenomeOpsWrapper(TGenome& genome) : genome_(genome) {}
 
-	ModuleLibrary lib("../debug");
+	/// Construye un genoma en forma aleatoria
+	void makeRandom();
 
-	lib.dump(cout);
-	
-	// OK
-	return 0;
-}
+	/// Realiza la cruza con otro genoma
+	void cross(TGenome& otherGenome);
+
+	/// Realiza la cruza con otro genoma con su corespondiente wrapper
+	void cross(PANFGenomeOpsWrapper& otherGenomeWrapper);
+
+	/// Realiza una mutación en el genoma
+	void mutate();
+
+	/// Realiza una operación de alteración de arquitectura
+	void altOp();
+
+	/// Devuelve el genoma en un formato textual o binario
+	/// (por defecto textual).
+	void save(std::ostream& os, bool textualFormat = true) const;
+
+	/// Carga un genoma  a partir de una descripción textual o binaria
+	/// (por defecto textual).
+	void load(std::istream& is, bool textualFormat = true);
+
+private:
+	/// Referencia al genoma
+	TGenome& genome_;
+};
+
+#endif

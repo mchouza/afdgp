@@ -30,23 +30,18 @@
 //
 
 //=============================================================================
-// main.cpp
+// util_fwd.h
 //-----------------------------------------------------------------------------
 // Creado por Mariano M. Chouza | Creado el 8 de abril de 2008
 //=============================================================================
 
-#include "module_library.h"
-#include <iostream>
+#ifndef UTIL_FWD_H
+#define UTIL_FWD_H
 
-int main(int argc, char* argv[])
+namespace Util
 {
-	using std::cout;
-	using Util::ModuleLibrary;
-
-	ModuleLibrary lib("../debug");
-
-	lib.dump(cout);
-	
-	// OK
-	return 0;
+	// Forwards
+	namespace OSDep {class ISharedLibrary;}
 }
+
+#endif

@@ -30,23 +30,41 @@
 //
 
 //=============================================================================
-// main.cpp
+// ops_module.h
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 8 de abril de 2008
+// Creado por Mariano M. Chouza | Agregado a AFDGP el 8 de abril de 2008
 //=============================================================================
 
-#include "module_library.h"
-#include <iostream>
+#ifndef OPS_MODULE_H
+#define OPS_MODULE_H
 
-int main(int argc, char* argv[])
+#include "module.h"
+#include <genome.h>
+
+/// Base abstracta para los módulos encargados de generar, mutar y cruzar los
+/// genomas
+class MODULE_API OpsModule : public Module
 {
-	using std::cout;
-	using Util::ModuleLibrary;
+public:
+	/// Inicializa un genoma en forma aleatoria
+	virtual void randomInit(TGenome& genome) const = 0;
 
-	ModuleLibrary lib("../debug");
+	/// Muta un genoma
+	virtual void mutate(TGenome& genome) const = 0;
 
-	lib.dump(cout);
-	
-	// OK
-	return 0;
-}
+	/// Cruza un genoma con otro
+	virtual void cross(TGenome& genome1, TGenome& genome2) const = 0;
+
+	/// Realiza un operación de alteración
+	virtual void altOp(TGenome& genome) const = 0;
+
+	/// Guarda un genoma en una stream
+	virtual void save(std::ostream& os, TGenome& genome,
+		bool textualFormat = true) const = 0;
+
+	/// Carga un genoma a partir de una stream
+	virtual void load(std::istream& is, TGenome& genome,
+		bool textualFormat = true) const = 0;
+};
+
+#endif
