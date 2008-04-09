@@ -30,23 +30,73 @@
 //
 
 //=============================================================================
-// main.cpp
+// mod_genops_panfilter.cpp
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 8 de abril de 2008
+// Creado por Mariano M. Chouza | Agregado a NGPD el 6 de abril de 2008
 //=============================================================================
 
-#include "module_library.h"
-#include <iostream>
+#include "mod_genops_panfilter.h"
+#include "panf_genome_ops_wrapper.h"
 
-int main(int argc, char* argv[])
+using boost::shared_ptr;
+using std::istream;
+using std::map;
+using std::ostream;
+using std::string;
+using std::vector;
+
+// Exporto al módulo
+EXPORT_MODULE(ModGenOpsPAnFilter)
+
+const string ModGenOpsPAnFilter::name_ = "GenOpsPassiveAnalogFilter";
+const unsigned int ModGenOpsPAnFilter::version_ = 0;
+const vector<Module::Req> ModGenOpsPAnFilter::reqs_ =
+	std::vector<Module::Req>();
+
+bool ModGenOpsPAnFilter::giveConfigData(const map<string,string> &configData)
 {
-	using std::cout;
-	using Util::ModuleLibrary;
+	// FIXME: Hacer que funcione
+	return true;
+}
 
-	ModuleLibrary lib("../debug");
+bool ModGenOpsPAnFilter::giveReqMods(const vector<shared_ptr<Module> > &reqMods)
+{
+	// No requiere módulos, devuelvo error si me los dan
+	return reqMods.size() == 0;
+}
 
-	lib.dump(cout);
-	
-	// OK
-	return 0;
+void ModGenOpsPAnFilter::randomInit(TGenome &genome) const
+{
+	PANFGenomeOpsWrapper wrapper(genome);
+	wrapper.makeRandom();
+}
+
+void ModGenOpsPAnFilter::mutate(TGenome &genome) const
+{
+	PANFGenomeOpsWrapper wrapper(genome);
+	wrapper.mutate();
+}
+
+void ModGenOpsPAnFilter::cross(TGenome &genome1, TGenome &genome2) const
+{
+	PANFGenomeOpsWrapper wrapper(genome1);
+	wrapper.cross(genome2);
+}
+
+void ModGenOpsPAnFilter::altOp(TGenome& genome) const
+{
+	PANFGenomeOpsWrapper wrapper(genome);
+	wrapper.altOp();
+}
+
+void ModGenOpsPAnFilter::load(istream& is, TGenome& genome, bool textualFormat) const
+{
+	PANFGenomeOpsWrapper wrapper(genome);
+	wrapper.load(is, textualFormat);
+}
+
+void ModGenOpsPAnFilter::save(ostream& os, TGenome& genome, bool textualFormat) const
+{
+	PANFGenomeOpsWrapper wrapper(genome);
+	wrapper.save(os, textualFormat);
 }

@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="afdgp"
-	ProjectGUID="{3A093EF9-7C69-4B7E-897B-67023493267E}"
-	RootNamespace="afdgp"
+	Name="mod_eval_panfilter"
+	ProjectGUID="{81A5C830-937B-4B89-BC7C-B992CA0B40BA}"
+	RootNamespace="mod_eval_panfilter"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -19,7 +19,7 @@
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
+			ConfigurationType="2"
 			CharacterSet="0"
 			>
 			<Tool
@@ -41,7 +41,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="../common"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;BOOST_ALL_DYN_LINK"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MOD_EVAL_PANFILTER_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -63,7 +63,7 @@
 				Name="VCLinkerTool"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
-				SubSystem="1"
+				SubSystem="2"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -95,7 +95,7 @@
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
+			ConfigurationType="2"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -116,7 +116,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MOD_EVAL_PANFILTER_EXPORTS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -136,7 +136,7 @@
 				Name="VCLinkerTool"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
-				SubSystem="1"
+				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				TargetMachine="1"
@@ -171,73 +171,93 @@
 	</References>
 	<Files>
 		<Filter
-			Name="Core"
+			Name="Source Files"
+			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
-			<Filter
-				Name="Header Files"
-				Filter="h;hpp;hxx;hm;inl;inc;xsd"
-				UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
+			<File
+				RelativePath=".\component_value_transl.cpp"
 				>
-				<File
-					RelativePath=".\config.h"
-					>
-				</File>
-				<File
-					RelativePath=".\config_file.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Source Files"
-				Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
-				UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
+			</File>
+			<File
+				RelativePath=".\individual.cpp"
 				>
-				<File
-					RelativePath=".\config.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\config_file.cpp"
-					>
-				</File>
-			</Filter>
+			</File>
+			<File
+				RelativePath=".\mod_eval_panfilter.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\panf_genome_exec_wrapper.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\profiling.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\spice_ac_out.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\transfer_spec.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\writing_head.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
-			Name="Util"
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl;inc;xsd"
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
-			<Filter
-				Name="Header Files"
+			<File
+				RelativePath=".\component.h"
 				>
-				<File
-					RelativePath=".\module_library.h"
-					>
-				</File>
-				<File
-					RelativePath=".\os_dep.h"
-					>
-				</File>
-				<File
-					RelativePath=".\util_fwd.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Source Files"
+			</File>
+			<File
+				RelativePath=".\component_namer.h"
 				>
-				<File
-					RelativePath=".\module_library.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\os_dep.cpp"
-					>
-				</File>
-			</Filter>
+			</File>
+			<File
+				RelativePath=".\component_value_transl.h"
+				>
+			</File>
+			<File
+				RelativePath=".\exceptions_panf.h"
+				>
+			</File>
+			<File
+				RelativePath=".\individual.h"
+				>
+			</File>
+			<File
+				RelativePath=".\mod_eval_panfilter.h"
+				>
+			</File>
+			<File
+				RelativePath=".\panf_genome_exec_wrapper.h"
+				>
+			</File>
+			<File
+				RelativePath=".\profiling.h"
+				>
+			</File>
+			<File
+				RelativePath=".\spice_ac_out.h"
+				>
+			</File>
+			<File
+				RelativePath=".\transfer_spec.h"
+				>
+			</File>
+			<File
+				RelativePath=".\writing_head.h"
+				>
+			</File>
 		</Filter>
-		<File
-			RelativePath=".\main.cpp"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="afdgp"
-	ProjectGUID="{3A093EF9-7C69-4B7E-897B-67023493267E}"
-	RootNamespace="afdgp"
+	Name="mod_genops_panfilter"
+	ProjectGUID="{2D646185-FB82-41F5-A34B-FAF6C3C1A6D4}"
+	RootNamespace="mod_genops_panfilter"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -19,7 +19,7 @@
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
+			ConfigurationType="2"
 			CharacterSet="0"
 			>
 			<Tool
@@ -41,7 +41,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="../common"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;BOOST_ALL_DYN_LINK"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MOD_GENOPS_PANFILTER_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -63,7 +63,7 @@
 				Name="VCLinkerTool"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
-				SubSystem="1"
+				SubSystem="2"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -95,7 +95,7 @@
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
+			ConfigurationType="2"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -116,7 +116,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MOD_GENOPS_PANFILTER_EXPORTS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -136,7 +136,7 @@
 				Name="VCLinkerTool"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
-				SubSystem="1"
+				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				TargetMachine="1"
@@ -171,73 +171,41 @@
 	</References>
 	<Files>
 		<Filter
-			Name="Core"
+			Name="Source Files"
+			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
-			<Filter
-				Name="Header Files"
-				Filter="h;hpp;hxx;hm;inl;inc;xsd"
-				UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
+			<File
+				RelativePath=".\mod_genops_panfilter.cpp"
 				>
-				<File
-					RelativePath=".\config.h"
-					>
-				</File>
-				<File
-					RelativePath=".\config_file.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Source Files"
-				Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
-				UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
+			</File>
+			<File
+				RelativePath=".\panf_genome_iterator.cpp"
 				>
-				<File
-					RelativePath=".\config.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\config_file.cpp"
-					>
-				</File>
-			</Filter>
+			</File>
+			<File
+				RelativePath=".\panf_genome_ops_wrapper.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
-			Name="Util"
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl;inc;xsd"
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
-			<Filter
-				Name="Header Files"
+			<File
+				RelativePath=".\mod_genops_panfilter.h"
 				>
-				<File
-					RelativePath=".\module_library.h"
-					>
-				</File>
-				<File
-					RelativePath=".\os_dep.h"
-					>
-				</File>
-				<File
-					RelativePath=".\util_fwd.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Source Files"
+			</File>
+			<File
+				RelativePath=".\panf_genome_iterator.h"
 				>
-				<File
-					RelativePath=".\module_library.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\os_dep.cpp"
-					>
-				</File>
-			</Filter>
+			</File>
+			<File
+				RelativePath=".\panf_genome_ops_wrapper.h"
+				>
+			</File>
 		</Filter>
-		<File
-			RelativePath=".\main.cpp"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

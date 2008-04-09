@@ -30,23 +30,52 @@
 //
 
 //=============================================================================
-// main.cpp
+// os_dep.h
 //-----------------------------------------------------------------------------
 // Creado por Mariano M. Chouza | Creado el 8 de abril de 2008
 //=============================================================================
 
-#include "module_library.h"
-#include <iostream>
+#ifndef OS_DEP_H
+#define OS_DEP_H
 
-int main(int argc, char* argv[])
+#include <boost/shared_ptr.hpp>
+#include <string>
+
+namespace Util
 {
-	using std::cout;
-	using Util::ModuleLibrary;
+	/// Contiene elementos cuya implemnetación es dependiente del sistema
+	namespace OSDep
+	{
+		/// Interfaz de una biblioteca compartida
+		class ISharedLibrary
+		{
+			// Prohibo copia
+			ISharedLibrary(const ISharedLibrary&);
+			const ISharedLibrary& operator=(const ISharedLibrary&);
 
-	ModuleLibrary lib("../debug");
+		protected:
+			// Prohibo construcción "desde afuera"
+			ISharedLibrary()
+			{
+			}
 
-	lib.dump(cout);
-	
-	// OK
-	return 0;
+			virtual ~ISharedLibrary()
+			{
+			}
+
+		public:
+			/// Construye una a partir de un path
+			static boost::shared_ptr<ISharedLibrary> 
+				makeFromPath(const std::string& path);
+
+			/// Obtiene una dirección
+			virtual void* 
+				getSymbolAddress(const std::string& symbolName) const = 0;
+		};
+
+		/// Devuelve la extensión correspondiente a los módulos
+		const std::string& getModulesFileExtension();
+	}
 }
+
+#endif

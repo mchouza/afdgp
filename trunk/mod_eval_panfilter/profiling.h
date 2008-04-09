@@ -30,23 +30,35 @@
 //
 
 //=============================================================================
-// main.cpp
+// profiling.h
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 8 de abril de 2008
+// Creado por Mariano M. Chouza | Agregado a AFDGP el 8 de abril de 2008
 //=============================================================================
 
-#include "module_library.h"
-#include <iostream>
+#ifndef PROFILING_H
+#define PROFILING_H
 
-int main(int argc, char* argv[])
+#include <cassert>
+#include <map>
+#include <string>
+
+#ifndef MY_PROFILER_STORAGE
+#define NO_STORAGE
+#include <profiler.hpp>
+#undef NO_STORAGE
+#else
+#include <profiler.hpp>
+#endif
+
+/// Para efectuar profiling de la evaluación
+class MyProfiler : public boost::prof::basic_profiler<
+								boost::prof::empty_logging_policy,
+								boost::prof::default_stats_policy,
+								boost::high_resolution_timer>
 {
-	using std::cout;
-	using Util::ModuleLibrary;
+public:
+	/// Constructor
+	MyProfiler(const char* desc) : basic_profiler(desc) {}
+};
 
-	ModuleLibrary lib("../debug");
-
-	lib.dump(cout);
-	
-	// OK
-	return 0;
-}
+#endif

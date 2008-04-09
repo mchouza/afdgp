@@ -30,23 +30,43 @@
 //
 
 //=============================================================================
-// main.cpp
+// mod_genops_panfilter.h
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 8 de abril de 2008
+// Creado por Mariano M. Chouza | Agregado a NGPD el 6 de abril de 2008
 //=============================================================================
 
-#include "module_library.h"
-#include <iostream>
+#ifndef MOD_GENOPS_PANFILTER_H
+#define MOD_GENOPS_PANFILTER_H
 
-int main(int argc, char* argv[])
+#include <ops_module.h>
+
+/// Clase del módulo encargado de operar con el genoma (mutarlo,
+/// hacer cruzas, etc)
+class MODULE_API ModGenOpsPAnFilter : public OpsModule
 {
-	using std::cout;
-	using Util::ModuleLibrary;
+public:
+	// Requeridos por la interfaz
+	virtual const std::string& getName() const {return name_;};
+	virtual const std::vector<Req>& getReqMods() const {return reqs_;}
+	virtual unsigned int getVersion() const {return version_;}
+	virtual bool giveReqMods(const std::vector<boost::shared_ptr<Module> >& reqMods);
+	virtual bool giveConfigData(const std::map<std::string, std::string>& configData);
+	virtual void randomInit(TGenome& genome) const;
+	virtual void mutate(TGenome& genome) const;
+	virtual void cross(TGenome& genome1, TGenome& genome2) const;
+	virtual void altOp(TGenome& genome) const;
+	virtual void save(std::ostream& os, TGenome& genome, bool textualFormat = true) const;
+	virtual void load(std::istream& is, TGenome& genome, bool textualFormat = true) const;
 
-	ModuleLibrary lib("../debug");
+private:
+	/// Nombre del módulo
+	static const std::string name_;
 
-	lib.dump(cout);
-	
-	// OK
-	return 0;
-}
+	/// Versión del módulo
+	static const unsigned int version_;
+
+	/// IDs de los módulos requeridos
+	static const std::vector<Req> reqs_;
+};
+
+#endif

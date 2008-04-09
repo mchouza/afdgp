@@ -30,23 +30,33 @@
 //
 
 //=============================================================================
-// main.cpp
+// i_mod_spice.h
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 8 de abril de 2008
+// Creado por Mariano M. Chouza | Agregado a AFDGP el 8 de abril de 2008
 //=============================================================================
 
-#include "module_library.h"
-#include <iostream>
+#ifndef I_MOD_SPICE_H
+#define I_MOD_SPICE_H
 
-int main(int argc, char* argv[])
+#include <module.h>
+#include <string>
+
+class MODULE_API IModSpice : public Module
 {
-	using std::cout;
-	using Util::ModuleLibrary;
+public:
+	// Destructor virtual
+	virtual ~IModSpice() {}
 
-	ModuleLibrary lib("../debug");
+	// Definidas por la interfaz
+	virtual const std::string& getName() const = 0;
+	virtual const std::vector<Req>& getReqMods() const = 0;
+	virtual unsigned int getVersion() const = 0;
+	virtual bool giveConfigData(const std::map<std::string, std::string>& configData) = 0;
+	virtual bool giveReqMods(const std::vector<boost::shared_ptr<Module> >& reqMods) = 0;
 
-	lib.dump(cout);
-	
-	// OK
-	return 0;
-}
+	/// Procesa una netlist
+	virtual bool procNetlist(const std::string& netlist,
+		std::vector<char>& result, bool binaryResults = true) const = 0;
+};
+
+#endif

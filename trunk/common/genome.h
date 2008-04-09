@@ -30,23 +30,21 @@
 //
 
 //=============================================================================
-// main.cpp
+// genome.h
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 8 de abril de 2008
+// Creado por Mariano M. Chouza | Agregado a AFDGP el 8 de abril de 2008
 //=============================================================================
 
-#include "module_library.h"
-#include <iostream>
+#ifndef GENOME_H
+#define GENOME_H
 
-int main(int argc, char* argv[])
-{
-	using std::cout;
-	using Util::ModuleLibrary;
+#include <vector>
 
-	ModuleLibrary lib("../debug");
+/// Tipo del genoma
+typedef std::vector<unsigned char> TGenome;
 
-	lib.dump(cout);
-	
-	// OK
-	return 0;
-}
+/// Tipo del iterador del genoma
+typedef std::vector<unsigned char>::iterator TGenomeIterator;
+typedef std::vector<unsigned char>::const_iterator TGenomeConstIterator;
+
+#endif

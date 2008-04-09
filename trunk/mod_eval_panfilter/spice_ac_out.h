@@ -30,23 +30,51 @@
 //
 
 //=============================================================================
-// main.cpp
+// spice_ac_out.h
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 8 de abril de 2008
+// Creado por Mariano M. Chouza | Agregado a AFDGP el 8 de abril de 2008
 //=============================================================================
 
-#include "module_library.h"
-#include <iostream>
+#ifndef SPICE_AC_OUT_H
+#define SPICE_AC_OUT_H
 
-int main(int argc, char* argv[])
+#include <complex>
+#include <iosfwd>
+#include <set>
+#include <vector>
+
+/// Clase encargada de mostrarnos la salida de un análisis AC hecho con
+/// SPICE
+class SpiceACOut
 {
-	using std::cout;
-	using Util::ModuleLibrary;
+public:
+	/// Construye la salida en base a la salida textual
+	SpiceACOut(const std::vector<char>& spiceRawOutput);
 
-	ModuleLibrary lib("../debug");
+	/// Muestra la salida en forma de texto
+	friend std::ostream& operator<<(std::ostream& os, const SpiceACOut& out);
 
-	lib.dump(cout);
-	
-	// OK
-	return 0;
-}
+	/// Obtiene el vector de valores de voltaje en un nodo dado
+	void getNodeVoltages(const std::string& node,
+		std::vector<std::complex<double> >& voltages) const;
+
+	/// Obtiene el vector de frecuencias
+	const std::vector<double>& getFreqs() const;
+
+protected:
+	/// Rellena los vectores de la clase
+	void fillVectors(const std::vector<char>& spiceRawOutput);
+
+private:
+	/// Vector de vectores. Las filas representan cada nodo y las columnas
+	/// cada frecuencia
+	std::vector<std::vector<std::complex<double> > > data_;
+
+	/// Vector indicando las frecuencias
+	std::vector<double> freqs_;
+
+	/// Vector indicando los nodos (siempre uso números, no strings)
+	std::vector<unsigned> nodes_;
+};
+
+#endif
