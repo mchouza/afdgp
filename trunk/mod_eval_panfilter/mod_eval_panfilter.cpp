@@ -76,7 +76,7 @@ const vector<Module::Req> ModEvalPAnFilter::reqs_ =
 	std::vector<Module::Req>(
 		1,
 		// SPICE
-		Module::Req("ModSpice", 0));
+		Module::Req("Spice", 0));
 
 // FIXME: Solo para impresión con propósitos de debugging
 #include <iostream>
@@ -96,8 +96,8 @@ bool ModEvalPAnFilter::giveReqMods(const vector<shared_ptr<Module> > &reqMods)
 		return false;
 	
 	// Me fijo que sea el del SPICE
-	//if (reqMods[0]->getID() != spiceModID)
-	//	return false;
+	if (reqMods[0]->getName() != "Spice")
+		return false;
 
 	// La versión no importa
 
