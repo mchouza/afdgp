@@ -61,15 +61,16 @@ ModuleLibrary::ModuleLibrary(const std::string& pathStr)
 	for (; it != itEnd; ++it)
 	{
 		// Si es un archivo...
-		if (extension(it->path().leaf()) == getModulesFileExtension())
+		if (extension(it->path()) == getModulesFileExtension())
 			// ...trato de cargarlo
-			tryToLoad(it->path().leaf());
+			tryToLoad(it->path().string());
 	}
 }
 
 void ModuleLibrary::dump(std::ostream& out) const
 {
-	out << "Módulos cargados: " << "\n";
+	out << "Módulos cargados: " << (modules_.size() ? "\n" : "ninguno\n");
+	
 	TModuleContainer::const_iterator it = modules_.begin();
 	for (; it != modules_.end(); ++it)
 	{

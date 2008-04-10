@@ -52,7 +52,7 @@
 	#endif
 #endif
 
-#ifdef DEBUG
+#ifdef _DEBUG
 const unsigned MAGIC_NUMBER = 0xd93363ff;
 #else
 const unsigned MAGIC_NUMBER = 0x01d7baf6;
