@@ -29,84 +29,51 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-#=============================================================================
+################################################################################
 # check_file_standards.py
-#-----------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # Creado por Mariano M. Chouza | Creado el 9 de abril de 2008
-#=============================================================================
-
-# FIXME: Reformular estructura para el procesamiento por línea y los warnings
+################################################################################
 
 import os
 import sys
 
-# La cantidad de espacios que se considera que vale un TAB
-TAB_SIZE = 4
+# FIXME: IMPLEMNETAR UN PROCESAMIENTO PARA CADA TIPO DE ARCHIVO
 
-# Cantidad de advertencias antes de suprimir
-MAX_WARNING_COUNT = 3
+def nothing(a):
+    pass
 
-# Tamaño de línea máximo
-MAX_LINE_SIZE = 80
-
-# Da un aviso
-def warn(msg, wc):
-    
-    # Si no se "cansó" de dar avisos, lo muestro
-    if wc <= MAX_WARNING_COUNT:
-        print msg
-
-    # Si está en el límite, aviso
-    if wc == MAX_WARNING_COUNT:
-        print '(Posteriores advertencias serán omitidas.)'
-
-
-# Reviso un archivo fuente en general
-def checkSrcFile(fileName):
-
-    # Cantidad de avisos dados
-    warningCount = 0
-
-    # Contador de líneas
-    lineNumber = 1
-
-    # Para todas las líneas
-    for line in file(fileName):
-
-        # Avanza el número de línea
-        lineNumber += 1
-
-        # Reemplazo los tabs por TAB_SIZE espacios
-        line = line.replace('\t', ' ' * TAB_SIZE)
-
-        # Veo que la longitud sea menor o igual a lo establecido
-        if len(line) > MAX_LINE_SIZE:
-            warn('La línea %d tiene más de %d caracteres.' %
-                 (lineNumber, MAX_LINE_SIZE),
-                 warningCount)
-            warningCount += 1
-
-# Reviso un archivo fuente C++
-def checkCppSrcFile(fileName):
-
-    # Es un archivo de código fuente, así que lo reviso primero como tal
-    checkSrcFile(fileName)
-
-# Reviso un archivo header de C++
-def checkCppHdrFile(fileName):
-
-    # Es un archivo de código fuente, así que lo reviso primero como tal
-    checkSrcFile(fileName)
-
-# Extensiones a procesar y con qué hacerlo
+# Despacho
 fileTypeDispatch =\
 {
-    'cpp': checkCppSrcFile,
-    'h':   checkCppHdrFile
+    'cpp': nothing,
+    'c': nothing,
+    'h': nothing,
+    'py': nothing
 }
 
+# Se fija si un directorio está suprimido
+def isSuppressed(suppressions, dirName):
+
+    # Si está en la lista, está suprimido
+    if dirName in suppressions:
+        return True
+
+    # Si tiene como prefijo uno de la lista también
+    for supDir in suppressions:
+        if dirName.startswith(supDir + os.sep):
+            return True
+
+    return False
+
 # Revisa un directorio
-def checkIndivDir(args, dirName, files):
+def checkIndivDir(supressions, dirName, files):
+
+    # FIXME: EXTREMADAMENTE INEFICIENTE, HAGO RECURSIÓN SABIENDO QUE TENGO
+    # QUE CORTAR!!
+    # Si está suprimido, abandono
+    if isSuppressed(supressions, dirName):
+        return
     
     # Muestro donde estoy
     print 'Revisando directorio: %s' % dirName
@@ -128,31 +95,60 @@ def checkIndivDir(args, dirName, files):
         fileTypeDispatch[ext](os.path.join(dirName, fileName))
 
 # Revisa un directorio en forma recursiva hasta el fondo
-def checkBaseDir(baseDir, recLevel = 0):
+def recCheckDir(baseDir, suppressions):
     
     # Muestro la base
     print 'Directorio base: %s' % baseDir
 
-    # Hago un walk del árbolde directorios
-    os.path.walk(baseDir, checkIndivDir, None)
+    # Hago un walk del árbol de directorios
+    os.path.walk(baseDir, checkIndivDir, suppressions)
+
+# Muestra la sintaxis
+def printSyntax():
+
+    # Imprimo la sintaxis
+    print 'check_file_standards <dir1> ... <dirN> -<sdir1> ... -<sdirM>'
+    print
+    print \
+'''Revisa todos los archivos cuyos tipos tenga registrados para verificar el
+cumplimiento de un cierto número de "standards". La exploración en busca de
+estos archivos se realiza en forma recursiva a partir de los directorios pasados
+como parámetros (<dir1>, <dir2>, ..., <dirN> en el ejemplo. Si se le antepone
+un guión ('-'), el directorio será "suprimido" de la exploración recursiva.'''
 
 # Main
 def main(argv = []):
     
-    # Reviso la cantidad de parámetros
-    if len(argv) > 2:
-        # Demasiados, salgo con error
-        print >>sys.stderr, 'Cantidad incorrecta de parámetros.\n'
-        return 1
-    elif len(argv) == 2:
-        # Dir de arranque pasado como parámetro
-        baseDir = argv[1]
-    else:
-        # Tomo el directorio actual como el de arranque
-        baseDir = '.'
+    # Directorios a revisar
+    dirs2Check = []
 
-    # Reviso el directorio
-    checkBaseDir(baseDir)
+    # Suppressions (lugares en donde no reviso)
+    suppressions = []
+
+    # Si no tengo parámetros, indico la sintaxis y salgo con error
+    if len(argv) < 2:
+        printSyntax()
+        return 1
+
+    # Reviso los parámetros
+    for arg in argv[1:]:
+        
+        # Me fijo si hay que revisarlo o suprimirlo
+        if arg[0] == '-':
+            # Hay que suprimirlo
+            suppressions.append(arg[1:])
+        else:
+            # Hay que revisarlo
+            dirs2Check.append(arg)
+
+    # Pongo a todos los paths en una forma canónica, así puedo identificar a
+    # las suppressions
+    dirs2Check = map(os.path.abspath, dirs2Check)
+    suppressions = map(os.path.abspath, suppressions)
+
+    # Reviso a cada directorio en forma recursiva, indicando las supressions
+    for d2c in dirs2Check:
+        recCheckDir(d2c, suppressions)  
 
     # OK
     return 0

@@ -30,54 +30,26 @@
 //
 
 //=============================================================================
-// module_library.h
+// afdgp_app.cpp
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 8 de abril de 2008
+// Creado por Mariano M. Chouza | Creado el 11 de abril de 2008
 //=============================================================================
 
-#ifndef MODULE_LIBRARY_H
-#define MODULE_LIBRARY_H
+#include "afdgp_app.h"
+#include "config.h"
+#include "module_library.h"
+#include "afd_job.h"
 
-#include "module.h"
-#include "util_fwd.h"
-#include <boost/shared_ptr.hpp>
-#include <map>
-#include <string>
+using namespace Core;
 
-namespace Core
+AFDGPApp::AFDGPApp(int argc, char* argv[])
 {
-	/// Maneja el conjunto de módulos asignado a la aplicación
-	class ModuleLibrary
-	{
-		/// Tipo del contenedor de bibliotecas compartidas 
-		typedef 
-			std::map<	std::string,
-						boost::shared_ptr<Util::OSDep::ISharedLibrary> >
-			TShLibContainer;
-		
-		/// Contenedor de bibliotecas compartidas indexado por nombre de módulo
-		TShLibContainer shLibs_;
-		
-		/// Tipo del contenedor de módulos
-		typedef std::map<std::string, boost::shared_ptr<Module> >
-			TModuleContainer;
-		
-		/// Contenedor de módulos indexados por nombre
-		TModuleContainer modules_;
-
-		/// Intenta cargar un módulo
-		void tryToLoad(const std::string& modulePath);
-
-	public:
-		/// Construye a partir de un path de directorio
-		ModuleLibrary(const std::string& path);
-
-		/// Obtiene un módulo según el nombre
-		boost::shared_ptr<Module> getModuleByName(const std::string& name);
-
-		/// Muestra los módulos cargados con sus correspondientes versiones
-		void dump(std::ostream& out) const;
-	};
 }
 
-#endif
+AFDGPApp::~AFDGPApp()
+{
+}
+
+void AFDGPApp::run()
+{
+}
