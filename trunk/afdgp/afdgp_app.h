@@ -30,53 +30,41 @@
 //
 
 //=============================================================================
-// module_library.h
+// afdgp_app.h
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 8 de abril de 2008
+// Creado por Mariano M. Chouza | Creado el 11 de abril de 2008
 //=============================================================================
 
-#ifndef MODULE_LIBRARY_H
-#define MODULE_LIBRARY_H
+#ifndef AFDGP_APP_H
+#define AFDGP_APP_H
 
-#include "module.h"
-#include "util_fwd.h"
-#include <boost/shared_ptr.hpp>
-#include <map>
-#include <string>
+#include "core_fwd.h"
+#include <boost/scoped_ptr.hpp>
 
 namespace Core
 {
-	/// Maneja el conjunto de módulos asignado a la aplicación
-	class ModuleLibrary
+	/// Representa a la aplicación encargada de realizar el diseño de un filtro 
+	/// analógico utilizando programación genética
+	class AFDGPApp
 	{
-		/// Tipo del contenedor de bibliotecas compartidas 
-		typedef 
-			std::map<	std::string,
-						boost::shared_ptr<Util::OSDep::ISharedLibrary> >
-			TShLibContainer;
-		
-		/// Contenedor de bibliotecas compartidas indexado por nombre de módulo
-		TShLibContainer shLibs_;
-		
-		/// Tipo del contenedor de módulos
-		typedef std::map<std::string, boost::shared_ptr<Module> >
-			TModuleContainer;
-		
-		/// Contenedor de módulos indexados por nombre
-		TModuleContainer modules_;
+		/// Configuración general de la app
+		boost::scoped_ptr<Config> config_;
 
-		/// Intenta cargar un módulo
-		void tryToLoad(const std::string& modulePath);
+		/// Módulos de la app
+		boost::scoped_ptr<ModuleLibrary> modules_;
+
+		/// Trabajo a ejecutar
+		boost::scoped_ptr<Job> job_;
 
 	public:
-		/// Construye a partir de un path de directorio
-		ModuleLibrary(const std::string& path);
+		/// Construye la aplicación a partir de la línea de comandos
+		AFDGPApp(int argc, char* argv[]);
 
-		/// Obtiene un módulo según el nombre
-		boost::shared_ptr<Module> getModuleByName(const std::string& name);
+		/// Destructor
+		virtual ~AFDGPApp();
 
-		/// Muestra los módulos cargados con sus correspondientes versiones
-		void dump(std::ostream& out) const;
+		/// Comienza la ejecución de la aplicación
+		void run();
 	};
 }
 

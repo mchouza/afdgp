@@ -180,11 +180,27 @@
 				UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 				>
 				<File
+					RelativePath=".\afd_job.h"
+					>
+				</File>
+				<File
+					RelativePath=".\afdgp_app.h"
+					>
+				</File>
+				<File
 					RelativePath=".\config.h"
 					>
 				</File>
 				<File
 					RelativePath=".\config_file.h"
+					>
+				</File>
+				<File
+					RelativePath=".\core_fwd.h"
+					>
+				</File>
+				<File
+					RelativePath=".\module_library.h"
 					>
 				</File>
 			</Filter>
@@ -194,11 +210,23 @@
 				UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 				>
 				<File
+					RelativePath=".\afd_job.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\afdgp_app.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\config.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\config_file.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\module_library.cpp"
 					>
 				</File>
 			</Filter>
@@ -209,10 +237,6 @@
 			<Filter
 				Name="Header Files"
 				>
-				<File
-					RelativePath=".\module_library.h"
-					>
-				</File>
 				<File
 					RelativePath=".\os_dep.h"
 					>
@@ -225,10 +249,6 @@
 			<Filter
 				Name="Source Files"
 				>
-				<File
-					RelativePath=".\module_library.cpp"
-					>
-				</File>
 				<File
 					RelativePath=".\os_dep.cpp"
 					>

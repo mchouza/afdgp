@@ -38,9 +38,6 @@
 #include <algorithm>
 #include <boost/unordered_set.hpp>
 
-// FIXME: DEBUG
-//#include <iostream>
-
 namespace
 {
 	/// Guarda los pedidos de memoria

@@ -39,7 +39,7 @@
 #include "os_dep.h"
 #include <boost/filesystem.hpp>
 
-using namespace Util;
+using namespace Core;
 
 ModuleLibrary::ModuleLibrary(const std::string& pathStr)
 {
@@ -47,7 +47,7 @@ ModuleLibrary::ModuleLibrary(const std::string& pathStr)
 	using boost::filesystem::exists;
 	using boost::filesystem::extension;
 	using boost::filesystem::path;
-	using OSDep::getModulesFileExtension;
+	using Util::OSDep::getModulesFileExtension;
 
 	path dirPath(pathStr);
 

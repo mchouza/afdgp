@@ -35,18 +35,37 @@
 // Creado por Mariano M. Chouza | Creado el 8 de abril de 2008
 //=============================================================================
 
-#include "module_library.h"
+#include "afdgp_app.h"
 #include <iostream>
 
 int main(int argc, char* argv[])
 {
-	using std::cout;
-	using Util::ModuleLibrary;
+	using Core::AFDGPApp;
+	using std::cerr;
+	using std::endl;
 
-	ModuleLibrary lib("../debug");
+	// Atrapo las excepciones que lleguen a este nivel para, al menos, indicar
+	// un mensaje de error con sentido
+	try
+	{
+		// Construyo la aplicación
+		AFDGPApp app(argc, argv);
 
-	lib.dump(cout);
-	
+		// Ejecuto el trabajo que tenga que hacer
+		app.run();
+	}
+	catch (std::exception& e)
+	{
+		// Indico la clase de error producido
+		cerr << "ERROR IRRECUPERABLE: " << e.what() << endl;
+	}
+	catch (...)
+	{
+		// Muestro un mensaje de error. No es demasiado específico, pero es
+		// por que no puedo serlo
+		cerr << "Se ha producido un error desconocido." << endl;
+	}
+
 	// OK
 	return 0;
 }
