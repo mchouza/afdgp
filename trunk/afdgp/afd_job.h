@@ -38,11 +38,18 @@
 #ifndef JOB_H
 #define JOB_H
 
+#include "core_fwd.h"
+#include <string>
+
 namespace Core
 {
 	/// Representa un trabajo de diseño de un filtro analógico
 	class Job
 	{
+	public:
+		/// Lo construye en base a una configuración base y un nombre de 
+		/// archivo
+		Job(const Config& baseConfig, const std::string& filename);
 	};
 }
 
