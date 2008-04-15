@@ -38,6 +38,7 @@
 #ifndef OS_DEP_H
 #define OS_DEP_H
 
+#include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
 #include <string>
 
@@ -75,6 +76,41 @@ namespace Util
 
 		/// Devuelve la extensión correspondiente a los módulos
 		const std::string& getModulesFileExtension();
+
+		// Forward
+		struct OSSpecificTime;
+
+		/// Mide el tiempo de ejecución de un proceso
+		class ProcessTimer
+		{
+			/// Tiempo acumulado
+			double acumTime_;
+
+			/// Corriendo
+			bool running_;
+
+			/// Tiempo específico al OS
+			boost::scoped_ptr<OSSpecificTime> pOSSpecTime_;
+
+		public:
+			/// Lo construye
+			ProcessTimer(bool autoStart = true);
+
+			/// Destructor
+			virtual ~ProcessTimer();
+
+			/// Lo arranca
+			void start();
+
+			/// Lo detiene
+			void stop();
+
+			/// Lo vuelve a cero
+			void reset();
+
+			/// Lee el tiempo acumulado (solo válido cuando está detenido...)
+			double readAcumTime() const;
+		};
 	}
 }
 
