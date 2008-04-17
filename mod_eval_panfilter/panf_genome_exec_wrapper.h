@@ -38,8 +38,8 @@
 #ifndef PANF_GENOME_WRAPPER_H
 #define PANF_GENOME_WRAPPER_H
 
+#include "eval_module.h"
 #include "writing_head.h"
-#include <evalmodule.h>
 
 /// Actua como un "wrapper" del genoma, permitiendo su ejecución sobre el
 /// embrión

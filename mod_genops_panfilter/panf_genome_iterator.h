@@ -38,8 +38,8 @@
 #ifndef PANF_GENOME_ITERATOR_H
 #define PANF_GENOME_ITERATOR_H
 
-#include <genome.h>
-#include <panf_genome.h>
+#include "panf_genome.h"
+#include "population.h"
 #include <vector>
 
 /// Clase que representa un opcode o un valor

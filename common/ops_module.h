@@ -39,7 +39,7 @@
 #define OPS_MODULE_H
 
 #include "module.h"
-#include <genome.h>
+#include "population.h"
 
 /// Base abstracta para los módulos encargados de generar, mutar y cruzar los
 /// genomas

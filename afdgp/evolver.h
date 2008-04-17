@@ -30,46 +30,52 @@
 //
 
 //=============================================================================
-// config_file.h
+// evolver.h
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 8 de abril de 2008
+// Creado por Mariano M. Chouza | Creado el 17 de abril de 2008
 //=============================================================================
 
-#ifndef CONFIG_FILE_H
-#define CONFIG_FILE_H
+#ifndef EVOLVER_H
+#define EVOLVER_H
 
-#include "config.h"
+#include "core_fwd.h"
+#include "eval_module.h"
+#include "evolver_strategy.h"
+#include "ops_module.h"
+#include "population.h"
+#include <boost/scoped_ptr.hpp>
+#include <vector>
 
-namespace Core
+namespace GP
 {
-	/// Configuración a partir de un archivo
-	class ConfigFile : public Config
+	/// Clase encargada de manejar el proceso evolutivo
+	class Evolver
 	{
-		/// Tipo del mapa con los datos
-		typedef std::map<std::string, std::string> TConfigMap;
-		
-		/// Mapa con los datos
-		TConfigMap configMap_;
+		/// Población
+		TPop pop_;
 
-		/// Carga el mapa con los datos desde un archivo .properties
-		void loadFromPropertiesFile(const std::string& filename);
+		/// Módulo para realizar operaciones con la población
+		boost::scoped_ptr<OpsModule> pOpsMod_;
 
-		/// Guarda el mapa en un archivo .properties
-		void saveToPropertiesFile(const std::string& filename) const;
+		/// Módulo para evaluar a los individuos
+		boost::scoped_ptr<EvalModule> pEvalMod_;
+
+		/// Estrategia a utilizar
+		boost::scoped_ptr<EvolverStrategy> pEvSt_;
 
 	public:
-		/// Constructor a partir de un archivo
-		ConfigFile(const std::string& filename);
+		/// Construye en base a una configuración
+		Evolver(const Core::Config& config);
 
-		/// Lee un valor dada su clave
-		virtual std::string readValue(const std::string& key) const;
+		/// Realiza un "paso evolutivo" (puede significar distintas cosas de 
+		/// acuerdo a la estrategia adoptada, pero debe ser atómico)
+		void step();
 
-		/// Lee un valor dada su clave con un valor por defecto
-		virtual std::string readValue(const std::string& key, 
-			const std::string& defaultValue) const;
+		/// Serializa la población
+		void serializePop(std::ostream& os) const;
 
-		/// Obtiene las claves
-		virtual std::vector<std::string> getKeys() const;
+		/// Deserializa la población
+		void deserializePop(std::istream& is);
 	};
 }
 

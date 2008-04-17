@@ -30,47 +30,28 @@
 //
 
 //=============================================================================
-// config_file.h
+// eval_module.h
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 8 de abril de 2008
+// Creado por Mariano M. Chouza | Agregado a AFDGP el 8 de abril de 2008
 //=============================================================================
 
-#ifndef CONFIG_FILE_H
-#define CONFIG_FILE_H
+#ifndef EVAL_MODULE_H
+#define EVAL_MODULE_H
 
-#include "config.h"
+#include "module.h"
+#include "population.h"
 
-namespace Core
+/// Base abstracta de las clases de los módulos de evaluación
+class MODULE_API EvalModule : public Module
 {
-	/// Configuración a partir de un archivo
-	class ConfigFile : public Config
-	{
-		/// Tipo del mapa con los datos
-		typedef std::map<std::string, std::string> TConfigMap;
-		
-		/// Mapa con los datos
-		TConfigMap configMap_;
+public:
+	/// Evalúa un genoma dando un valor en el rango entre 0 y 1
+	/// 0 corresponde a inválido o totalmente inadecuado
+	/// 1 corresponde a adecuación perfecta
+	virtual double evaluateGenome(const TGenome& genome) const = 0;
 
-		/// Carga el mapa con los datos desde un archivo .properties
-		void loadFromPropertiesFile(const std::string& filename);
-
-		/// Guarda el mapa en un archivo .properties
-		void saveToPropertiesFile(const std::string& filename) const;
-
-	public:
-		/// Constructor a partir de un archivo
-		ConfigFile(const std::string& filename);
-
-		/// Lee un valor dada su clave
-		virtual std::string readValue(const std::string& key) const;
-
-		/// Lee un valor dada su clave con un valor por defecto
-		virtual std::string readValue(const std::string& key, 
-			const std::string& defaultValue) const;
-
-		/// Obtiene las claves
-		virtual std::vector<std::string> getKeys() const;
-	};
-}
+	/// Muestra un individuo en una forma útil para su aplicación
+	virtual void showIndiv(std::ostream& os, const TGenome& genome) const = 0;
+};
 
 #endif

@@ -30,21 +30,9 @@
 //
 
 //=============================================================================
-// genome.h
+// evolver.cpp
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Agregado a AFDGP el 8 de abril de 2008
+// Creado por Mariano M. Chouza | Creado el 17 de abril de 2008
 //=============================================================================
 
-#ifndef GENOME_H
-#define GENOME_H
-
-#include <vector>
-
-/// Tipo del genoma
-typedef std::vector<unsigned char> TGenome;
-
-/// Tipo del iterador del genoma
-typedef std::vector<unsigned char>::iterator TGenomeIterator;
-typedef std::vector<unsigned char>::const_iterator TGenomeConstIterator;
-
-#endif
+#include "evolver.h"

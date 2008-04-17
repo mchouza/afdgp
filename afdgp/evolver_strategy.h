@@ -30,46 +30,27 @@
 //
 
 //=============================================================================
-// config_file.h
+// evolver_strategy.h
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 8 de abril de 2008
+// Creado por Mariano M. Chouza | Creado el 17 de abril de 2008
 //=============================================================================
 
-#ifndef CONFIG_FILE_H
-#define CONFIG_FILE_H
+#ifndef EVOLVER_STRATEGY_H
+#define EVOLVER_STRATEGY_H
 
-#include "config.h"
+#include "eval_module.h"
+#include "ops_module.h"
+#include "population.h"
 
-namespace Core
+namespace GP
 {
-	/// Configuración a partir de un archivo
-	class ConfigFile : public Config
+	/// Clase base abstracta de las distintas estrategias que adopta el Evolver
+	class EvolverStrategy
 	{
-		/// Tipo del mapa con los datos
-		typedef std::map<std::string, std::string> TConfigMap;
-		
-		/// Mapa con los datos
-		TConfigMap configMap_;
-
-		/// Carga el mapa con los datos desde un archivo .properties
-		void loadFromPropertiesFile(const std::string& filename);
-
-		/// Guarda el mapa en un archivo .properties
-		void saveToPropertiesFile(const std::string& filename) const;
-
 	public:
-		/// Constructor a partir de un archivo
-		ConfigFile(const std::string& filename);
-
-		/// Lee un valor dada su clave
-		virtual std::string readValue(const std::string& key) const;
-
-		/// Lee un valor dada su clave con un valor por defecto
-		virtual std::string readValue(const std::string& key, 
-			const std::string& defaultValue) const;
-
-		/// Obtiene las claves
-		virtual std::vector<std::string> getKeys() const;
+		/// Realiza un paso evolutivo
+		virtual void evolutionaryStep(TPop& pop, EvalModule& evalMod, 
+			OpsModule& opsMod) = 0;
 	};
 }
 

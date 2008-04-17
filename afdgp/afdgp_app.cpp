@@ -42,7 +42,8 @@
 
 using namespace Core;
 
-AFDGPApp::AFDGPApp(int argc, char* argv[])
+AFDGPApp::AFDGPApp(int argc, char* argv[]) :
+need2Exit_(false) // No necesita salir cuando empieza!
 {
 }
 
@@ -52,4 +53,11 @@ AFDGPApp::~AFDGPApp()
 
 void AFDGPApp::run()
 {
+	while (!need2Exit_);
+}
+
+void AFDGPApp::exit()
+{
+	// FIXME: MUTEX!!!
+	need2Exit_ = true;
 }
