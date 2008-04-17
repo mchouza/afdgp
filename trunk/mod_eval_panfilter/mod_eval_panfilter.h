@@ -40,11 +40,11 @@
 
 #include "component_namer.h"
 #include "component_value_transl.h"
+#include "eval_module.h"
 #include "individual.h"
+#include "population.h"
 #include "spice_ac_out.h"
 #include "transfer_spec.h"
-#include <evalmodule.h>
-#include <genome.h>
 #include <i_mod_spice.h>
 #include <boost/scoped_ptr.hpp>
 

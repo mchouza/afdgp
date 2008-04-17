@@ -44,7 +44,8 @@
 namespace Core
 {
 	/// Representa a la aplicación encargada de realizar el diseño de un filtro 
-	/// analógico utilizando programación genética
+	/// analógico utilizando programación genética. Su ejecución puede ser 
+	/// interrumpida llamando a exit().
 	class AFDGPApp
 	{
 		/// Configuración general de la app
@@ -54,7 +55,13 @@ namespace Core
 		boost::scoped_ptr<ModuleLibrary> modules_;
 
 		/// Trabajo a ejecutar
-		boost::scoped_ptr<Job> job_;
+		boost::scoped_ptr<AFDJob> job_;
+
+		/// Indica si tiene que salir
+		bool need2Exit_;
+
+		// Impido la copia
+		AFDGPApp(const AFDGPApp&);
 
 	public:
 		/// Construye la aplicación a partir de la línea de comandos
@@ -65,6 +72,9 @@ namespace Core
 
 		/// Comienza la ejecución de la aplicación
 		void run();
+
+		/// Termina la ejecución de la aplicación
+		void exit();
 	};
 }
 

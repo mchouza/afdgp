@@ -44,12 +44,18 @@
 namespace Core
 {
 	/// Representa un trabajo de diseño de un filtro analógico
-	class Job
+	class AFDJob
 	{
 	public:
 		/// Lo construye en base a una configuración base y un nombre de 
 		/// archivo
-		Job(const Config& baseConfig, const std::string& filename);
+		AFDJob(const Config& baseConfig, const std::string& filename);
+
+		/// Guarda el estado de avance del trabajo
+		void makeCheckPoint() const;
+
+		/// Avanza un paso que debe ejecutarse "atómicamente" en el trabajo
+		void step();
 	};
 }
 

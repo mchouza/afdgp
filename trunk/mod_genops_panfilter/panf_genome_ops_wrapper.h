@@ -38,7 +38,7 @@
 #ifndef PANF_GENOME_OPS_WRAPPER_H
 #define PANF_GENOME_OPS_WRAPPER_H
 
-#include <genome.h>
+#include "population.h"
 
 /// Actua como un "wrapper" del genoma, permitiendo la realización de 
 /// operaciones sobre el mismo así como su serialización

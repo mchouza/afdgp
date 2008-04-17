@@ -30,28 +30,24 @@
 //
 
 //=============================================================================
-// evalmodule.h
+// population.h
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Agregado a AFDGP el 8 de abril de 2008
+// Creado por Mariano M. Chouza | Creado el 17 de abril de 2008
 //=============================================================================
 
-#ifndef EVALMODULE_H
-#define EVALMODULE_H
+#ifndef POPULATION_H
+#define POPULATION_H
 
-#include "module.h"
-#include <genome.h>
+#include <vector>
 
-/// Base abstracta de las clases de los módulos de evaluación
-class MODULE_API EvalModule : public Module
-{
-public:
-	/// Evalúa un genoma dando un valor en el rango entre 0 y 1
-	/// 0 corresponde a inválido o totalmente inadecuado
-	/// 1 corresponde a adecuación perfecta
-	virtual double evaluateGenome(const TGenome& genome) const = 0;
+/// Tipo del genoma
+typedef std::vector<unsigned char> TGenome;
 
-	/// Muestra un individuo en una forma útil para su aplicación
-	virtual void showIndiv(std::ostream& os, const TGenome& genome) const = 0;
-};
+/// Tipo del iterador del genoma
+typedef std::vector<unsigned char>::iterator TGenomeIterator;
+typedef std::vector<unsigned char>::const_iterator TGenomeConstIterator;
+
+/// Tipo de la población
+typedef std::vector<TGenome> TPop;
 
 #endif

@@ -36,7 +36,58 @@
 //=============================================================================
 
 #include "afdgp_app.h"
+#include <boost/signal.hpp>
+#include <csignal>
 #include <iostream>
+
+namespace
+{
+	/// Señal de Boost representando SIGINT
+	boost::signal<void ()> sigint;
+	
+	/// Maneja una señal SIGINT
+	void sigintHandler(int)
+	{
+		using std::cerr;
+		
+		// Indico que recibí el mensaje
+		cerr << "\nPedido de terminación recibido...\n";
+		
+		// Señala usando la señal de Boost
+		sigint();
+
+		// Continúo manejando la señal
+		signal(SIGINT, sigintHandler);
+	}
+
+	/// Conecta SIGINT a la aplicación
+	void connectSIGINT2App(Core::AFDGPApp& app)
+	{
+		using Core::AFDGPApp;
+
+		// Functor privado para invocar a exit
+		struct AppExitFunctor
+		{
+			AFDGPApp& app_;
+
+			AppExitFunctor(AFDGPApp& app) :
+			app_(app)
+			{
+			}
+
+			void operator()()
+			{
+				app_.exit();
+			}
+		} appExitFunctor(app);
+		
+		// Conecto la señal SIGINT al handler
+		signal(SIGINT, sigintHandler);
+
+		// Conecto la aplicación a la señal de boost
+		sigint.connect(appExitFunctor);
+	}
+}
 
 int main(int argc, char* argv[])
 {
@@ -50,6 +101,9 @@ int main(int argc, char* argv[])
 	{
 		// Construyo la aplicación
 		AFDGPApp app(argc, argv);
+
+		// Inicializa manejo d eseñales
+		connectSIGINT2App(app);
 
 		// Ejecuto el trabajo que tenga que hacer
 		app.run();

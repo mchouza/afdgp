@@ -41,7 +41,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="../common"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;BOOST_ALL_DYN_LINK"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -117,7 +117,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="../common"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;BOOST_ALL_DYN_LINK"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -251,6 +251,30 @@
 				>
 				<File
 					RelativePath=".\os_dep.cpp"
+					>
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="GP"
+			>
+			<Filter
+				Name="Header Files"
+				>
+				<File
+					RelativePath=".\evolver.h"
+					>
+				</File>
+				<File
+					RelativePath=".\evolver_strategy.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Source FIles"
+				>
+				<File
+					RelativePath=".\evolver.cpp"
 					>
 				</File>
 			</Filter>

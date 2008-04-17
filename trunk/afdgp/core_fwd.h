@@ -43,7 +43,7 @@ namespace Core
 	// Forwards
 	class Config;
 	class ModuleLibrary;
-	class Job;
+	class AFDJob;
 }
 
 #endif

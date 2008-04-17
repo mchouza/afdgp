@@ -122,3 +122,22 @@ void ConfigFile::loadFromPropertiesFile(const std::string& filename)
 		configMap_[matchRes.str(1)] = matchRes.str(2);
 	}
 }
+
+void ConfigFile::saveToPropertiesFile(const std::string &filename) const
+{
+	// Abro el archivo de salida
+	std::ofstream out(filename.c_str());
+	if (!out.is_open())
+		throw; // FIXME: Lanzar algo más significativo
+
+	// Indico que fue generado automáticamente
+	out << "# Archivo generado automáticamente\n";
+
+	// Recorro el map guardando los pares clave-valor
+	TConfigMap::const_iterator it = configMap_.begin();
+	TConfigMap::const_iterator itEnd = configMap_.end();
+	for (; it != itEnd; ++it)
+		out << it->first << " = " << it->second << "\n";
+
+	// Se cierra al salir de scope
+}
