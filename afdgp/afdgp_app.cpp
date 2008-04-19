@@ -35,16 +35,70 @@
 // Creado por Mariano M. Chouza | Creado el 11 de abril de 2008
 //=============================================================================
 
+
 #include "afdgp_app.h"
-#include "config.h"
-#include "module_library.h"
 #include "afd_job.h"
+#include "config_file.h"
+#include "module_library.h"
+#include "os_dep.h"
 
 using namespace Core;
 
-AFDGPApp::AFDGPApp(int argc, char* argv[]) :
-need2Exit_(false) // No necesita salir cuando empieza!
+/// Implementación de la aplicación
+class AFDGPApp::Impl
 {
+	/// Configuración general de la app
+	ConfigFile config_;
+
+	/// Módulos de la app
+	ModuleLibrary modules_;
+
+	/// Trabajo a ejecutar
+	boost::scoped_ptr<AFDJob> pJob_;
+
+	/// Indica si tiene que salir
+	bool need2Exit_;
+
+	/// Timer
+	Util::OSDep::ProcessTimer timer_;
+
+public:
+	Impl(int argc, char* argv[]) :
+	config_("config.properties"),
+	modules_(config_.readValue("modulesPath")),
+	need2Exit_(false) // No necesita salir cuando empieza!
+	{
+		// Si tiene más o menos de un argumento, sale
+		if (argc != 2)
+			throw; // FIXME: Lanzar algo más específico
+
+		// Crea el trabajo
+		pJob_.reset(new AFDJob(config_, argv[1]));
+	}
+
+	void run()
+	{
+		// Mientras no tenga que salir
+		while (!need2Exit_)
+		{
+			// Avanzo un paso
+			pJob_->step();
+		}
+
+		// Antes de salir, guardo
+		pJob_->makeCheckPoint();
+	}
+
+	void exit()
+	{
+		// FIXME: MUTEX!!!
+		need2Exit_ = true;
+	}
+};
+
+AFDGPApp::AFDGPApp(int argc, char* argv[])
+{
+	pImpl_.reset(new Impl(argc, argv));
 }
 
 AFDGPApp::~AFDGPApp()
@@ -53,11 +107,12 @@ AFDGPApp::~AFDGPApp()
 
 void AFDGPApp::run()
 {
-	while (!need2Exit_);
+	// Delego
+	pImpl_->run();
 }
 
 void AFDGPApp::exit()
 {
-	// FIXME: MUTEX!!!
-	need2Exit_ = true;
+	// Delego
+	pImpl_->exit();
 }
