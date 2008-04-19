@@ -36,5 +36,46 @@
 //=============================================================================
 
 #include "afd_job.h"
+#include "config.h"
+#include "evolver.h"
 
 using namespace Core;
+
+AFDJob::AFDJob(const Config& baseConfig, 
+			   const std::string& filename) :
+pConfig_(baseConfig.getView("Job")),
+filename_(filename)
+{
+	pEvolver_.reset(new GP::Evolver(*pConfig_));
+
+	// Carga los datos de la ejecución anterior, si es necesario
+	resumeIfPossible();
+}
+
+AFDJob::~AFDJob()
+{
+}
+
+void AFDJob::makeCheckPoint() const
+{
+	// FIXME: Implementar
+
+	// Serializa los datos del evolver a los archivos asociados
+}
+
+void AFDJob::step()
+{
+	// FIXME: Implementar
+}
+
+/// Continúa la ejecución anterior, si es posible
+void AFDJob::resumeIfPossible()
+{
+	// FIXME: Implementar
+
+	// Se fija si están los archivos con los datos
+
+		// Si no están, sale
+
+	// Si están los carga en el evolver
+}

@@ -71,11 +71,13 @@ namespace GP
 		/// acuerdo a la estrategia adoptada, pero debe ser atómico)
 		void step();
 
-		/// Serializa la población
-		void serializePop(std::ostream& os) const;
+		/// Serializa todo. Por razones de performance utiliza un stream 
+		/// binario para la población.
+		void serialize(std::ostream& osTxt, std::ostream& osBin) const;
 
-		/// Deserializa la población
-		void deserializePop(std::istream& is);
+		/// Deserializa todo
+		void deserialize(std::istream& isTxt, std::istream& isBin);
+
 	};
 }
 

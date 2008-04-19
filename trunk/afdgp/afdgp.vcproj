@@ -269,6 +269,10 @@
 					RelativePath=".\evolver_strategy.h"
 					>
 				</File>
+				<File
+					RelativePath=".\gp_fwd.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Source FIles"

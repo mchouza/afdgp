@@ -36,3 +36,10 @@
 //=============================================================================
 
 #include "evolver.h"
+
+using namespace GP;
+
+Evolver::Evolver(const Core::Config& config)
+{
+	// FIXME: Implementar
+}

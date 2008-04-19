@@ -30,52 +30,18 @@
 //
 
 //=============================================================================
-// afd_job.h
+// gp_fwd.h
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 11 de abril de 2008
+// Creado por Mariano M. Chouza | Creado el 18 de abril de 2008
 //=============================================================================
 
-#ifndef JOB_H
-#define JOB_H
+#ifndef GP_FWD_H
+#define GP_FWD_H
 
-#include "core_fwd.h"
-#include "gp_fwd.h"
-#include <boost/scoped_ptr.hpp>
-#include <boost/shared_ptr.hpp>
-#include <string>
-
-namespace Core
+namespace GP
 {
-	/// Representa un trabajo de diseño de un filtro analógico
-	class AFDJob
-	{
-		/// Configuración del trabajo
-		boost::shared_ptr<Config> pConfig_;
-
-		/// Evolver para realizar el trabajo
-		boost::scoped_ptr<GP::Evolver> pEvolver_;
-
-		/// Nombre del trabajo
-		std::string filename_;
-
-		/// Carga los datos de una ejecución anterior si es posible
-		void resumeIfPossible();
-
-	public:
-		/// Lo construye en base a una configuración base y un nombre de 
-		/// archivo
-		AFDJob(const Config& baseConfig, 
-			const std::string& filename);
-
-		/// Destructor
-		virtual ~AFDJob();
-
-		/// Guarda el estado de avance del trabajo
-		void makeCheckPoint() const;
-
-		/// Avanza un paso que debe ejecutarse "atómicamente" en el trabajo
-		void step();
-	};
+	// Forwards
+	class Evolver;
 }
 
 #endif

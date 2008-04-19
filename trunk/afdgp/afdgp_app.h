@@ -48,17 +48,11 @@ namespace Core
 	/// interrumpida llamando a exit().
 	class AFDGPApp
 	{
-		/// Configuración general de la app
-		boost::scoped_ptr<Config> config_;
+		/// Clase de la implementación
+		class Impl;
 
-		/// Módulos de la app
-		boost::scoped_ptr<ModuleLibrary> modules_;
-
-		/// Trabajo a ejecutar
-		boost::scoped_ptr<AFDJob> job_;
-
-		/// Indica si tiene que salir
-		bool need2Exit_;
+		/// Puntero a la implementación
+		boost::scoped_ptr<Impl> pImpl_;
 
 		// Impido la copia
 		AFDGPApp(const AFDGPApp&);
