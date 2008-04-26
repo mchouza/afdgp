@@ -121,3 +121,18 @@ void ModuleLibrary::tryToLoad(const std::string& modulePath)
 	shLibs_[modName] = pLib;
 	modules_[modName] = pMod;
 }
+
+boost::shared_ptr<Module> 
+ModuleLibrary::getModuleByName(const std::string& name)
+{
+	// Busco un módulo con ese nombre
+	TModuleContainer::iterator it = modules_.find(name);
+
+	// Lo encontré?
+	if (it == modules_.end())
+		// No, devuelvo un null pointer
+		return boost::shared_ptr<Module>();
+	else
+		// Si, devuelvo el puntero
+		return it->second;
+}
