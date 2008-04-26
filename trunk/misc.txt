@@ -1,64 +1,73 @@
--------------------------------------------------------------------------------
+#
+# Configuración general del trabajo
+#
 
-Función hash de Paul Hsieh 
-==========================
-(para usar con alguna tabla hash que almacene resultados de evaluaciones)
+# Estrategia para manejar la población (debe ser "STANDARD", "PLAGUE", "FITNESSHOLE" o "ANCESTORCOMP")
+PopStrategy: ANCESTORCOMP
 
-#include "pstdint.h" /* Replace with <stdint.h> if appropriate */
-#undef get16bits
-#if (defined(__GNUC__) && defined(__i386__)) || defined(__WATCOMC__) \
-  || defined(_MSC_VER) || defined (__BORLANDC__) || defined (__TURBOC__)
-#define get16bits(d) (*((const uint16_t *) (d)))
-#endif
+# Tamaño
+Size: 1000
 
-#if !defined (get16bits)
-#define get16bits(d) ((((uint32_t)(((const uint8_t *)(d))[1])) << 8)\
-                       +(uint32_t)(((const uint8_t *)(d))[0]) )
-#endif
+# Cantidad de generaciones
+NumberOfGens: 100
 
-uint32_t SuperFastHash (const char * data, int len) {
-uint32_t hash = len, tmp;
-int rem;
+# Número de ejecuciones
+NumberOfRuns: 3
 
-    if (len <= 0 || data == NULL) return 0;
+# Tasa de mutación
+MutRate: 0.10
 
-    rem = len & 3;
-    len >>= 2;
+# Tasa de cruza
+CrossRate: 0.50
 
-    /* Main loop */
-    for (;len > 0; len--) {
-        hash  += get16bits (data);
-        tmp    = (get16bits (data+2) << 11) ^ hash;
-        hash   = (hash << 16) ^ tmp;
-        data  += 2*sizeof (uint16_t);
-        hash  += hash >> 11;
-    }
+# Tasa de operaciones de alteración de la arquitectura
+ArchModRate: 0.15
 
-    /* Handle end cases */
-    switch (rem) {
-        case 3: hash += get16bits (data);
-                hash ^= hash << 16;
-                hash ^= data[sizeof (uint16_t)] << 18;
-                hash += hash >> 11;
-                break;
-        case 2: hash += get16bits (data);
-                hash ^= hash << 11;
-                hash += hash >> 17;
-                break;
-        case 1: hash += *data;
-                hash ^= hash << 10;
-                hash += hash >> 1;
-    }
+# Lambda para la selección de los individuos (relativo al tamaño de la población)
+FitnessSelLambda: 3.0
 
-    /* Force "avalanching" of final 127 bits */
-    hash ^= hash << 3;
-    hash += hash >> 5;
-    hash ^= hash << 4;
-    hash += hash >> 17;
-    hash ^= hash << 25;
-    hash += hash >> 6;
+#
+# Configuración del módulo de evaluación
+#
 
-    return hash;
-}
+# Es el embrión sobre el que el genoma debe aplicarse
+EvalPassiveAnalogFilter.InitialEmbryo: TITLE\nV1 0 1 1\nR1 1 2 1K\nZ1 2 3 X\nR2 3 0 1K\nP1 3 0 X\n
 
--------------------------------------------------------------------------------
+# Indica la tolerancia de los componentes con los que trabajamos
+EvalPassiveAnalogFilter.Tolerance: 50
+
+# Indica el nodo sobre el que se mide la transferencia
+EvalPassiveAnalogFilter.ProbedNode: 3
+
+# Indica la transferencia deseada (en este caso se trata de un pasabajos)
+EvalPassiveAnalogFilter.DesiredTransfer: 0 0.5 10000 0.5 10010 0 1000000 0
+
+# Los sigiuientes valores indican la penalización por excesivo tamaño. Opera en base a la fórmula
+# Penalidad = Exp((tamaño - PenaltyZero) * PenaltyMultiplier)
+
+EvalPassiveAnalogFilter.PenaltyZero: 1000
+EvalPassiveAnalogFilter.PenaltyMultiplier: 0.005
+
+# Los siguientes valores indican los parámetros del barrido en SPICE que se realiza en el análisis AC
+
+# Frecuencia de inicio
+EvalPassiveAnalogFilter.StartFreq: 1
+
+# Frecuencia de finalización
+EvalPassiveAnalogFilter.EndFreq: 100000
+
+# Puntos por década
+EvalPassiveAnalogFilter.PointsPerDec: 10
+
+#
+# Configuración de la estrategia de selección de la población
+#
+
+# Cantidad que mueren por generación (Estrategia: PLAGUE)
+PopStrat.PlagueDeathsByGen: 10
+
+# Cambio mínimo por generación (Estrategia: ANCESTORCOMP)
+PopStrat.MC: 0.1
+
+# Probabilidad de ejecución (Estrategia: FITNESSHOLE)
+PopStrat.TarpeianExecProb: 0.2

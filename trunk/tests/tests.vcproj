@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="afdgp"
-	ProjectGUID="{3A093EF9-7C69-4B7E-897B-67023493267E}"
-	RootNamespace="afdgp"
+	Name="tests"
+	ProjectGUID="{48B12D32-3CB6-4562-947D-7B0EEE736E6D}"
+	RootNamespace="tests"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -40,11 +40,12 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../common"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
+				AdditionalIncludeDirectories="../common;../afdgp"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_USRDLL"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
+				DisableLanguageExtensions="false"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
@@ -116,8 +117,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="../common"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
+				AdditionalIncludeDirectories="../common;../afdgp"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_USRDLL"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -172,35 +173,53 @@
 	</References>
 	<Files>
 		<Filter
-			Name="Core"
+			Name="Test Cached Eval"
 			>
+			<File
+				RelativePath=".\test_cached_eval.cpp"
+				>
+			</File>
 			<Filter
 				Name="Header Files"
-				Filter="h;hpp;hxx;hm;inl;inc;xsd"
-				UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 				>
 				<File
-					RelativePath=".\afd_job.h"
+					RelativePath=".\cached_eval_module.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Source Files"
+				>
+				<File
+					RelativePath=".\cached_eval_module.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\afdgp_app.h"
+					RelativePath="..\afdgp\module_library.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\config.h"
+					RelativePath="..\afdgp\os_dep.cpp"
+					>
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="Test Hash"
+			>
+			<File
+				RelativePath=".\test_hash.cpp"
+				>
+			</File>
+			<Filter
+				Name="Header Files"
+				>
+				<File
+					RelativePath=".\mm2_wrapper.h"
 					>
 				</File>
 				<File
-					RelativePath=".\config_file.h"
-					>
-				</File>
-				<File
-					RelativePath=".\core_fwd.h"
-					>
-				</File>
-				<File
-					RelativePath=".\module_library.h"
+					RelativePath=".\murmurhash2.h"
 					>
 				</File>
 			</Filter>
@@ -210,85 +229,17 @@
 				UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 				>
 				<File
-					RelativePath=".\afd_job.cpp"
+					RelativePath=".\mm2_wrapper.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\afdgp_app.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\config.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\config_file.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\module_library.cpp"
-					>
-				</File>
-			</Filter>
-		</Filter>
-		<Filter
-			Name="Util"
-			>
-			<Filter
-				Name="Header Files"
-				>
-				<File
-					RelativePath=".\os_dep.h"
-					>
-				</File>
-				<File
-					RelativePath=".\plat_dep.h"
-					>
-				</File>
-				<File
-					RelativePath=".\util_fwd.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Source Files"
-				>
-				<File
-					RelativePath=".\os_dep.cpp"
-					>
-				</File>
-			</Filter>
-		</Filter>
-		<Filter
-			Name="GP"
-			>
-			<Filter
-				Name="Header Files"
-				>
-				<File
-					RelativePath=".\evolver.h"
-					>
-				</File>
-				<File
-					RelativePath=".\evolver_strategy.h"
-					>
-				</File>
-				<File
-					RelativePath=".\gp_fwd.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Source FIles"
-				>
-				<File
-					RelativePath=".\evolver.cpp"
+					RelativePath=".\murmurhash2.cpp"
 					>
 				</File>
 			</Filter>
 		</Filter>
 		<File
-			RelativePath=".\main.cpp"
+			RelativePath=".\common.h"
 			>
 		</File>
 	</Files>
