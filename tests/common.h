@@ -38,8 +38,8 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#define TEST_HASH
+//#define TEST_HASH
 //#define TEST_CACHED_EVAL
-//#define TEST_ESF
+#define TEST_ESF
 
 #endif
