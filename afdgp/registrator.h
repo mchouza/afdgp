@@ -30,59 +30,27 @@
 //
 
 //=============================================================================
-// cached_eval_module.h
+// registrator.h
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 25 de abril de 2008
+// Creado por Mariano M. Chouza | Creado el 30 de abril de 2008
 //=============================================================================
 
-#ifndef CACHED_EVAL_MODULE_H
-#define CACHED_EVAL_MODULE_H
+#ifndef REGISTRATOR_H
+#define REGISTRATOR_H
 
-#include "eval_module.h"
-#include "mm2_wrapper.h"
-#include "plat_dep.h"
-#include <boost/scoped_array.hpp>
-
-/// Módulo de evaluación con caché. Encapsula un módulo de evaluación pero 
-/// realiza la función de caché transparente
-class MODULE_API CachedEvalModule : public EvalModule
+namespace Util
 {
-	/// Módulo normal
-	boost::shared_ptr<EvalModule> pEvalMod_;
-
-	/// Tipo de la entrada en la tabla de resultados anteriores
-	typedef std::pair<uint64_t, double> TCacheEntry;
-
-	/// Tipo de la tabla de resultados anteriores
-	typedef boost::scoped_array<TCacheEntry> TCache;
-
-	/// Tabla de resultados anteriores
-	mutable TCache cache_;
-
-	/// Tamaño de la tabla de resultados anteriores
-	size_t cacheSize_;
-
-public:
-	/// Construye a partir de un módulo de evaluación normal, 
-	/// dándole el tamaño del caché
-	CachedEvalModule(boost::shared_ptr<EvalModule> pEvalMod,
-		size_t cacheSize);
-
-	/// Destructor
-	virtual ~CachedEvalModule();
-
-	// De las clases base
-	virtual double evaluateGenome(const TGenome& genome) const;
-	virtual void showIndiv(std::ostream& os, const TGenome& genome) const;
-	virtual const std::string& getName() const;
-	virtual unsigned int getVersion() const;
-	virtual const std::vector<Req>& getReqMods() const;
-	virtual bool
-		giveConfigData(const std::map<std::string, std::string>& 
-			configData);
-	virtual bool 
-		giveReqMods(const std::vector<boost::shared_ptr<Module> >&
-			reqMods);
-};
+	/// Se encarga de registrar una clase en ua factory
+	template <typename U, typename V>
+	class Registrator
+	{
+	public:
+		/// Constructor: efectúa el registro
+		Registrator(const std::string& name)
+		{
+			U::registrate(name, V::create);
+		}
+	};
+}
 
 #endif

@@ -64,8 +64,9 @@ namespace GP
 		boost::scoped_ptr<EvolverStrategy> pEvSt_;
 
 	public:
-		/// Construye en base a una configuración
-		Evolver(const Core::Config& config);
+		/// Construye en base a una configuración bas y una específica
+		Evolver(const Core::Config& baseConfig, 
+			const Core::Config& specConfig);
 
 		/// Realiza un "paso evolutivo" (puede significar distintas cosas de 
 		/// acuerdo a la estrategia adoptada, pero debe ser atómico)

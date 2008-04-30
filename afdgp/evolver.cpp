@@ -39,7 +39,8 @@
 
 using namespace GP;
 
-Evolver::Evolver(const Core::Config& config)
+Evolver::Evolver(const Core::Config& baseConfig, 
+				 const Core::Config& specConfig)
 {
 	// FIXME: Implementar
 }

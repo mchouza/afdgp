@@ -30,96 +30,62 @@
 //
 
 //=============================================================================
-// main.cpp
+// cached_eval_module.h
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 8 de abril de 2008
+// Creado por Mariano M. Chouza | Creado el 25 de abril de 2008
 //=============================================================================
 
-#include "afdgp_app.h"
-#include <boost/signal.hpp>
-#include <csignal>
-#include <iostream>
+#ifndef CACHED_EVAL_MODULE_H
+#define CACHED_EVAL_MODULE_H
 
-namespace
+#include "eval_module.h"
+#include "mm2_wrapper.h"
+#include "plat_dep.h"
+#include <boost/scoped_array.hpp>
+
+namespace GP
 {
-	/// Señal de Boost representando SIGINT
-	boost::signal<void ()> sigint;
-	
-	/// Maneja una señal SIGINT
-	void sigintHandler(int)
+	/// Módulo de evaluación con caché. Encapsula un módulo de evaluación pero 
+	/// realiza la función de caché transparente
+	class MODULE_API CachedEvalModule : public EvalModule
 	{
-		using std::cerr;
-		
-		// Indico que recibí el mensaje
-		cerr << "\nPedido de terminación recibido...\n";
-		
-		// Señala usando la señal de Boost
-		sigint();
+		/// Módulo normal
+		boost::shared_ptr<EvalModule> pEvalMod_;
 
-		// Continúo manejando la señal
-		signal(SIGINT, sigintHandler);
-	}
+		/// Tipo de la entrada en la tabla de resultados anteriores
+		typedef std::pair<uint64_t, double> TCacheEntry;
 
-	/// Conecta SIGINT a la aplicación
-	void connectSIGINT2App(Core::AFDGPApp& app)
-	{
-		using Core::AFDGPApp;
+		/// Tipo de la tabla de resultados anteriores
+		typedef boost::scoped_array<TCacheEntry> TCache;
 
-		// Functor privado para invocar a exit
-		struct AppExitFunctor
-		{
-			AFDGPApp& app_;
+		/// Tabla de resultados anteriores
+		mutable TCache cache_;
 
-			AppExitFunctor(AFDGPApp& app) :
-			app_(app)
-			{
-			}
+		/// Tamaño de la tabla de resultados anteriores
+		size_t cacheSize_;
 
-			void operator()()
-			{
-				app_.exit();
-			}
-		} appExitFunctor(app);
-		
-		// Conecto la señal SIGINT al handler
-		signal(SIGINT, sigintHandler);
+	public:
+		/// Construye a partir de un módulo de evaluación normal, 
+		/// dándole el tamaño del caché
+		CachedEvalModule(boost::shared_ptr<EvalModule> pEvalMod,
+			size_t cacheSize);
 
-		// Conecto la aplicación a la señal de boost
-		sigint.connect(appExitFunctor);
-	}
+		/// Destructor
+		virtual ~CachedEvalModule();
+
+		// De las clases base
+		virtual double evaluateGenome(const TGenome& genome) const;
+		virtual void showIndiv(std::ostream& os, const TGenome& genome) const;
+		virtual const std::string& getName() const;
+		virtual unsigned int getVersion() const;
+		virtual const std::vector<Req>& getReqMods() const;
+		virtual bool
+			giveConfigData(const std::map<std::string, std::string>& 
+				configData);
+		virtual bool 
+			giveReqMods(const std::vector<boost::shared_ptr<Module> >&
+				reqMods);
+	};
 }
 
-int main(int argc, char* argv[])
-{
-	using Core::AFDGPApp;
-	using std::cerr;
-	using std::endl;
-
-	// Atrapo las excepciones que lleguen a este nivel para, al menos, indicar
-	// un mensaje de error con sentido
-	try
-	{
-		// Construyo la aplicación
-		AFDGPApp app(argc, argv);
-
-		// Inicializa manejo de señales
-		connectSIGINT2App(app);
-
-		// Ejecuto el trabajo que tenga que hacer
-		app.run();
-	}
-	catch (std::exception& e)
-	{
-		// Indico la clase de error producido
-		cerr << "ERROR IRRECUPERABLE: " << e.what() << endl;
-	}
-	catch (...)
-	{
-		// Muestro un mensaje de error. No es demasiado específico, pero es
-		// por que no puedo serlo
-		cerr << "Se ha producido un error desconocido." << endl;
-	}
-
-	// OK
-	return 0;
-}
+#endif

@@ -94,7 +94,7 @@ void ConfigFile::loadFromPropertiesFile(const std::string& filename)
 		throw; // FIXME: Lanzar algo más significativo
 
 	// Expresiones regulares para distintos tipos de líneas
-	regex reBlankOrCom("^#.*$");
+	regex reBlankOrCom("^(#.*)|(?:)$");
 	regex reAssignment("^([A-Za-z.-]+)\\s*=\\s*(\\S.*)?");
 	
 	smatch matchRes;
