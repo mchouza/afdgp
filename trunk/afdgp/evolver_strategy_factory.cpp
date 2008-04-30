@@ -39,13 +39,11 @@
 
 using namespace GP;
 
-EvolverStrategyFactory::TProductLine EvolverStrategyFactory::productLine_;
-
 boost::shared_ptr<EvolverStrategy> 
 EvolverStrategyFactory::make(const std::string& name)
 {
-	TProductLine::iterator it = productLine_.find(name);
-	if (it == productLine_.end())
+	TProductLine::iterator it = getProductLine().find(name);
+	if (it == getProductLine().end())
 		return boost::shared_ptr<EvolverStrategy>();
 	else
 		return it->second();
@@ -56,5 +54,11 @@ void EvolverStrategyFactory::registrate(const std::string& name,
 										(*factoryFunction)(void))
 {
 	// No me importa si pisa a una ya existente...
-	productLine_[name] = factoryFunction;
+	getProductLine()[name] = factoryFunction;
+}
+
+EvolverStrategyFactory::TProductLine& EvolverStrategyFactory::getProductLine()
+{
+	static TProductLine productLine;
+	return productLine;
 }

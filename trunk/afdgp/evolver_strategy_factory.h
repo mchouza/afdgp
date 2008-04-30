@@ -49,13 +49,13 @@ namespace GP
 	/// evolutivo
 	class EvolverStrategyFactory
 	{
-		/// Tipo de la "línea de productos"
+		/// Tipo de la "línea de productos", o sea un mapa que asocia los 
+		/// nombres con los punteros a las "factory functions"
 		typedef std::map<std::string, boost::shared_ptr<EvolverStrategy> (*)()>
 			TProductLine;
 
-		/// "Línea de productos", o sea un mapa que asocia los nombres con 
-		/// los punteros a las "factory functions"
-		static TProductLine productLine_;
+		/// Obtiene la línea de productos
+		static TProductLine& getProductLine();
 
 	public:
 		/// Crea el que esté registrado con ese nombre o devuelve 0 si no lo 
