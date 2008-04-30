@@ -38,6 +38,8 @@
 #include "cached_eval_module.h"
 #include <algorithm>
 
+using namespace GP;
+
 namespace
 {
 	/// Hash inválido

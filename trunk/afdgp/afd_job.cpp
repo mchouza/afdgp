@@ -37,6 +37,7 @@
 
 #include "afd_job.h"
 #include "config.h"
+#include "config_file.h"
 #include "evolver.h"
 
 using namespace Core;
@@ -46,7 +47,11 @@ AFDJob::AFDJob(const Config& baseConfig,
 pConfig_(baseConfig.getView("Job")),
 filename_(filename)
 {
-	pEvolver_.reset(new GP::Evolver(*pConfig_));
+	// Obtengo la configuración para este trabajo
+	Core::ConfigFile specConfig(filename);
+
+	// Creo el evolver con la configuración base y la específica a este trabajo
+	pEvolver_.reset(new GP::Evolver(*pConfig_, specConfig));
 
 	// Carga los datos de la ejecución anterior, si es necesario
 	resumeIfPossible();

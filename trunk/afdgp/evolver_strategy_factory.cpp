@@ -30,96 +30,31 @@
 //
 
 //=============================================================================
-// main.cpp
+// evolver_strategy_factory.cpp
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 8 de abril de 2008
+// Creado por Mariano M. Chouza | Creado el 30 de abril de 2008
 //=============================================================================
 
-#include "afdgp_app.h"
-#include <boost/signal.hpp>
-#include <csignal>
-#include <iostream>
+#include "evolver_strategy_factory.h"
 
-namespace
+using namespace GP;
+
+EvolverStrategyFactory::TProductLine EvolverStrategyFactory::productLine_;
+
+boost::shared_ptr<EvolverStrategy> 
+EvolverStrategyFactory::make(const std::string& name)
 {
-	/// Señal de Boost representando SIGINT
-	boost::signal<void ()> sigint;
-	
-	/// Maneja una señal SIGINT
-	void sigintHandler(int)
-	{
-		using std::cerr;
-		
-		// Indico que recibí el mensaje
-		cerr << "\nPedido de terminación recibido...\n";
-		
-		// Señala usando la señal de Boost
-		sigint();
-
-		// Continúo manejando la señal
-		signal(SIGINT, sigintHandler);
-	}
-
-	/// Conecta SIGINT a la aplicación
-	void connectSIGINT2App(Core::AFDGPApp& app)
-	{
-		using Core::AFDGPApp;
-
-		// Functor privado para invocar a exit
-		struct AppExitFunctor
-		{
-			AFDGPApp& app_;
-
-			AppExitFunctor(AFDGPApp& app) :
-			app_(app)
-			{
-			}
-
-			void operator()()
-			{
-				app_.exit();
-			}
-		} appExitFunctor(app);
-		
-		// Conecto la señal SIGINT al handler
-		signal(SIGINT, sigintHandler);
-
-		// Conecto la aplicación a la señal de boost
-		sigint.connect(appExitFunctor);
-	}
+	TProductLine::iterator it = productLine_.find(name);
+	if (it == productLine_.end())
+		return boost::shared_ptr<EvolverStrategy>();
+	else
+		return it->second();
 }
 
-int main(int argc, char* argv[])
+void EvolverStrategyFactory::registrate(const std::string& name, 
+										boost::shared_ptr<EvolverStrategy> 
+										(*factoryFunction)(void))
 {
-	using Core::AFDGPApp;
-	using std::cerr;
-	using std::endl;
-
-	// Atrapo las excepciones que lleguen a este nivel para, al menos, indicar
-	// un mensaje de error con sentido
-	try
-	{
-		// Construyo la aplicación
-		AFDGPApp app(argc, argv);
-
-		// Inicializa manejo de señales
-		connectSIGINT2App(app);
-
-		// Ejecuto el trabajo que tenga que hacer
-		app.run();
-	}
-	catch (std::exception& e)
-	{
-		// Indico la clase de error producido
-		cerr << "ERROR IRRECUPERABLE: " << e.what() << endl;
-	}
-	catch (...)
-	{
-		// Muestro un mensaje de error. No es demasiado específico, pero es
-		// por que no puedo serlo
-		cerr << "Se ha producido un error desconocido." << endl;
-	}
-
-	// OK
-	return 0;
+	// No me importa si pisa a una ya existente...
+	productLine_[name] = factoryFunction;
 }

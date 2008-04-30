@@ -179,30 +179,6 @@
 				RelativePath=".\test_cached_eval.cpp"
 				>
 			</File>
-			<Filter
-				Name="Header Files"
-				>
-				<File
-					RelativePath=".\cached_eval_module.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Source Files"
-				>
-				<File
-					RelativePath=".\cached_eval_module.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\afdgp\module_library.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\afdgp\os_dep.cpp"
-					>
-				</File>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="Test Hash"
@@ -211,29 +187,97 @@
 				RelativePath=".\test_hash.cpp"
 				>
 			</File>
-			<Filter
-				Name="Header Files"
+		</Filter>
+		<Filter
+			Name="Test EvolverStrategyFactory"
+			>
+			<File
+				RelativePath=".\test_evolver_strategy_factory.cpp"
 				>
-				<File
-					RelativePath=".\mm2_wrapper.h"
-					>
-				</File>
-				<File
-					RelativePath=".\murmurhash2.h"
-					>
-				</File>
-			</Filter>
+			</File>
+		</Filter>
+		<Filter
+			Name="Needed Files"
+			>
 			<Filter
 				Name="Source Files"
-				Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
-				UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 				>
 				<File
-					RelativePath=".\mm2_wrapper.cpp"
+					RelativePath="..\afdgp\cached_eval_module.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\afdgp\evolver_strategy_factory.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\murmurhash2.cpp"
+					RelativePath="..\afdgp\mm2_wrapper.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\afdgp\module_library.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\afdgp\murmurhash2.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\afdgp\os_dep.cpp"
 					>
 				</File>
 			</Filter>

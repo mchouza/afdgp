@@ -41,10 +41,11 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="../common"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_USRDLL"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
+				DisableLanguageExtensions="false"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
@@ -117,7 +118,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="../common"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_USRDLL"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -238,11 +239,23 @@
 				Name="Header Files"
 				>
 				<File
+					RelativePath=".\mm2_wrapper.h"
+					>
+				</File>
+				<File
+					RelativePath=".\murmurhash2.h"
+					>
+				</File>
+				<File
 					RelativePath=".\os_dep.h"
 					>
 				</File>
 				<File
 					RelativePath=".\plat_dep.h"
+					>
+				</File>
+				<File
+					RelativePath=".\registrator.h"
 					>
 				</File>
 				<File
@@ -253,6 +266,14 @@
 			<Filter
 				Name="Source Files"
 				>
+				<File
+					RelativePath=".\mm2_wrapper.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\murmurhash2.cpp"
+					>
+				</File>
 				<File
 					RelativePath=".\os_dep.cpp"
 					>
@@ -266,11 +287,19 @@
 				Name="Header Files"
 				>
 				<File
+					RelativePath=".\cached_eval_module.h"
+					>
+				</File>
+				<File
 					RelativePath=".\evolver.h"
 					>
 				</File>
 				<File
 					RelativePath=".\evolver_strategy.h"
+					>
+				</File>
+				<File
+					RelativePath=".\evolver_strategy_factory.h"
 					>
 				</File>
 				<File
@@ -282,7 +311,15 @@
 				Name="Source FIles"
 				>
 				<File
+					RelativePath=".\cached_eval_module.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\evolver.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\evolver_strategy_factory.cpp"
 					>
 				</File>
 			</Filter>

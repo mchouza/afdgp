@@ -42,6 +42,7 @@ namespace GP
 {
 	// Forwards
 	class Evolver;
+	class EvolverStrategy;
 }
 
 #endif

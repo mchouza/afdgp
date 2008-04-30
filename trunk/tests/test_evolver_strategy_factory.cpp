@@ -30,50 +30,67 @@
 //
 
 //=============================================================================
-// test_cached_eval.cpp
+// test_evolver_strategy_factory.cpp
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 25 de abril de 2008
+// Creado por Mariano M. Chouza | Creado el 30 de abril de 2008
 //=============================================================================
 
-#include "cached_eval_module.h"
 #include "common.h"
 #include "eval_module.h"
+#include "evolver_strategy.h"
+#include "evolver_strategy_factory.h"
 #include "module_library.h"
 #include "ops_module.h"
-#include <boost/shared_ptr.hpp>
-#include <ctime>
+#include "registrator.h"
 #include <iostream>
-#include <vector>
+
+using namespace GP;
+
+class TestES : public EvolverStrategy
+{
+	TestES()
+	{
+	}
+
+public:
+	virtual void evolutionaryStep(TPop& pop, EvalModule& evalMod,
+				OpsModule& opsMod)
+	{
+		std::cout << "evolutionaryStep() de TestES\n";
+	}
+
+	static boost::shared_ptr<EvolverStrategy> create()
+	{
+		return boost::shared_ptr<EvolverStrategy>(new TestES());
+	}
+};
+
+class TestES2 : public EvolverStrategy
+{
+	TestES2()
+	{
+	}
+
+public:
+	virtual void evolutionaryStep(TPop& pop, EvalModule& evalMod,
+				OpsModule& opsMod)
+	{
+		std::cout << "evolutionaryStep() de TestES2\n";
+	}
+
+	static boost::shared_ptr<EvolverStrategy> create()
+	{
+		return boost::shared_ptr<EvolverStrategy>(new TestES2());
+	}
+};
 
 namespace
 {
 	using std::map;
 	using std::string;
-	using std::vector;
-
-	const size_t NUM_INDIV = 100000;
 	
-	TPop generatePopulation(const OpsModule& opsMod)
-	{
-		TPop ret(NUM_INDIV);
-		for (size_t i = 0; i < ret.size(); i++)
-			opsMod.randomInit(ret[i]);
-		return ret;
-	}
-
-	vector<double> evaluatePopulation(const EvalModule& evalMod, 
-		const TPop& pop)
-	{
-		using std::cout;
-		vector<double> score(pop.size());
-		for (size_t i = 0; i < score.size(); i++)
-		{
-			if (i % (score.size() / 10) == 0)
-				cout << (i * 100) / score.size() << "%\n";
-			score[i] = evalMod.evaluateGenome(pop[i]);
-		}
-		return score;
-	}
+	Util::Registrator<EvolverStrategyFactory, TestES> r("TEST_ES");
+	Util::Registrator<EvolverStrategyFactory, TestES2> r2("TEST_ES_2");
 
 	map<string, string> makeEMConfigMap()
 	{
@@ -94,77 +111,39 @@ namespace
 	}
 }
 
-#ifdef TEST_CACHED_EVAL
+#ifdef TEST_ESF
 
 int main()
 {
 	using boost::shared_dynamic_cast;
 	using boost::shared_ptr;
-	using GP::CachedEvalModule;
-	using std::cout;
-	using std::map;
-	using std::string;
+	using GP::EvolverStrategy;
+	using GP::EvolverStrategyFactory;
 
-	time_t startTime, endTime;
+	shared_ptr<EvolverStrategy> p, q;
 
+	p = EvolverStrategyFactory::make("TEST_ES");
+	q = EvolverStrategyFactory::make("TEST_ES_2");
+
+	TPop pop;
 #ifdef NDEBUG
 	Core::ModuleLibrary lib("../release");
 #else
 	Core::ModuleLibrary lib("../debug");
 #endif
-	lib.dump(cout);
-
 	shared_ptr<EvalModule> pEM = shared_dynamic_cast<EvalModule, Module>(
 		lib.getModuleByName("EvalPassiveAnalogFilter"));
 	shared_ptr<OpsModule> pOM = shared_dynamic_cast<OpsModule, Module>(
 		lib.getModuleByName("GenOpsPassiveAnalogFilter"));
 	shared_ptr<Module> pSM = lib.getModuleByName("Spice");
 	pEM->giveReqMods(std::vector<shared_ptr<Module> >(1, pSM));
-
 	pEM->giveConfigData(makeEMConfigMap());
 
-	CachedEvalModule cEM(pEM, (1 << 20));
-
-	cout << "Módulo de evaluación: " << pEM->getName() << "\n";
-	cout << "Módulo de operaciones: " << pOM->getName() << "\n";
-
-	cout << "Generando población...\n";
-	startTime = clock();
-	TPop pop = generatePopulation(*pOM);
-	endTime = clock();
-	cout << "Se han generado los " << pop.size() << " individuos en "
-		<< double(endTime - startTime) / CLOCKS_PER_SEC << " segundos.\n";
-
-	std::vector<double> scores[4];
-	
-	for (int i = 0; i < 3; i++)
-	{
-		cout << i << ". Evaluando población...\n";
-		startTime = clock();
-#if 0
-		evaluatePopulation(*pEM, pop);
-#else
-		scores[i] = evaluatePopulation(cEM, pop);
-#endif
-		endTime = clock();
-		cout << "Se han evaluado los " << pop.size() << " individuos en "
-			<< double(endTime - startTime) / CLOCKS_PER_SEC << " segundos.\n";
-	}
-
-	cout << "Evaluando con módulo sin caché...\n";
-	startTime = clock();
-	scores[3] = evaluatePopulation(*pEM, pop);
-	endTime = clock();
-	cout << "Se han evaluado los " << pop.size() << " individuos en "
-		<< double(endTime - startTime) / CLOCKS_PER_SEC << " segundos.\n";
-
-	cout << "Comparando resultados...\n";
-	if (scores[0] == scores[1] && scores[1] == scores[2] && scores[2] == scores[3])
-		cout << "Los resultados coinciden.\n";
-	else
-		cout << "Los resultados difieren.\n";
-
-	return 0;
+	p->evolutionaryStep(pop, *pEM, *pOM);
+	q->evolutionaryStep(pop, *pEM, *pOM);
+	p.swap(q);
+	p->evolutionaryStep(pop, *pEM, *pOM);
+	q->evolutionaryStep(pop, *pEM, *pOM);
 }
 
 #endif

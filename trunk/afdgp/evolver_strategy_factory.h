@@ -30,96 +30,43 @@
 //
 
 //=============================================================================
-// main.cpp
+// evolver_strategy_factory.h
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 8 de abril de 2008
+// Creado por Mariano M. Chouza | Creado el 30 de abril de 2008
 //=============================================================================
 
-#include "afdgp_app.h"
-#include <boost/signal.hpp>
-#include <csignal>
-#include <iostream>
+#ifndef EVOLVER_STRATEGY_FACTORY_H
+#define EVOLVER_STRATEGY_FACTORY_H
 
-namespace
+#include <boost/shared_ptr.hpp>
+#include <map>
+#include <string>
+#include "gp_fwd.h"
+
+namespace GP
 {
-	/// Señal de Boost representando SIGINT
-	boost::signal<void ()> sigint;
-	
-	/// Maneja una señal SIGINT
-	void sigintHandler(int)
+	/// Se ocupa de crear la estrategia que corresponda para manejar el proceso
+	/// evolutivo
+	class EvolverStrategyFactory
 	{
-		using std::cerr;
-		
-		// Indico que recibí el mensaje
-		cerr << "\nPedido de terminación recibido...\n";
-		
-		// Señala usando la señal de Boost
-		sigint();
+		/// Tipo de la "línea de productos"
+		typedef std::map<std::string, boost::shared_ptr<EvolverStrategy> (*)()>
+			TProductLine;
 
-		// Continúo manejando la señal
-		signal(SIGINT, sigintHandler);
-	}
+		/// "Línea de productos", o sea un mapa que asocia los nombres con 
+		/// los punteros a las "factory functions"
+		static TProductLine productLine_;
 
-	/// Conecta SIGINT a la aplicación
-	void connectSIGINT2App(Core::AFDGPApp& app)
-	{
-		using Core::AFDGPApp;
+	public:
+		/// Crea el que esté registrado con ese nombre o devuelve 0 si no lo 
+		/// está
+		static boost::shared_ptr<EvolverStrategy> 
+			make(const std::string& name);
 
-		// Functor privado para invocar a exit
-		struct AppExitFunctor
-		{
-			AFDGPApp& app_;
-
-			AppExitFunctor(AFDGPApp& app) :
-			app_(app)
-			{
-			}
-
-			void operator()()
-			{
-				app_.exit();
-			}
-		} appExitFunctor(app);
-		
-		// Conecto la señal SIGINT al handler
-		signal(SIGINT, sigintHandler);
-
-		// Conecto la aplicación a la señal de boost
-		sigint.connect(appExitFunctor);
-	}
+		/// Registra uno nuevo
+		static void registrate(const std::string& name, 
+			boost::shared_ptr<EvolverStrategy> (*factoryFunction)());
+	};
 }
 
-int main(int argc, char* argv[])
-{
-	using Core::AFDGPApp;
-	using std::cerr;
-	using std::endl;
-
-	// Atrapo las excepciones que lleguen a este nivel para, al menos, indicar
-	// un mensaje de error con sentido
-	try
-	{
-		// Construyo la aplicación
-		AFDGPApp app(argc, argv);
-
-		// Inicializa manejo de señales
-		connectSIGINT2App(app);
-
-		// Ejecuto el trabajo que tenga que hacer
-		app.run();
-	}
-	catch (std::exception& e)
-	{
-		// Indico la clase de error producido
-		cerr << "ERROR IRRECUPERABLE: " << e.what() << endl;
-	}
-	catch (...)
-	{
-		// Muestro un mensaje de error. No es demasiado específico, pero es
-		// por que no puedo serlo
-		cerr << "Se ha producido un error desconocido." << endl;
-	}
-
-	// OK
-	return 0;
-}
+#endif
