@@ -73,7 +73,7 @@ public:
 			throw; // FIXME: Lanzar algo más específico
 
 		// Crea el trabajo
-		pJob_.reset(new AFDJob(config_, argv[1]));
+		pJob_.reset(new AFDJob(modules_, config_, argv[1]));
 	}
 
 	void run()

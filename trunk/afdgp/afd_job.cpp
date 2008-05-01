@@ -42,7 +42,8 @@
 
 using namespace Core;
 
-AFDJob::AFDJob(const Config& baseConfig, 
+AFDJob::AFDJob(const ModuleLibrary& lib,
+			   const Config& baseConfig, 
 			   const std::string& filename) :
 pConfig_(baseConfig.getView("Job")),
 filename_(filename)
@@ -51,7 +52,7 @@ filename_(filename)
 	Core::ConfigFile specConfig(filename);
 
 	// Creo el evolver con la configuración base y la específica a este trabajo
-	pEvolver_.reset(new GP::Evolver(*pConfig_, specConfig));
+	pEvolver_.reset(new GP::Evolver(lib, *pConfig_, specConfig));
 
 	// Carga los datos de la ejecución anterior, si es necesario
 	resumeIfPossible();

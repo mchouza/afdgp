@@ -36,11 +36,52 @@
 //=============================================================================
 
 #include "evolver.h"
+#include "config.h"
+#include "module_library.h"
+#include <boost/lexical_cast.hpp>
 
 using namespace GP;
 
-Evolver::Evolver(const Core::Config& baseConfig, 
+Evolver::Evolver(const Core::ModuleLibrary& lib, 
+				 const Core::Config& baseConfig, 
 				 const Core::Config& specConfig)
 {
-	// FIXME: Implementar
+	using boost::lexical_cast;
+	using boost::shared_dynamic_cast;
+	using boost::shared_ptr;
+	using Core::Config;
+	using std::string;
+
+	// Obtengo la configuración a utilizar
+	shared_ptr<Config> pCC = specConfig.getCombinedConfig(baseConfig);
+
+	// Cargo los módulos que sean necesarios
+	std::string evalModName = pCC->readValue("EvalModule");
+	std::string opsModName = pCC->readValue("OpsModule");
+	pEvalMod_ =
+		shared_dynamic_cast<EvalModule>(lib.getModuleByName(evalModName));
+	pOpsMod_ =
+		shared_dynamic_cast<OpsModule>(lib.getModuleByName(opsModName));
+
+	// Le doy los datos de configuración a cada módulo
+	bool retEM, retOM;
+	retEM = pEvalMod_->giveConfigData(
+		pCC->getView("EvalModule")->getKeyValuePairs());
+	retOM = pOpsMod_->giveConfigData(
+		pCC->getView("OpsModule")->getKeyValuePairs());
+	if (!(retOM && retEM))
+		throw; // FIXME: Lanzar algo más específico
+
+	// Inicializo la población
+	size_t popSize = lexical_cast<size_t>(pCC->readValue("PopulationSize"));
+	pop_.resize(popSize);
+	for (size_t i = 0; i < pop_.size(); i++)
+		pOpsMod_->randomInit(pop_[i]);
+
+	// FIXME: Inicializar la estrategia evolutiva
+}
+
+void Evolver::step()
+{
+	pEvSt_->evolutionaryStep(pop_, *pEvalMod_, *pOpsMod_);
 }

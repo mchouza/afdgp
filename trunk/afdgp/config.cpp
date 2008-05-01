@@ -71,6 +71,12 @@ namespace
 			return baseConfig_.readValue(prefix_ + "." + key, defaultValue);
 		}
 
+		/// Se fija si está presente una clave
+		virtual bool hasKey(const std::string& key) const
+		{
+			return baseConfig_.hasKey(prefix_ + "." + key);
+		}
+
 		/// Obtiene las claves
 		virtual std::vector<std::string> getKeys() const
 		{
@@ -88,6 +94,91 @@ namespace
 				
 			return ret;
 		}
+
+		/// Obtiene los pares clave-valor
+		virtual std::map<std::string, std::string> getKeyValuePairs() const
+		{
+			using std::map;
+			using std::string;
+			using std::vector;
+
+			// FIXME: Performance deficiente, aunque es simple
+
+			map<string, string> ret;
+			vector<string> keys = getKeys();
+			for (size_t i = 0; i < keys.size(); i++)
+				ret[keys[i]] = readValue(keys[i]);
+
+			return ret;
+		}
+	};
+
+	/// Clase encargada de combinar configuraciones
+	class JoinedConfig : public Config
+	{
+		/// Configuración primaria
+		const Config& primaryConfig_;
+
+		/// Configuración base
+		const Config& baseConfig_;
+
+	public:
+		/// Construye a partir de las dos configuraciones
+		JoinedConfig(const Config& p, const Config& b) :
+		  primaryConfig_(p),
+		  baseConfig_(b)
+		{
+		}
+		
+		/// Lee un valor dada su clave
+		virtual std::string readValue(const std::string& key) const
+		{
+			if (primaryConfig_.hasKey(key))
+				return primaryConfig_.readValue(key);
+			else if (baseConfig_.hasKey(key))
+				return baseConfig_.readValue(key);
+			else
+				throw; // FIXME: Lanzar algo más específico
+		}
+
+		/// Lee un valor dada su clave con un valor por defecto
+		virtual std::string readValue(const std::string& key, 
+			const std::string& defaultValue) const
+		{
+			if (primaryConfig_.hasKey(key))
+				return primaryConfig_.readValue(key);
+			else if (baseConfig_.hasKey(key))
+				return baseConfig_.readValue(key);
+			else
+				return defaultValue;
+		}
+
+		/// Se fija si tiene una clave
+		virtual bool hasKey(const std::string& key) const
+		{
+			return primaryConfig_.hasKey(key) || baseConfig_.hasKey(key);
+		}
+
+		/// Obtiene las claves
+		virtual std::vector<std::string> getKeys() const
+		{
+			// FIXME: Probablemente ineficiente
+			// FIXME: Puede que tenga duplicados
+			std::vector<std::string> pck = primaryConfig_.getKeys();
+			std::vector<std::string> bck = baseConfig_.getKeys();
+			pck.insert(pck.end(), bck.begin(), bck.end());
+			return pck;
+		}
+
+		/// Obtiene los pares clave-valor
+		virtual std::map<std::string, std::string> getKeyValuePairs() const
+		{
+			std::map<std::string, std::string> ret, aux;
+			ret = primaryConfig_.getKeyValuePairs();
+			aux = baseConfig_.getKeyValuePairs();
+			ret.insert(aux.begin(), aux.end());
+			return ret;
+		}
 	};
 }
 
@@ -96,4 +187,12 @@ boost::shared_ptr<Config> Config::getView(const std::string& prefix) const
 	using boost::shared_ptr;
 	
 	return shared_ptr<Config>(new ConfigView(*this, prefix));
+}
+
+boost::shared_ptr<Config> 
+Config::getCombinedConfig(const Config& baseConfig) const
+{
+	using boost::shared_ptr;
+
+	return shared_ptr<Config>(new JoinedConfig(*this, baseConfig));
 }

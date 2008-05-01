@@ -64,7 +64,7 @@ namespace Core
 	public:
 		/// Lo construye en base a una configuración base y un nombre de 
 		/// archivo
-		AFDJob(const Config& baseConfig, 
+		AFDJob(const ModuleLibrary& lib, const Config& baseConfig, 
 			const std::string& filename);
 
 		/// Destructor

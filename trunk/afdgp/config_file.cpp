@@ -67,6 +67,11 @@ std::string ConfigFile::readValue(const std::string& key,
 		return it->second;
 }
 
+bool ConfigFile::hasKey(const std::string& key) const
+{
+	return configMap_.find(key) != configMap_.end();
+}
+
 std::vector<std::string> ConfigFile::getKeys() const
 {
 	using std::string;
@@ -79,6 +84,11 @@ std::vector<std::string> ConfigFile::getKeys() const
 		ret.push_back(it->first);
 
 	return ret;
+}
+
+std::map<std::string, std::string> ConfigFile::getKeyValuePairs() const
+{
+	return configMap_;
 }
 
 void ConfigFile::loadFromPropertiesFile(const std::string& filename)
