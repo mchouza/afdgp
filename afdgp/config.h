@@ -56,12 +56,23 @@ namespace Core
 		virtual std::string readValue(const std::string& key, 
 			const std::string& defaultValue) const = 0;
 
+		/// Se fija si está una clave dada presente
+		virtual bool hasKey(const std::string& key) const = 0;
+
 		/// Obtiene las claves
 		virtual std::vector<std::string> getKeys() const = 0;
+
+		/// Obtiene un map con los pares clave-valor
+		virtual std::map<std::string, std::string> getKeyValuePairs() const = 0;
 
 		/// Obtiene una configuración "conteniendo" todos los pares 
 		/// clave-valor cuyas claves comiencen con un cierto prefijo
 		boost::shared_ptr<Config> getView(const std::string& prefix) const;
+
+		/// Obtiene una configuración que resulta de buscar primero en esta 
+		/// configuración y después en baseConfig
+		boost::shared_ptr<Config> 
+			getCombinedConfig(const Config& baseConfig) const;
 	};
 }
 

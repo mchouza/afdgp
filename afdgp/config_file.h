@@ -68,8 +68,14 @@ namespace Core
 		virtual std::string readValue(const std::string& key, 
 			const std::string& defaultValue) const;
 
+		/// Observa si tiene una nueva clave
+		virtual bool hasKey(const std::string& key) const;
+
 		/// Obtiene las claves
 		virtual std::vector<std::string> getKeys() const;
+
+		/// Obtiene los pares clave-valor
+		virtual std::map<std::string, std::string> getKeyValuePairs() const;
 	};
 }
 

@@ -123,10 +123,10 @@ void ModuleLibrary::tryToLoad(const std::string& modulePath)
 }
 
 boost::shared_ptr<Module> 
-ModuleLibrary::getModuleByName(const std::string& name)
+ModuleLibrary::getModuleByName(const std::string& name) const
 {
 	// Busco un módulo con ese nombre
-	TModuleContainer::iterator it = modules_.find(name);
+	TModuleContainer::const_iterator it = modules_.find(name);
 
 	// Lo encontré?
 	if (it == modules_.end())

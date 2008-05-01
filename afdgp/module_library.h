@@ -73,7 +73,8 @@ namespace Core
 		ModuleLibrary(const std::string& path);
 
 		/// Obtiene un módulo según el nombre
-		boost::shared_ptr<Module> getModuleByName(const std::string& name);
+		boost::shared_ptr<Module> 
+			getModuleByName(const std::string& name) const;
 
 		/// Muestra los módulos cargados con sus correspondientes versiones
 		void dump(std::ostream& out) const;

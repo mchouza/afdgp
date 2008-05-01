@@ -44,6 +44,7 @@
 #include "ops_module.h"
 #include "population.h"
 #include <boost/scoped_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <vector>
 
 namespace GP
@@ -55,30 +56,29 @@ namespace GP
 		TPop pop_;
 
 		/// Módulo para realizar operaciones con la población
-		boost::scoped_ptr<OpsModule> pOpsMod_;
+		boost::shared_ptr<OpsModule> pOpsMod_;
 
 		/// Módulo para evaluar a los individuos
-		boost::scoped_ptr<EvalModule> pEvalMod_;
+		boost::shared_ptr<EvalModule> pEvalMod_;
 
 		/// Estrategia a utilizar
 		boost::scoped_ptr<EvolverStrategy> pEvSt_;
 
 	public:
-		/// Construye en base a una configuración bas y una específica
-		Evolver(const Core::Config& baseConfig, 
+		/// Construye en base a una configuración base y una específica
+		Evolver(const Core::ModuleLibrary& lib, 
+			const Core::Config& baseConfig, 
 			const Core::Config& specConfig);
 
 		/// Realiza un "paso evolutivo" (puede significar distintas cosas de 
 		/// acuerdo a la estrategia adoptada, pero debe ser atómico)
 		void step();
 
-		/// Serializa todo. Por razones de performance utiliza un stream 
-		/// binario para la población.
-		void serialize(std::ostream& osTxt, std::ostream& osBin) const;
+		/// Serializa todo
+		void serialize(std::ostream& os) const;
 
 		/// Deserializa todo
-		void deserialize(std::istream& isTxt, std::istream& isBin);
-
+		void deserialize(std::istream& is);
 	};
 }
 
