@@ -1,0 +1,8 @@
+Ciclos de vida
+--------------
+-	Habría que repensar los ciclos de vida. No tiene sentido tener shared_ptr 
+	por todos lados.
+-	Con una adecuada comprensión de la presencia de la vida de cada objeto, no
+	hacen falta smart pointers para todo. Y si me equivoco con la vida de los
+	objetos, las referencias pueden explotar de todos modos.
+	

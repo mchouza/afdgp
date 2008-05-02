@@ -36,6 +36,7 @@
 //=============================================================================
 
 #include "evolver.h"
+#include "cached_eval_module.h"
 #include "config.h"
 #include "module_library.h"
 #include <boost/lexical_cast.hpp>
@@ -55,13 +56,22 @@ Evolver::Evolver(const Core::ModuleLibrary& lib,
 	// Obtengo la configuración a utilizar
 	shared_ptr<Config> pCC = specConfig.getCombinedConfig(baseConfig);
 
-	// Cargo los módulos que sean necesarios
+	// Cargo los módulos de evaluación y operaciones que correspondan
 	std::string evalModName = pCC->readValue("EvalModule");
 	std::string opsModName = pCC->readValue("OpsModule");
 	pEvalMod_ =
 		shared_dynamic_cast<EvalModule>(lib.getModuleByName(evalModName));
 	pOpsMod_ =
 		shared_dynamic_cast<OpsModule>(lib.getModuleByName(opsModName));
+
+	// Si me indican usar el que incorpora caché, lo hago
+	if (lexical_cast<bool>(pCC->readValue("UseCachedEvalModule")))
+	{
+		size_t cacheSize =
+			lexical_cast<size_t>(pCC->readValue("CachedEvalModule.CacheSize"));
+		shared_ptr<EvalModule> pBaseModule = pEvalMod_;
+		pEvalMod_.reset(new CachedEvalModule(pBaseModule, cacheSize));
+	}
 
 	// Le doy los datos de configuración a cada módulo
 	bool retEM, retOM;
