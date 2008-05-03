@@ -38,7 +38,7 @@
 import codecs
 import os
 import sys
-from filters import CFilter, CppFilter, PyFilter, LineError, Error
+from filters import CFilter, CppFilter, PyFilter, Error
 
 # Licencia
 licenseTxt = """
@@ -74,6 +74,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 # Sintaxis
 syntaxTxt = """
+NO CORRESPONDE A LA SINTAXIS ACTUAL
 check_file_standards <dir1> ... <dirN> -<sdir1> ... -<sdirM>'
 
 Revisa todos los archivos cuyos tipos tenga registrados para verificar
@@ -102,6 +103,20 @@ encoding =\
     'py': 'utf_8_sig'
 }
 
+# Imprime todo por defecto
+silent = False
+
+class InvalidOption(Exception):
+    """Indica una opción no válida."""
+
+    def __init__(self, optionName):
+        """Inicializa la excepción con el nombre de la opción."""
+        self.optionName = optionName
+
+    def __str__(self):
+        """Muestra el error como una cadena de texto."""
+        return 'La opción ' + self.optionName + ' no pudo ser reconocida.'
+
 # Se fija si un directorio está suprimido
 def isSuppressed(suppressions, dirName):
 
@@ -119,6 +134,9 @@ def isSuppressed(suppressions, dirName):
 # Procesa un archivo
 def processFile(filePath, extension):
 
+    # Si es silencioso, tiene que imprimri el warning
+    printWarning = silent
+
     # Abre el archivo
     file2Proc = codecs.open(filePath, 'r', encoding[extension])
 
@@ -134,11 +152,11 @@ def processFile(filePath, extension):
         lineNumber += 1
         try:
             myFilter(line)
-        except LineError, le:
-            le.giveLineNumber(lineNumber)
-            print le
         except Error, e:
-            print u'Línea %d: ' % lineNumber, e
+            if printWarning:
+                printWarning = False
+                print u'En archivo %s:' % filePath
+            print u'\tLínea %d: ' % lineNumber, unicode(e)
 
     # Cierro el archivo
     file2Proc.close()
@@ -153,7 +171,8 @@ def checkIndivDir(supressions, dirName, files):
         return
     
     # Muestro donde estoy
-    print 'Revisando directorio: %s' % dirName
+    if not silent:
+        print 'Revisando directorio: %s' % dirName
 
     # Recorro los archivos
     for fileName in files:
@@ -166,7 +185,8 @@ def checkIndivDir(supressions, dirName, files):
             continue
 
         # Muestro el nombre de archivo
-        print '\t%s' % fileName
+        if not silent:
+            print '\t%s' % fileName
 
         # Lo proceso
         processFile(os.path.join(dirName, fileName), ext)
@@ -175,7 +195,8 @@ def checkIndivDir(supressions, dirName, files):
 def recCheckDir(baseDir, suppressions):
     
     # Muestro la base
-    print 'Directorio base: %s' % baseDir
+    if not silent:
+        print 'Directorio base: %s' % baseDir
 
     # Hago un walk del árbol de directorios
     os.path.walk(baseDir, checkIndivDir, suppressions)
@@ -185,6 +206,12 @@ def printSyntax():
 
     # Imprimo la sintaxis
     print syntaxTxt
+
+# Procesa el cuerpo de los argumentos
+def processArgBody(argBody):
+
+    # Divido por ';'
+    return argBody.split(';')
 
 # Main
 def main(argv = []):
@@ -203,13 +230,25 @@ def main(argv = []):
     # Reviso los parámetros
     for arg in argv[1:]:
         
-        # Me fijo si hay que revisarlo o suprimirlo
-        if arg[0] == '-':
-            # Hay que suprimirlo
-            suppressions.append(arg[1:])
+        # Me fijo si es una opción
+        if arg[0] == '/' or arg[0] == '-':
+            # Es una opción, me fijo cuál es
+            if arg[1:].find('=') != -1:
+                argName, argBody = arg[1:].split('=', 1)
+            else:
+                argName, argBody =  arg[1:], ''
+            if argName == 'silent':
+                global silent
+                silent = True
+            elif argName == 'inspect':
+                dirs2Check.extend(processArgBody(argBody))
+            elif argName == 'dontInspect':
+                suppressions.extend(processArgBody(argBody))
+            else:
+                raise InvalidOption(arg)
         else:
-            # Hay que revisarlo
-            dirs2Check.append(arg)
+            # No es una opción, así que es inválida
+            raise InvalidOption(arg)
 
     # Pongo a todos los paths en una forma canónica, así puedo identificar a
     # las suppressions
@@ -225,4 +264,8 @@ def main(argv = []):
 
 # Entry point
 if __name__ == '__main__':
-    sys.exit(main(sys.argv))
+    try:
+        sys.exit(main(sys.argv))
+    except Exception, e:
+        print e
+        

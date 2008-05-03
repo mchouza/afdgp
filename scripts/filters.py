@@ -47,32 +47,11 @@ class Error(Exception):
     
     def __init__(self, message):
         """Contruye un error en base a un mensaje."""
-        Exception.__init__(self, message)
+        self.message = message
 
-class LineError(Error):
-    """Clase base de los errores que se detectan en una línea dada."""
-
-    def __init__(self, message, lineNumber = None):
-        """Construye un error en base a un mensaje, donde $LINE será
-        reemplazado por el número de línea."""
-        if lineNumber is not None:
-            Error.__init__(self, message.replace('$LINE', lineNumber))
-        else:
-            Error.__init__(self, u'ERROR: Número de línea no indicado.')
-            self.template = message
-
-    def giveLineNumber(self, lineNumber):
-        """Le da un número de línea al error."""
-        if 'template' in dir(self):
-            Error.__init__(self,
-                           self.template.replace('$LINE', str(lineNumber)))
-            del self.template
-        else:
-            raise FatalError(u'La excepción ya tiene número de línea.')
-
-class FileError(Error):
-    """Clase base de los errores que corresponden a un archivo."""
-    pass
+    def __unicode__(self):
+        """Muestra el mensaje."""
+        return self.message
 
 class Filter(object):
     """Clase base de los filtros. No hace nada..."""
@@ -111,12 +90,7 @@ class JoinedFilter(Filter):
         # Aplica todos los filtros de archivo
         for fileFilter in self.fileFilters:
             # Aplica el filtro de archivo
-            try:
-                fileFilter(line)
-            except Error, e:
-                # Si detecta un error, borra el filtro y relanza el error
-                fileFilter.disable()
-                raise e
+            fileFilter(line)
 
     def reset(self):
         """Reinicializa el filtro combinado, es decir todos los filtros
@@ -133,7 +107,7 @@ class EightyColsFilter(Filter):
         """Verifica que la línea no pase de las 80 columnas."""
         line = line.replace('\t', ' ' * self.TAB_SIZE).rstrip('\r\n')
         if len(line) > 80:
-            raise LineError('La línea $LINE tiene más de 80 columnas.')
+            raise Error(u'Tiene más de 80 columnas.')
 
 class CheckLicenseFilter(Filter):
     """Se ocupa de verificar que los archivos tengan la licencia
@@ -159,7 +133,10 @@ class CheckLicenseFilter(Filter):
 
         # Compara la línea del archivo con la línea de la licencia
         if line.rstrip() != self.license[self.lineNumber].rstrip():
-            raise FileError(u'El archivo no tiene una licencia correcta.')
+            self.disable()
+            raise Error(u'El archivo no tiene una licencia correcta.')
+
+        # Siguiente línea
         self.lineNumber += 1
 
     def disable(self):
