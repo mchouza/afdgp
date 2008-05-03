@@ -1,21 +1,21 @@
-﻿#
+﻿# 
 # Copyright (c) 2008, Mariano M. Chouza
 # All rights reserved.
-#
+# 
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-#
+# 
 #    * Redistributions of source code must retain the above copyright notice, 
 #      this list of conditions and the following disclaimer.
-#
+# 
 #    * Redistributions in binary form must reproduce the above copyright
 #      notice, this list of conditions and the following disclaimer in the
 #      documentation and/or other materials provided with the distribution.
-#
+# 
 #    * The names of the contributors may not be used to endorse or promote
 #      products derived from this software without specific prior written
 #      permission.
-#
+# 
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 # AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 # IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -27,7 +27,7 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-#
+# 
 
 ################################################################################
 # check_file_standards.py
@@ -35,21 +35,71 @@
 # Creado por Mariano M. Chouza | Creado el 9 de abril de 2008
 ################################################################################
 
+import codecs
 import os
 import sys
+from filters import CFilter, CppFilter, PyFilter, LineError, Error
 
-# FIXME: IMPLEMNETAR UN PROCESAMIENTO PARA CADA TIPO DE ARCHIVO
+# Licencia
+licenseTxt = """
+Copyright (c) 2008, Mariano M. Chouza
+All rights reserved.
 
-def nothing(a):
-    pass
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+   * Redistributions of source code must retain the above copyright notice, 
+     this list of conditions and the following disclaimer.
+
+   * Redistributions in binary form must reproduce the above copyright
+     notice, this list of conditions and the following disclaimer in the
+     documentation and/or other materials provided with the distribution.
+
+   * The names of the contributors may not be used to endorse or promote
+     products derived from this software without specific prior written
+     permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+"""
+
+# Sintaxis
+syntaxTxt = """
+check_file_standards <dir1> ... <dirN> -<sdir1> ... -<sdirM>'
+
+Revisa todos los archivos cuyos tipos tenga registrados para verificar
+el cumplimiento de un cierto número de "standards". La exploración en
+busca de estos archivos se realiza en forma recursiva a partir de los
+directorios pasados como parámetros (<dir1>, <dir2>, ..., <dirN> en el
+ejemplo. Si se le antepone un guión ('-'), el directorio será "suprimido"
+de la exploración recursiva.
+"""
 
 # Despacho
 fileTypeDispatch =\
 {
-    'cpp': nothing,
-    'c': nothing,
-    'h': nothing,
-    'py': nothing
+    'cpp': CppFilter(licenseTxt),
+    'c': CFilter(licenseTxt),
+    'h': CppFilter(licenseTxt),
+    'py': PyFilter(licenseTxt)
+}
+
+# Tipo de encoding
+encoding =\
+{
+    'cpp': 'windows-1252',
+    'c': 'windows-1252',
+    'h': 'windows-1252',
+    'py': 'utf_8_sig'
 }
 
 # Se fija si un directorio está suprimido
@@ -65,6 +115,33 @@ def isSuppressed(suppressions, dirName):
             return True
 
     return False
+
+# Procesa un archivo
+def processFile(filePath, extension):
+
+    # Abre el archivo
+    file2Proc = codecs.open(filePath, 'r', encoding[extension])
+
+    # Obtengo el filtro
+    myFilter = fileTypeDispatch[extension]
+
+    # Lo reseteo
+    myFilter.reset()
+
+    # Lo aplico a todas las líneas
+    lineNumber = 0
+    for line in file2Proc:
+        lineNumber += 1
+        try:
+            myFilter(line)
+        except LineError, le:
+            le.giveLineNumber(lineNumber)
+            print le
+        except Error, e:
+            print u'Línea %d: ' % lineNumber, e
+
+    # Cierro el archivo
+    file2Proc.close()
 
 # Revisa un directorio
 def checkIndivDir(supressions, dirName, files):
@@ -92,7 +169,7 @@ def checkIndivDir(supressions, dirName, files):
         print '\t%s' % fileName
 
         # Lo proceso
-        fileTypeDispatch[ext](os.path.join(dirName, fileName))
+        processFile(os.path.join(dirName, fileName), ext)
 
 # Revisa un directorio en forma recursiva hasta el fondo
 def recCheckDir(baseDir, suppressions):
@@ -107,14 +184,7 @@ def recCheckDir(baseDir, suppressions):
 def printSyntax():
 
     # Imprimo la sintaxis
-    print 'check_file_standards <dir1> ... <dirN> -<sdir1> ... -<sdirM>'
-    print
-    print \
-'''Revisa todos los archivos cuyos tipos tenga registrados para verificar el
-cumplimiento de un cierto número de "standards". La exploración en busca de
-estos archivos se realiza en forma recursiva a partir de los directorios pasados
-como parámetros (<dir1>, <dir2>, ..., <dirN> en el ejemplo. Si se le antepone
-un guión ('-'), el directorio será "suprimido" de la exploración recursiva.'''
+    print syntaxTxt
 
 # Main
 def main(argv = []):
