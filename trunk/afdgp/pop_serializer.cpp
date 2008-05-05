@@ -30,17 +30,56 @@
 //
 
 //=============================================================================
-// common.h
+// pop_serializer.cpp
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 19 de abril de 2008
+// Creado por Mariano M. Chouza | Creado el 5 de mayo de 2008
 //=============================================================================
 
-#ifndef COMMON_H
-#define COMMON_H
+#include "pop_serializer.h"
 
-//#define TEST_HASH
-//#define TEST_CACHED_EVAL
-//#define TEST_ESF
-#define TEST_POP_SERIALIZER
+using namespace Util;
 
-#endif
+void PopSerializer::serialize(std::ostream& os, const TPop& pop)
+{
+	// Escribo el tamaño de la población
+	size_t popSize = pop.size();
+	os.write(reinterpret_cast<const char*>(&popSize), sizeof(popSize));
+
+	// Para cada elemento de la población...
+	for (size_t i = 0; i < pop.size(); i++)
+	{
+		// Escribo el tamaño en bytes
+		size_t indivSize = pop[i].size();
+		os.write(reinterpret_cast<const char*>(&indivSize),
+			sizeof(indivSize));
+
+		// Escribo el individuo
+		os.write(reinterpret_cast<const char*>(&pop[i][0]), 
+			static_cast<std::streamsize>(pop[i].size()));
+	}
+}
+
+void PopSerializer::deserialize(TPop& pop, std::istream& is)
+{
+	// Leo el tamaño de la población
+	size_t popSize;
+	is.read(reinterpret_cast<char*>(&popSize), sizeof(popSize));
+
+	// Reservo memoria para la población
+	pop.resize(popSize);
+
+	// Leo esa cantidad de individuos
+	for (size_t i = 0; i < popSize; i++)
+	{
+		// Leo el tamaño del individuo
+		size_t indivSize;
+		is.read(reinterpret_cast<char*>(&indivSize), sizeof(indivSize));
+
+		// Reservo memoria para el individuo
+		pop[i].resize(indivSize);
+
+		// Leo al individuo
+		is.read(reinterpret_cast<char*>(&pop[i][0]), 
+			static_cast<std::streamsize>(indivSize));
+	}
+}

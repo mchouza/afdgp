@@ -280,7 +280,19 @@
 					RelativePath="..\afdgp\os_dep.cpp"
 					>
 				</File>
+				<File
+					RelativePath="..\afdgp\pop_serializer.cpp"
+					>
+				</File>
 			</Filter>
+		</Filter>
+		<Filter
+			Name="Test PopSerializer"
+			>
+			<File
+				RelativePath=".\test_pop_serializer.cpp"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath=".\common.h"

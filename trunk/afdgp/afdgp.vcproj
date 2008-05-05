@@ -41,7 +41,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="../common"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_USRDLL"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_USRDLL;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -255,6 +255,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\pop_serializer.h"
+					>
+				</File>
+				<File
 					RelativePath=".\registrator.h"
 					>
 				</File>
@@ -276,6 +280,10 @@
 				</File>
 				<File
 					RelativePath=".\os_dep.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\pop_serializer.cpp"
 					>
 				</File>
 			</Filter>
