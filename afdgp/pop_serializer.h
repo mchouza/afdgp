@@ -30,17 +30,30 @@
 //
 
 //=============================================================================
-// common.h
+// pop_serializer.h
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 19 de abril de 2008
+// Creado por Mariano M. Chouza | Creado el 5 de mayo de 2008
 //=============================================================================
 
-#ifndef COMMON_H
-#define COMMON_H
+#ifndef POP_SERIALIZER_H
+#define POP_SERIALIZER_H
 
-//#define TEST_HASH
-//#define TEST_CACHED_EVAL
-//#define TEST_ESF
-#define TEST_POP_SERIALIZER
+#include <iostream>
+#include "population.h"
+
+namespace Util
+{
+	/// Se encarga de serializar a la población. La codificación utilizada es
+	/// dependiente de la plataforma.
+	class PopSerializer
+	{
+	public:
+		/// Serializa la población a una ostream binaria
+		static void serialize(std::ostream& os, const TPop& pop);
+
+		/// Deserializa la población desde una istream binaria
+		static void deserialize(TPop& pop, std::istream& is);
+	};
+}
 
 #endif

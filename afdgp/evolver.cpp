@@ -39,6 +39,7 @@
 #include "cached_eval_module.h"
 #include "config.h"
 #include "module_library.h"
+#include "pop_serializer.h"
 #include <boost/lexical_cast.hpp>
 
 using namespace GP;
@@ -65,7 +66,7 @@ Evolver::Evolver(const Core::ModuleLibrary& lib,
 		shared_dynamic_cast<OpsModule>(lib.getModuleByName(opsModName));
 
 	// Si me indican usar el que incorpora caché, lo hago
-	if (lexical_cast<bool>(pCC->readValue("UseCachedEvalModule")))
+	if (lexical_cast<bool>(pCC->readValue("UseCachedEvalModule", "false")))
 	{
 		size_t cacheSize =
 			lexical_cast<size_t>(pCC->readValue("CachedEvalModule.CacheSize"));
@@ -94,4 +95,16 @@ Evolver::Evolver(const Core::ModuleLibrary& lib,
 void Evolver::step()
 {
 	pEvSt_->evolutionaryStep(pop_, *pEvalMod_, *pOpsMod_);
+}
+
+void Evolver::serialize(std::ostream &os) const
+{
+	// FIXME: Solo serializa a la población
+	Util::PopSerializer::serialize(os, pop_);
+}
+
+void Evolver::deserialize(std::istream &is)
+{
+	// FIXME: Solo deserializa a la población
+	Util::PopSerializer::deserialize(pop_, is);
 }
