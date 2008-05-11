@@ -311,6 +311,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\evolver_strategy_standard.h"
+					>
+				</File>
+				<File
 					RelativePath=".\gp_fwd.h"
 					>
 				</File>
@@ -327,7 +331,19 @@
 					>
 				</File>
 				<File
+					RelativePath=".\evolver_strategy_dyn_adj.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\evolver_strategy_factory.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\evolver_strategy_plague.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\evolver_strategy_standard.cpp"
 					>
 				</File>
 			</Filter>

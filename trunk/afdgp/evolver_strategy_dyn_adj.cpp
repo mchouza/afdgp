@@ -30,36 +30,58 @@
 //
 
 //=============================================================================
-// evolver_strategy_factory.cpp
+// evolver_strategy_dyn_adj.cpp
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 30 de abril de 2008
+// Creado por Mariano M. Chouza | Creado el 11 de mayo de 2008
 //=============================================================================
 
+#include "config.h"
+#include "evolver_strategy.h"
 #include "evolver_strategy_factory.h"
+#include "evolver_strategy_standard.h"
+#include "registrator.h"
+#include <boost/lexical_cast.hpp>
 
-using namespace GP;
+namespace GP {
 
-boost::shared_ptr<EvolverStrategy> 
-EvolverStrategyFactory::make(const std::string& name, 
-							 const Core::Config& config)
+/// Clase de la estrategia derivada
+class EvolverStrategyDynAdj : public EvolverStrategy
 {
-	TProductLine::iterator it = getProductLine().find(name);
-	if (it == getProductLine().end())
-		return boost::shared_ptr<EvolverStrategy>();
-	else
-		return it->second(config);
+	/// Probabilidad de ejecución para los individuos por encima del límite
+	double tarpeianExecProb_;
+
+	/// Evolver standard para el manejo general
+	EvolverStrategyStandard standardEvSt_;
+
+public:
+	/// Constructor
+	EvolverStrategyDynAdj(const Core::Config& c) :
+	  tarpeianExecProb_(
+		  boost::lexical_cast<double>(c.readValue("tarpeianExecProb"))),
+	  standardEvSt_(c)
+	{
+	}
+
+	/// Crea una nueva instancia
+	static boost::shared_ptr<EvolverStrategy> create(const Core::Config& c)
+	{
+		return boost::shared_ptr<EvolverStrategy>(
+			new EvolverStrategyDynAdj(c));
+	}
+
+	/// Realiza un paso evolutivo
+	virtual void evolutionaryStep(TPop& pop, EvalModule& evalMod, 
+		OpsModule& opsMod)
+	{
+		// FIXME: Implementar!!
+	}
+};
+
+namespace
+{
+	// Registra la clase
+	Util::Registrator<EvolverStrategyFactory, EvolverStrategyDynAdj>
+		r("DynamicAdjustment");
 }
 
-void EvolverStrategyFactory::registrate(const std::string& name, 
-										boost::shared_ptr<EvolverStrategy>
-										(*factoryFunc)(const Core::Config&))
-{
-	// No me importa si pisa a una ya existente...
-	getProductLine()[name] = factoryFunc;
-}
-
-EvolverStrategyFactory::TProductLine& EvolverStrategyFactory::getProductLine()
-{
-	static TProductLine productLine;
-	return productLine;
-}
+} // Namespace GP

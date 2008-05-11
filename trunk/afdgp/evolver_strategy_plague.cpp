@@ -30,36 +30,40 @@
 //
 
 //=============================================================================
-// evolver_strategy_factory.cpp
+// evolver_strategy_plague.cpp
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 30 de abril de 2008
+// Creado por Mariano M. Chouza | Creado el 11 de mayo de 2008
 //=============================================================================
 
+#include "evolver_strategy.h"
 #include "evolver_strategy_factory.h"
+#include "registrator.h"
 
-using namespace GP;
+namespace GP {
 
-boost::shared_ptr<EvolverStrategy> 
-EvolverStrategyFactory::make(const std::string& name, 
-							 const Core::Config& config)
+/// Clase de la estrategia derivada
+class EvolverStrategyPlague : public EvolverStrategy
 {
-	TProductLine::iterator it = getProductLine().find(name);
-	if (it == getProductLine().end())
-		return boost::shared_ptr<EvolverStrategy>();
-	else
-		return it->second(config);
+public:
+	/// Crea una nueva instancia
+	static boost::shared_ptr<EvolverStrategy> create(const Core::Config&)
+	{
+		return boost::shared_ptr<EvolverStrategy>(new EvolverStrategyPlague());
+	}
+
+	/// Realiza un paso evolutivo
+	virtual void evolutionaryStep(TPop& pop, EvalModule& evalMod, 
+		OpsModule& opsMod)
+	{
+		// FIXME: Implementar!!
+	}
+};
+
+namespace
+{
+	// Registra la clase
+	Util::Registrator<EvolverStrategyFactory, EvolverStrategyPlague>
+		r("Plague");
 }
 
-void EvolverStrategyFactory::registrate(const std::string& name, 
-										boost::shared_ptr<EvolverStrategy>
-										(*factoryFunc)(const Core::Config&))
-{
-	// No me importa si pisa a una ya existente...
-	getProductLine()[name] = factoryFunc;
-}
-
-EvolverStrategyFactory::TProductLine& EvolverStrategyFactory::getProductLine()
-{
-	static TProductLine productLine;
-	return productLine;
-}
+} // Namespace GP
