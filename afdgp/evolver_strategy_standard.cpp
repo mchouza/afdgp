@@ -30,36 +30,39 @@
 //
 
 //=============================================================================
-// evolver_strategy_factory.cpp
+// evolver_strategy_standard.cpp
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 30 de abril de 2008
+// Creado por Mariano M. Chouza | Creado el 11 de mayo de 2008
 //=============================================================================
 
+#include "evolver_strategy_standard.h"
+#include "config.h"
 #include "evolver_strategy_factory.h"
+#include "registrator.h"
 
 using namespace GP;
 
+namespace
+{
+	// Registra la clase
+	Util::Registrator<EvolverStrategyFactory, EvolverStrategyStandard>
+		r("Standard");
+}
+
+EvolverStrategyStandard::EvolverStrategyStandard(const Core::Config& c)
+{
+	// FIXME: Implementar
+}
+
 boost::shared_ptr<EvolverStrategy> 
-EvolverStrategyFactory::make(const std::string& name, 
-							 const Core::Config& config)
+EvolverStrategyStandard::create(const Core::Config& c)
 {
-	TProductLine::iterator it = getProductLine().find(name);
-	if (it == getProductLine().end())
-		return boost::shared_ptr<EvolverStrategy>();
-	else
-		return it->second(config);
+	return boost::shared_ptr<EvolverStrategy>(
+		new EvolverStrategyStandard(c));
 }
 
-void EvolverStrategyFactory::registrate(const std::string& name, 
-										boost::shared_ptr<EvolverStrategy>
-										(*factoryFunc)(const Core::Config&))
+void EvolverStrategyStandard::evolutionaryStep(TPop& pop, EvalModule& evalMod,
+											   OpsModule& opsMod)
 {
-	// No me importa si pisa a una ya existente...
-	getProductLine()[name] = factoryFunc;
-}
-
-EvolverStrategyFactory::TProductLine& EvolverStrategyFactory::getProductLine()
-{
-	static TProductLine productLine;
-	return productLine;
+	// FIXME: Implementar!!
 }

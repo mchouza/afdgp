@@ -59,7 +59,7 @@ public:
 		std::cout << "evolutionaryStep() de TestES\n";
 	}
 
-	static boost::shared_ptr<EvolverStrategy> create()
+	static boost::shared_ptr<EvolverStrategy> create(const Core::Config&)
 	{
 		return boost::shared_ptr<EvolverStrategy>(new TestES());
 	}
@@ -78,7 +78,7 @@ public:
 		std::cout << "evolutionaryStep() de TestES2\n";
 	}
 
-	static boost::shared_ptr<EvolverStrategy> create()
+	static boost::shared_ptr<EvolverStrategy> create(const Core::Config&)
 	{
 		return boost::shared_ptr<EvolverStrategy>(new TestES2());
 	}
