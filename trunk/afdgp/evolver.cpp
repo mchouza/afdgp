@@ -36,6 +36,7 @@
 //=============================================================================
 
 #include "evolver.h"
+#include "evolver_strategy_factory.h"
 #include "cached_eval_module.h"
 #include "config.h"
 #include "module_library.h"
@@ -58,15 +59,15 @@ Evolver::Evolver(const Core::ModuleLibrary& lib,
 	shared_ptr<Config> pCC = specConfig.getCombinedConfig(baseConfig);
 
 	// Cargo los módulos de evaluación y operaciones que correspondan
-	std::string evalModName = pCC->readValue("EvalModule");
-	std::string opsModName = pCC->readValue("OpsModule");
+	std::string evalModName = pCC->readValue("EvalModule.Name");
+	std::string opsModName = pCC->readValue("OpsModule.Name");
 	pEvalMod_ =
 		shared_dynamic_cast<EvalModule>(lib.getModuleByName(evalModName));
 	pOpsMod_ =
 		shared_dynamic_cast<OpsModule>(lib.getModuleByName(opsModName));
 
 	// Si me indican usar el que incorpora caché, lo hago
-	if (lexical_cast<bool>(pCC->readValue("UseCachedEvalModule", "false")))
+	if (lexical_cast<bool>(pCC->readValue("UseCachedEvalModule", "0")))
 	{
 		size_t cacheSize =
 			lexical_cast<size_t>(pCC->readValue("CachedEvalModule.CacheSize"));
@@ -89,7 +90,9 @@ Evolver::Evolver(const Core::ModuleLibrary& lib,
 	for (size_t i = 0; i < pop_.size(); i++)
 		pOpsMod_->randomInit(pop_[i]);
 
-	// FIXME: Inicializar la estrategia evolutiva
+	// Creo la estrategia evolutiva
+	pEvSt_ = EvolverStrategyFactory::make(pCC->readValue("PopStrategy.Name",
+		"Standard"), *pCC->getView("PopStrategy"));
 }
 
 void Evolver::step()

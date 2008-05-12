@@ -36,34 +36,30 @@
 //=============================================================================
 
 #include "pop_serializer.h"
+#include "bin_rw.h"
 
 using namespace Util;
 
 void PopSerializer::serialize(std::ostream& os, const TPop& pop)
 {
 	// Escribo el tamaño de la población
-	size_t popSize = pop.size();
-	os.write(reinterpret_cast<const char*>(&popSize), sizeof(popSize));
+	writeToBinStream<size_t>(os, pop.size());
 
 	// Para cada elemento de la población...
 	for (size_t i = 0; i < pop.size(); i++)
 	{
 		// Escribo el tamaño en bytes
-		size_t indivSize = pop[i].size();
-		os.write(reinterpret_cast<const char*>(&indivSize),
-			sizeof(indivSize));
+		writeToBinStream<size_t>(os, pop[i].size());
 
 		// Escribo el individuo
-		os.write(reinterpret_cast<const char*>(&pop[i][0]), 
-			static_cast<std::streamsize>(pop[i].size()));
+		writeToBinStream(os, &pop[i][0], pop[i].size());
 	}
 }
 
 void PopSerializer::deserialize(TPop& pop, std::istream& is)
 {
 	// Leo el tamaño de la población
-	size_t popSize;
-	is.read(reinterpret_cast<char*>(&popSize), sizeof(popSize));
+	size_t popSize = readFromBinStream<size_t>(is);
 
 	// Reservo memoria para la población
 	pop.resize(popSize);
@@ -72,14 +68,12 @@ void PopSerializer::deserialize(TPop& pop, std::istream& is)
 	for (size_t i = 0; i < popSize; i++)
 	{
 		// Leo el tamaño del individuo
-		size_t indivSize;
-		is.read(reinterpret_cast<char*>(&indivSize), sizeof(indivSize));
+		size_t indivSize = readFromBinStream<size_t>(is);
 
 		// Reservo memoria para el individuo
 		pop[i].resize(indivSize);
 
 		// Leo al individuo
-		is.read(reinterpret_cast<char*>(&pop[i][0]), 
-			static_cast<std::streamsize>(indivSize));
+		readFromBinStream(is, &pop[i][0], indivSize);
 	}
 }

@@ -30,28 +30,47 @@
 //
 
 //=============================================================================
-// plat_dep.h
+// bin_rw.h
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 25 de abril de 2008
+// Creado por Mariano M. Chouza | Creado el 12 de mayo de 2008
 //=============================================================================
 
-#ifndef PLAT_DEP_H
-#define PLAT_DEP_H
+#ifndef BIN_RW_H
+#define BIN_RW_H
 
-#ifdef _MSC_VER
+namespace Util
+{
+	/// Lee una variable desde una stream binaria
+	template <typename T> 
+	T readFromBinStream(std::istream& is)
+	{
+		T ret;
+		is.read(reinterpret_cast<char*>(&ret), sizeof(T));
+		return ret;
+	}
 
-// Enteros con signo y tamaño específico
-typedef __int32 int32_t;
-typedef __int64 int64_t;
+	/// Lee un conjunto de variables desde una stream binaria
+	template <typename T>
+	void readFromBinStream(std::istream& is, T* buffer, size_t numElems)
+	{
+		is.read(reinterpret_cast<char*>(buffer), 
+			static_cast<std::streamsize>(numElems * sizeof(T)));
+	}
 
-// Enteros sin signo y con tamaño específico
-typedef unsigned __int32 uint32_t;
-typedef unsigned __int64 uint64_t;
+	/// Escribe una variable en una stream binaria
+	template <typename T> 
+	void writeToBinStream(std::ostream& os, const T& a)
+	{
+		os.write(reinterpret_cast<const char*>(&a), sizeof(T));
+	}
 
-#else
-
-#error Plataforma no soportada
-
-#endif
+	/// Escribe un conjunto de variables a una stream binaria
+	template <typename T>
+	void writeToBinStream(std::ostream& os, const T* buffer, size_t numElems)
+	{
+		os.write(reinterpret_cast<const char*>(buffer), 
+			static_cast<std::streamsize>(numElems * sizeof(T)));
+	}
+}
 
 #endif

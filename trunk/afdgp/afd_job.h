@@ -50,13 +50,16 @@ namespace Core
 	class AFDJob
 	{
 		/// Configuración del trabajo
-		boost::shared_ptr<Config> pConfig_;
+		const Config& config_;
 
 		/// Evolver para realizar el trabajo
 		boost::scoped_ptr<GP::Evolver> pEvolver_;
 
 		/// Nombre del trabajo
 		std::string filename_;
+
+		/// ID del trabajo
+		std::string id_;
 
 		/// Carga los datos de una ejecución anterior si es posible
 		void resumeIfPossible();

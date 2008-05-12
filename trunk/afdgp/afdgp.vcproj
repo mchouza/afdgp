@@ -239,6 +239,10 @@
 				Name="Header Files"
 				>
 				<File
+					RelativePath=".\bin_rw.h"
+					>
+				</File>
+				<File
 					RelativePath=".\mm2_wrapper.h"
 					>
 				</File>
@@ -248,10 +252,6 @@
 				</File>
 				<File
 					RelativePath=".\os_dep.h"
-					>
-				</File>
-				<File
-					RelativePath=".\plat_dep.h"
 					>
 				</File>
 				<File
