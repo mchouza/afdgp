@@ -44,12 +44,15 @@
 #endif
 
 #include "murmurhash2.h"
-#include "plat_dep.h"
+#include <boost/cstdint.hpp>
 #include <string>
 #include <vector>
 
 namespace Util
 {
+	using boost::uint32_t;
+	using boost::uint64_t;
+
 	/// Seed para las funciones hash (parte baja)
 	const uint32_t HASH_SEED_LO = 0x37b05be6;
 
@@ -59,7 +62,7 @@ namespace Util
 	/// Obtiene el hash de un buffer de bytes
 	uint64_t mmHash2(const void* buffer, size_t len);
 
-	/// Obtiene el hash de un vector de la STL. Utiliza MurmurHash2.
+	/// Obtiene el hash de un vector de la STL
 	template <typename T>
 	uint64_t mmHash2(const std::vector<T>& v)
 	{
@@ -68,9 +71,11 @@ namespace Util
 		return mmHash2(&v[0], v.size());
 	}
 
-	/// Obtiene el hash de una string de la STL. Utiliza MurmurHash2.
+	/// Obtiene el hash de una string de la STL
 	uint64_t mmHash2(const std::string& s);
+
+	/// Obtiene el hash de una istream
+	uint64_t mmHash2(std::istream& is);
 }
 
 #endif
-

@@ -65,7 +65,7 @@ class AFDGPApp::Impl
 public:
 	Impl(int argc, char* argv[]) :
 	config_("config.properties"),
-	modules_(config_.readValue("modulesPath")),
+	modules_(config_.readValue("ModulesPath")),
 	need2Exit_(false) // No necesita salir cuando empieza!
 	{
 		// Si tiene más o menos de un argumento, sale

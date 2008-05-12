@@ -43,7 +43,7 @@ using namespace GP;
 namespace
 {
 	/// Hash inválido
-	const uint64_t INVALID_HASH = ~0;
+	const boost::uint64_t INVALID_HASH = ~0;
 }
 
 CachedEvalModule::CachedEvalModule(boost::shared_ptr<EvalModule> pEvalMod, 
@@ -65,7 +65,7 @@ CachedEvalModule::~CachedEvalModule()
 
 double CachedEvalModule::evaluateGenome(const TGenome& genome) const
 {
-	uint64_t hashedGenome = Util::mmHash2(&genome[0], genome.size());
+	boost::uint64_t hashedGenome = Util::mmHash2(&genome[0], genome.size());
 
 	// Si el hash colisiona con el inválido, lo evalúo siempre
 	if (hashedGenome == INVALID_HASH)

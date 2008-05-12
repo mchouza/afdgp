@@ -43,7 +43,6 @@
 #include "evolver_strategy.h"
 #include "ops_module.h"
 #include "population.h"
-#include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
 #include <vector>
 
@@ -62,7 +61,7 @@ namespace GP
 		boost::shared_ptr<EvalModule> pEvalMod_;
 
 		/// Estrategia a utilizar
-		boost::scoped_ptr<EvolverStrategy> pEvSt_;
+		boost::shared_ptr<EvolverStrategy> pEvSt_;
 
 	public:
 		/// Construye en base a una configuración base y una específica

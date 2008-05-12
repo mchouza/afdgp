@@ -36,12 +36,16 @@
 //=============================================================================
 
 #include "mm2_wrapper.h"
+#include <algorithm>
+#include <iterator>
+
+using boost::uint64_t;
 
 uint64_t Util::mmHash2(const void* buffer, size_t len)
 {
 	using Util::Aux::MurmurHash2;
 	
-	__int64 hash = MurmurHash2(buffer, static_cast<int>(len), HASH_SEED_HI);
+	uint64_t hash = MurmurHash2(buffer, static_cast<int>(len), HASH_SEED_HI);
 	hash <<= 32;
 	hash |= MurmurHash2(buffer, static_cast<int>(len), HASH_SEED_LO);
 	return hash;
@@ -50,4 +54,22 @@ uint64_t Util::mmHash2(const void* buffer, size_t len)
 uint64_t Util::mmHash2(const std::string& s)
 {
 	return mmHash2(s.data(), s.size());
+}
+
+uint64_t Util::mmHash2(std::istream& is)
+{
+	// FIXME: No muy eficiente... pero mmHash2 no es incremental.
+	
+	using std::back_insert_iterator;
+	using std::copy;
+	using std::istream_iterator;
+	using std::vector;
+	
+	istream_iterator<unsigned char> isIt(is), isItEnd;
+	vector<unsigned char> buffer;
+	back_insert_iterator<vector<unsigned char> > bufferInserter(buffer);
+
+	copy(isIt, isItEnd, bufferInserter);
+
+	return mmHash2(buffer);
 }

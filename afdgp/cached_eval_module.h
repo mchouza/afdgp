@@ -40,7 +40,7 @@
 
 #include "eval_module.h"
 #include "mm2_wrapper.h"
-#include "plat_dep.h"
+#include <boost/cstdint.hpp>
 #include <boost/scoped_array.hpp>
 
 namespace GP
@@ -53,7 +53,7 @@ namespace GP
 		boost::shared_ptr<EvalModule> pEvalMod_;
 
 		/// Tipo de la entrada en la tabla de resultados anteriores
-		typedef std::pair<uint64_t, double> TCacheEntry;
+		typedef std::pair<boost::uint64_t, double> TCacheEntry;
 
 		/// Tipo de la tabla de resultados anteriores
 		typedef boost::scoped_array<TCacheEntry> TCache;
