@@ -30,18 +30,50 @@
 //
 
 //=============================================================================
-// common.h
+// exp_random_generator.h
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 19 de abril de 2008
+// Creado por Mariano M. Chouza | Creado el 13 de mayo de 2008
 //=============================================================================
 
-#ifndef COMMON_H
-#define COMMON_H
+#ifndef EXP_RANDOM_GENERATOR_H
+#define EXP_RANDOM_GENERATOR_H
 
-//#define TEST_HASH
-//#define TEST_CACHED_EVAL
-//#define TEST_ESF
-//#define TEST_POP_SERIALIZER
-#define TEST_EVOLVER_STRATEGY_STANDARD
+#include <boost/random.hpp>
+
+namespace Util
+{
+	/// Generador de números aleatorios distribuidos exponencialmente
+	class ExpRandomGenerator
+	{	
+		/// Generador interno
+		boost::mt19937 intGen_;
+
+	public:
+		/// Constructor
+		ExpRandomGenerator() :
+		intGen_()
+		{
+		}
+
+		/// Obtiene un entero en el rango [0, max) de acuerdo a una 
+		/// distribución exponencial de lambda dado
+		template <typename IntType, typename RealType>
+		IntType getRandomInteger(IntType max, RealType lambda)
+		{	
+			using boost::exponential_distribution;
+
+			// Obtengo el valor aleatorio
+			IntType ret = static_cast<IntType>(
+				exponential_distribution<RealType>(lambda)(intGen_));
+
+			// Si se pasa, lo reduzco al rango
+			if (ret >= max)
+				ret %= max;
+
+			// Devuelvo el valor
+			return ret;
+		}
+	};
+}
 
 #endif

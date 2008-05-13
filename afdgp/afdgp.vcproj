@@ -243,6 +243,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\exp_random_generator.h"
+					>
+				</File>
+				<File
 					RelativePath=".\mm2_wrapper.h"
 					>
 				</File>
@@ -260,6 +264,10 @@
 				</File>
 				<File
 					RelativePath=".\registrator.h"
+					>
+				</File>
+				<File
+					RelativePath=".\uniform_random_generator.h"
 					>
 				</File>
 				<File

@@ -40,12 +40,23 @@
 
 #include "core_fwd.h"
 #include "evolver_strategy.h"
+#include "exp_random_generator.h"
+#include "uniform_random_generator.h"
 
 namespace GP
 {
 	/// Clase de la estrategia estándar
 	class EvolverStrategyStandard : public EvolverStrategy
 	{
+		/// Parámetros de configuración
+		std::map<std::string, std::string> configParams_;
+
+		/// Generador de números aleatoriso con distribución exponencial
+		Util::ExpRandomGenerator expRandomGen_;
+
+		/// Generador de números aleatoriso con distribución uniforme
+		Util::UniformRandomGenerator uniformRandomGen_;
+
 	public:
 		/// Constructor
 		EvolverStrategyStandard(const Core::Config& c);

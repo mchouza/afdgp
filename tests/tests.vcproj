@@ -229,6 +229,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\afdgp\evolver_strategy_standard.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\afdgp\mm2_wrapper.cpp"
 					>
 					<FileConfiguration
@@ -291,6 +295,14 @@
 			>
 			<File
 				RelativePath=".\test_pop_serializer.cpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Test EvolverStrategyStandard"
+			>
+			<File
+				RelativePath=".\test_evolver_strategy_standard.cpp"
 				>
 			</File>
 		</Filter>

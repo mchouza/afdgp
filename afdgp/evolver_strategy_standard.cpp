@@ -39,19 +39,124 @@
 #include "config.h"
 #include "evolver_strategy_factory.h"
 #include "registrator.h"
+#include <boost/lexical_cast.hpp>
+#include <cassert>
 
 using namespace GP;
 
 namespace
 {
+	using boost::exponential_distribution;
+	using boost::lexical_cast;
+	using boost::mt19937;
+	using boost::uniform_real;
+	using boost::variate_generator;
+	using std::map;
+	using std::pair;
+	using std::string;
+	using std::vector;
+	using Util::ExpRandomGenerator;
+	using Util::UniformRandomGenerator;
+	
 	// Registra la clase
 	Util::Registrator<EvolverStrategyFactory, EvolverStrategyStandard>
 		r("Standard");
+	
+	/// Evalúa la población y devuelve sus puntajes ordenados
+	vector<pair<double, size_t> > evalPop(const TPop& pop, 
+		const EvalModule& evalMod)
+	{
+		// Armo el vector de puntajes e índices
+		vector<pair<double, size_t> > scores(pop.size());
+		for (size_t i = 0; i < pop.size(); i++)
+		{
+			scores[i].first = evalMod.evaluateGenome(pop[i]);
+			scores[i].second = i;
+		}
+
+		// Ordena los puntajes
+		sort(scores.begin(), scores.end());
+
+		// Los devuelve
+		return scores;
+	}
+
+	/// Ordena la población de acuerdo a los puntajes
+	void sortPopByScores(TPop& pop, 
+		const vector<pair<double, size_t> >& sortedScores)
+	{
+		TPop sortedPop(pop.size());
+		for (size_t i = 0; i < sortedPop.size(); i++)
+			sortedPop[i].swap(pop[sortedScores[i].second]);
+		pop.swap(sortedPop);
+	}
+	
+	/// Lee del map o lanza una excepción
+	template <typename T>
+	T readMapOrThrow(const map<string, string>& m, const std::string& key)
+	{
+		map<string, string>::const_iterator it = m.find(key);
+		if (it == m.end())
+			throw; // FIXME: Lanzar algo más específico...
+		return lexical_cast<T>(it->second);
+	}
+
+	/// Parámetros para obtener una nueva población
+	struct PopSelParams
+	{
+		double crossRate;
+		double mutRate;
+		double archModRate;
+		double fitnessSelLambda;
+		
+		PopSelParams(const map<string, string>& c) :
+		crossRate(readMapOrThrow<double>(c, "CrossRate")),
+		mutRate(readMapOrThrow<double>(c, "MutRate")),
+		archModRate(readMapOrThrow<double>(c, "ArchModRate")),
+		fitnessSelLambda(readMapOrThrow<double>(c, "FitnessSelLambda"))
+		{
+			assert(crossRate + mutRate + archModRate < 1.0);
+		}
+	};
+
+	/// Obtiene un nuevo individuo
+	TGenome getNewIndividual(const TPop& oldPop, const PopSelParams& params,
+		OpsModule& opsMod, ExpRandomGenerator& eRG, 
+		UniformRandomGenerator& uRG)
+	{
+		// FIXME: Implementar
+
+		// Obtengo un valor aleatorio entre 0 y 1
+		double r = uRG.getRandomFloat(0.0, 1.0);
+
+		// Selecciono un individuo al azar con distribución exponencial
+		double realLambda = params.fitnessSelLambda / oldPop.size();
+		TGenome ret = oldPop[eRG.getRandomInteger(oldPop.size(), realLambda)];
+
+		// Realizo la operación que corresponda con al probabilidad que 
+		// corresponda
+		if (r < params.archModRate)
+		{
+			opsMod.altOp(ret);
+		}
+		else if (r < params.archModRate + params.crossRate)
+		{
+			TGenome dummy = 
+				oldPop[eRG.getRandomInteger(oldPop.size(), realLambda)];
+			opsMod.cross(ret, dummy);
+		}
+		else if (r < params.archModRate + params.crossRate + params.mutRate)
+		{
+			opsMod.mutate(ret);
+		}
+
+		return ret;
+	}
 }
 
-EvolverStrategyStandard::EvolverStrategyStandard(const Core::Config& c)
+EvolverStrategyStandard::EvolverStrategyStandard(const Core::Config& c) :
+configParams_(c.getKeyValuePairs())
 {
-	// FIXME: Implementar
 }
 
 boost::shared_ptr<EvolverStrategy> 
@@ -64,5 +169,23 @@ EvolverStrategyStandard::create(const Core::Config& c)
 void EvolverStrategyStandard::evolutionaryStep(TPop& pop, EvalModule& evalMod,
 											   OpsModule& opsMod)
 {
-	// FIXME: Implementar!!
+	// Ordeno la población en forma de puntaje creciente
+	vector<pair<double, size_t> > sortedScores = evalPop(pop, evalMod);
+	sortPopByScores(pop, sortedScores);
+
+	// Armo la nueva población que siempre incorpora al mejor individuo de la
+	// anterior
+	TPop newPop(pop.size());
+	newPop[0] = pop[0];
+
+	// Obtengo los parámetros
+	PopSelParams params(configParams_);
+
+	// Relleno el resto
+	for (size_t i = 1; i < newPop.size(); i++)
+		newPop[i] = getNewIndividual(pop, params, opsMod, expRandomGen_,
+			uniformRandomGen_);
+
+	// Me quedo con la nueva población
+	pop.swap(newPop);
 }
