@@ -30,18 +30,45 @@
 //
 
 //=============================================================================
-// common.h
+// uniform_random_generator.h
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 19 de abril de 2008
+// Creado por Mariano M. Chouza | Creado el 13 de mayo de 2008
 //=============================================================================
 
-#ifndef COMMON_H
-#define COMMON_H
+#ifndef UNIFORM_RANDOM_GENERATOR_H
+#define UNIFORM_RANDOM_GENERATOR_H
 
-//#define TEST_HASH
-//#define TEST_CACHED_EVAL
-//#define TEST_ESF
-//#define TEST_POP_SERIALIZER
-#define TEST_EVOLVER_STRATEGY_STANDARD
+#include <boost/random.hpp>
+
+namespace Util
+{
+	/// Generador de números aleatorios distribuidos uniformemente
+	class UniformRandomGenerator
+	{
+		/// Generador interno
+		boost::mt19937 intGen_;
+
+	public:
+		/// Construye a partir del mínmo y del máximo
+		UniformRandomGenerator() :
+		intGen_()
+		{
+		}
+
+		/// Obtiene un  número en el rango [min, max) con una distribución 
+		/// uniforme
+		template <typename FloatType>
+		FloatType getRandomFloat(FloatType min, FloatType max)
+		{
+			using boost::uniform_real;
+
+			// Obtengo el valor aleatorio
+			FloatType ret = uniform_real<FloatType>(min, max)(intGen_);
+
+			// Devuelvo el valor
+			return ret;
+		}
+	};
+}
 
 #endif
