@@ -39,6 +39,7 @@
 #define EVOLVER_STRATEGY_H
 
 #include "eval_module.h"
+#include "gp_fwd.h"
 #include "ops_module.h"
 #include "population.h"
 
@@ -51,6 +52,9 @@ namespace GP
 		/// Realiza un paso evolutivo
 		virtual void evolutionaryStep(TPop& pop, EvalModule& evalMod, 
 			OpsModule& opsMod) = 0;
+
+		/// Obtiene el recolector de estadísticas asociado a la estrategia
+		virtual const StatsCollector& getStatsCollector() const = 0;
 	};
 }
 

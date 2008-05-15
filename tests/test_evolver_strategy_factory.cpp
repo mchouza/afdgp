@@ -42,15 +42,31 @@
 #include "module_library.h"
 #include "ops_module.h"
 #include "registrator.h"
+#include "stats_collector.h"
 #include <iostream>
 
 using namespace GP;
+
+class NullStatsCollector : public StatsCollector
+{
+	virtual void printStatsByGenHeader(std::ostream& os) const
+	{
+	}
+	virtual void printStatsByGenRow(std::ostream& os) const
+	{
+	}
+	virtual void printGlobalStats(std::ostream& os) const
+	{
+	}
+};
 
 class TestES : public EvolverStrategy
 {
 	TestES()
 	{
 	}
+
+	NullStatsCollector nsc_;
 
 public:
 	virtual void evolutionaryStep(TPop& pop, EvalModule& evalMod,
@@ -63,6 +79,11 @@ public:
 	{
 		return boost::shared_ptr<EvolverStrategy>(new TestES());
 	}
+
+	virtual const StatsCollector& getStatsCollector() const
+	{
+		return nsc_;
+	}
 };
 
 class TestES2 : public EvolverStrategy
@@ -70,6 +91,8 @@ class TestES2 : public EvolverStrategy
 	TestES2()
 	{
 	}
+
+	NullStatsCollector nsc_;
 
 public:
 	virtual void evolutionaryStep(TPop& pop, EvalModule& evalMod,
@@ -81,6 +104,11 @@ public:
 	static boost::shared_ptr<EvolverStrategy> create(const Core::Config&)
 	{
 		return boost::shared_ptr<EvolverStrategy>(new TestES2());
+	}
+
+	virtual const StatsCollector& getStatsCollector() const
+	{
+		return nsc_;
 	}
 };
 

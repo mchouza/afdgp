@@ -41,6 +41,7 @@
 #include "config_file.h"
 #include "evolver.h"
 #include "mm2_wrapper.h"
+#include "stats_collector.h"
 #include <boost/cstdint.hpp>
 #include <boost/filesystem.hpp>
 #include <fstream>
@@ -59,15 +60,20 @@ namespace
 
 AFDJob::AFDJob(const ModuleLibrary& lib,
 			   const Config& baseConfig, 
-			   const std::string& filename) :
+			   const std::string& filename,
+			   std::ostream& statsStream) :
 config_(baseConfig),
-filename_(filename)
+filename_(filename),
+statsStream_(statsStream)
 {
 	// Obtengo la configuración para este trabajo
 	Core::ConfigFile specConfig(filename);
 
 	// Creo el evolver con la configuración base y la específica a este trabajo
 	pEvolver_.reset(new GP::Evolver(lib, config_, specConfig));
+
+	// Muestro la fila de descripción de las estadísticas por generación
+	pEvolver_->getStatsCollector().printStatsByGenHeader(statsStream_);
 
 	// Obtengo el ID
 	id_ = specConfig.readValue("ID");
@@ -82,8 +88,6 @@ AFDJob::~AFDJob()
 
 void AFDJob::makeCheckPoint() const
 {
-	// FIXME: No serializa estadísticas
-
 	// Por Sección 27.8.1.1 Párrafo 3 del standard, fstream::seekg() y 
 	// fstream::seekp() son efectivamente lo mismo
 
@@ -102,7 +106,7 @@ void AFDJob::makeCheckPoint() const
 	// Guardo la posición desde donde leer
 	fstream::pos_type readPos = binOut.tellp();
 
-	// Serializo la población
+	// Serializo la población y demás datos del evolver
 	pEvolver_->serialize(binOut);
 
 	// Hago flush antes de leer

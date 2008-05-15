@@ -326,6 +326,10 @@
 					RelativePath=".\gp_fwd.h"
 					>
 				</File>
+				<File
+					RelativePath=".\stats_collector.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Source Files"
@@ -341,6 +345,22 @@
 				<File
 					RelativePath=".\evolver_strategy_dyn_adj.cpp"
 					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath=".\evolver_strategy_factory.cpp"
@@ -349,6 +369,22 @@
 				<File
 					RelativePath=".\evolver_strategy_plague.cpp"
 					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath=".\evolver_strategy_standard.cpp"

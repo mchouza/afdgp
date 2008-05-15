@@ -35,6 +35,7 @@
 // Creado por Mariano M. Chouza | Creado el 13 de mayo de 2008
 //=============================================================================
 
+#include "cached_eval_module.h"
 #include "common.h"
 #include "config.h"
 #include "eval_module.h"
@@ -149,6 +150,7 @@ int main()
 {
 	using boost::shared_dynamic_cast;
 	using boost::shared_ptr;
+	using GP::CachedEvalModule;
 	using GP::EvolverStrategy;
 	using GP::EvolverStrategyFactory;
 	using std::cout;
@@ -179,7 +181,8 @@ int main()
 
 	cout << "Generando población...\n";
 	startTime = clock();
-	TPop pop = generatePopulation(*pOM);
+	TPop basePop = generatePopulation(*pOM);
+	TPop pop(basePop);
 	endTime = clock();
 	cout << "Se han generado los " << pop.size() << " individuos en "
 		<< double(endTime - startTime) / CLOCKS_PER_SEC << " segundos.\n";
@@ -224,6 +227,48 @@ int main()
 	cout << "El puntaje del primer elemento es " 
 		<< pEM->evaluateGenome(pop.front()) << " y el del último elemento es "
 		<< pEM->evaluateGenome(pop.back()) << ".\n";
+
+	pop = basePop;
+	CachedEvalModule cEM(pEM, 1<<20);
+	pES = EvolverStrategyFactory::make("Standard", c);
+	cout << "Utilizando el módulo con caché...\n";
+	cout << "Realizando un paso evolutivo...\n";
+	startTime = clock();
+	pES->evolutionaryStep(pop, cEM, *pOM);
+	endTime = clock();
+	cout << "Se ha terminado el paso evolutivo en "
+		<< double(endTime - startTime) / CLOCKS_PER_SEC << " segundos.\n";
+
+	cout << "El puntaje del primer elemento es " 
+		<< cEM.evaluateGenome(pop.front()) << " y el del último elemento es "
+		<< cEM.evaluateGenome(pop.back()) << ".\n";
+
+	cout << "Realizando otros diez pasos evolutivos...\n";
+			startTime = clock();
+	for (int i = 0; i < 10; i++)
+	{
+		pES->evolutionaryStep(pop, cEM, *pOM);
+		cout << i << "\n";
+	}
+	endTime = clock();
+	cout << "Se han realizado estos 10 pasos en "
+		<< double(endTime - startTime) / CLOCKS_PER_SEC << " segundos.\n";
+	cout << "El puntaje del primer elemento es " 
+		<< cEM.evaluateGenome(pop.front()) << " y el del último elemento es "
+		<< cEM.evaluateGenome(pop.back()) << ".\n";
+	cout << "Realizando otros diez pasos evolutivos adicionales...\n";
+			startTime = clock();
+	for (int i = 0; i < 10; i++)
+	{
+		pES->evolutionaryStep(pop, cEM, *pOM);
+		cout << i << "\n";
+	}
+	endTime = clock();
+	cout << "Se han realizado estos 10 pasos en "
+		<< double(endTime - startTime) / CLOCKS_PER_SEC << " segundos.\n";
+	cout << "El puntaje del primer elemento es " 
+		<< cEM.evaluateGenome(pop.front()) << " y el del último elemento es "
+		<< cEM.evaluateGenome(pop.back()) << ".\n";
 }
 
 #endif

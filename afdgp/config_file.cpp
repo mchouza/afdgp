@@ -43,6 +43,46 @@
 
 using namespace Core;
 
+namespace
+{
+	/// Elimina caracteres de escape
+	std::string unescapeString(const std::string& input)
+	{
+		using std::string;
+		string::const_iterator it(input.begin()), itEnd(input.end());
+		string ret(itEnd - it, ' ');
+		string::iterator outIt(ret.begin());
+		for (; it != itEnd; ++it, ++outIt)
+		{
+			if (*it != '\\')
+			{
+				*outIt = *it;
+			}
+			else
+			{
+				if (++it == itEnd)
+					break;
+				switch (*it)
+				{
+				case 'n':
+					*outIt = '\n';
+					break;
+				case 't':
+					*outIt = '\t';
+					break;
+				case '\\':
+					*outIt = '\\';
+					break;
+				default:
+					throw; // FIXME: Lanzar algo más específico
+				}
+			}
+		}
+		ret.resize(outIt - ret.begin());
+		return ret;
+	}
+}
+
 ConfigFile::ConfigFile(const std::string& filename)
 {
 	// Desde un archivo .properties
@@ -129,7 +169,7 @@ void ConfigFile::loadFromPropertiesFile(const std::string& filename)
 			throw; // FIXME: Lanzar algo más significativo
 
 		// Guardo ese par en el mapa (no me preocupo de pisar pares anteriores)
-		configMap_[matchRes.str(1)] = matchRes.str(2);
+		configMap_[matchRes.str(1)] = unescapeString(matchRes.str(2));
 	}
 }
 

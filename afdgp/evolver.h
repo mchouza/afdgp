@@ -41,6 +41,7 @@
 #include "core_fwd.h"
 #include "eval_module.h"
 #include "evolver_strategy.h"
+#include "gp_fwd.h"
 #include "ops_module.h"
 #include "population.h"
 #include <boost/shared_ptr.hpp>
@@ -72,6 +73,9 @@ namespace GP
 		/// Realiza un "paso evolutivo" (puede significar distintas cosas de 
 		/// acuerdo a la estrategia adoptada, pero debe ser atómico)
 		void step();
+
+		/// Obtiene el recolector de estadísticas
+		const StatsCollector& getStatsCollector() const;
 
 		/// Serializa todo
 		void serialize(std::ostream& os) const;
