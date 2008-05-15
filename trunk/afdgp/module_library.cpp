@@ -38,6 +38,8 @@
 #include "module_library.h"
 #include "os_dep.h"
 #include <boost/filesystem.hpp>
+#include <map>
+#include <set>
 
 using namespace Core;
 
@@ -65,6 +67,9 @@ ModuleLibrary::ModuleLibrary(const std::string& pathStr)
 			// ...trato de cargarlo
 			tryToLoad(it->path().string());
 	}
+
+	// Completo las dependencias
+	fixDependencies();
 }
 
 void ModuleLibrary::dump(std::ostream& out) const
@@ -135,4 +140,80 @@ ModuleLibrary::getModuleByName(const std::string& name) const
 	else
 		// Si, devuelvo el puntero
 		return it->second;
+}
+
+
+void ModuleLibrary::fixDependencies()
+{
+	using boost::shared_ptr;
+	typedef Module::Req TReq;
+	using std::map;
+	using std::vector;
+	typedef TModuleContainer::iterator TMCIt;
+
+	// Para cada módulo
+	TMCIt it(modules_.begin()), itEnd(modules_.end());
+	for (; it != itEnd; ++it)
+	{
+		// Si ya encontré que el módulo tenía dependencias imposibles de 
+		// satisfacer
+		if (!it->second)
+			// Sigo con otro
+			continue;
+		
+		// Obtengo sus dependencias
+		const vector<TReq>& reqs = it->second->getReqMods();
+
+		// Para cada dependencia
+		for (size_t j = 0; j < reqs.size(); j++)
+		{
+			// No está satisfecha?
+			if (modules_.find(reqs[j].first) == modules_.end() ||
+				modules_[reqs[j].first]->getVersion() < reqs[j].second)
+			{
+				// Marco como imposible de utilizar al módulo
+				it->second = shared_ptr<Module>();
+
+				// Salgo del for
+				break;
+			}
+		}
+
+		// Encontré dependencias no satisfechas con el módulo?
+		if (!it->second)
+			// Empiezo desde el principio
+			it = modules_.begin(); // ATENCIÓN!! Modifico el iterador del loop
+	}
+
+	// Si llegué acá es porque todos los módulos estaban en alguna de dos
+	// situaciones:
+	// 1) Marcado como imposible de utilizar
+	// 2) Con todas sus dependencias posibles de encontrar
+	
+	// Elimino los módulos imposibles de utilizar
+	it = modules_.begin();
+	for (; it != itEnd;)
+	{
+		if (!it->second)
+			modules_.erase(it++);
+		else
+			++it;
+	}
+
+	// Satisfago las dependencias
+	it = modules_.begin();
+	for (; it != itEnd; ++it)
+	{
+		// Busco los requerimientos
+		const vector<TReq>& reqVec = it->second->getReqMods();
+		
+		// Armo el vector de requerimientos
+		vector<shared_ptr<Module> > reqs;
+		for (size_t i = 0; i < reqVec.size(); i++)
+			reqs.push_back(modules_[reqVec[i].first]);
+
+		// Lo entrego al módulo
+		if (!it->second->giveReqMods(reqs))
+			throw; // FIXME: Lanzar algo más específico
+	}
 }

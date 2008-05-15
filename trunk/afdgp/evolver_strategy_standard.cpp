@@ -39,6 +39,7 @@
 #include "config.h"
 #include "evolver_strategy_factory.h"
 #include "registrator.h"
+#include "stats_collector.h"
 #include <boost/lexical_cast.hpp>
 #include <cassert>
 
@@ -124,8 +125,6 @@ namespace
 		OpsModule& opsMod, ExpRandomGenerator& eRG, 
 		UniformRandomGenerator& uRG)
 	{
-		// FIXME: Implementar
-
 		// Obtengo un valor aleatorio entre 0 y 1
 		double r = uRG.getRandomFloat(0.0, 1.0);
 
@@ -152,10 +151,25 @@ namespace
 
 		return ret;
 	}
+
+	/// Recolector de estadísticas para la estrategia estándar
+	class StandardStrategyStatsCollector : public StatsCollector
+	{
+		virtual void printStatsByGenHeader(std::ostream& os) const
+		{
+		}
+		virtual void printStatsByGenRow(std::ostream& os) const
+		{
+		}
+		virtual void printGlobalStats(std::ostream& os) const
+		{
+		}
+	};
 }
 
 EvolverStrategyStandard::EvolverStrategyStandard(const Core::Config& c) :
-configParams_(c.getKeyValuePairs())
+configParams_(c.getKeyValuePairs()),
+pSC_(new StandardStrategyStatsCollector())
 {
 }
 
@@ -188,4 +202,9 @@ void EvolverStrategyStandard::evolutionaryStep(TPop& pop, EvalModule& evalMod,
 
 	// Me quedo con la nueva población
 	pop.swap(newPop);
+}
+
+const StatsCollector& EvolverStrategyStandard::getStatsCollector() const
+{
+	return *pSC_;
 }

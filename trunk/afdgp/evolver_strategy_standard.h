@@ -42,6 +42,7 @@
 #include "evolver_strategy.h"
 #include "exp_random_generator.h"
 #include "uniform_random_generator.h"
+#include <boost/scoped_ptr.hpp>
 
 namespace GP
 {
@@ -57,6 +58,9 @@ namespace GP
 		/// Generador de números aleatoriso con distribución uniforme
 		Util::UniformRandomGenerator uniformRandomGen_;
 
+		/// Recolector de estadísticas
+		boost::scoped_ptr<StatsCollector> pSC_;
+
 	public:
 		/// Constructor
 		EvolverStrategyStandard(const Core::Config& c);
@@ -68,6 +72,9 @@ namespace GP
 		/// Realiza un paso evolutivo
 		virtual void evolutionaryStep(TPop& pop, EvalModule& evalMod, 
 			OpsModule& opsMod);
+
+		/// Obtiene el recolector de estadísticas
+		virtual const StatsCollector& getStatsCollector() const;
 	};
 }
 

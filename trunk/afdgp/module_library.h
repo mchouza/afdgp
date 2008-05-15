@@ -65,6 +65,9 @@ namespace Core
 		/// Contenedor de módulos indexados por nombre
 		TModuleContainer modules_;
 
+		/// Arregla las dependencias
+		void fixDependencies();
+
 		/// Intenta cargar un módulo
 		void tryToLoad(const std::string& modulePath);
 

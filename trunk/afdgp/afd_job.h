@@ -61,6 +61,9 @@ namespace Core
 		/// ID del trabajo
 		std::string id_;
 
+		/// Stream para mostrar información estadística
+		std::ostream& statsStream_;
+
 		/// Carga los datos de una ejecución anterior si es posible
 		void resumeIfPossible();
 
@@ -68,7 +71,7 @@ namespace Core
 		/// Lo construye en base a una configuración base y un nombre de 
 		/// archivo
 		AFDJob(const ModuleLibrary& lib, const Config& baseConfig, 
-			const std::string& filename);
+			const std::string& filename, std::ostream& statsStream);
 
 		/// Destructor
 		virtual ~AFDJob();

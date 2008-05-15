@@ -41,6 +41,7 @@
 #include "config.h"
 #include "module_library.h"
 #include "pop_serializer.h"
+#include "stats_collector.h"
 #include <boost/lexical_cast.hpp>
 
 using namespace GP;
@@ -98,6 +99,11 @@ Evolver::Evolver(const Core::ModuleLibrary& lib,
 void Evolver::step()
 {
 	pEvSt_->evolutionaryStep(pop_, *pEvalMod_, *pOpsMod_);
+}
+
+const StatsCollector& Evolver::getStatsCollector() const
+{
+	return pEvSt_->getStatsCollector();
 }
 
 void Evolver::serialize(std::ostream &os) const

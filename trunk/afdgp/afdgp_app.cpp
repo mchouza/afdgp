@@ -41,6 +41,7 @@
 #include "config_file.h"
 #include "module_library.h"
 #include "os_dep.h"
+#include <iostream>
 
 using namespace Core;
 
@@ -73,7 +74,7 @@ public:
 			throw; // FIXME: Lanzar algo más específico
 
 		// Crea el trabajo
-		pJob_.reset(new AFDJob(modules_, config_, argv[1]));
+		pJob_.reset(new AFDJob(modules_, config_, argv[1], std::cout));
 	}
 
 	void run()

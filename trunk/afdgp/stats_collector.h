@@ -30,20 +30,29 @@
 //
 
 //=============================================================================
-// gp_fwd.h
+// stats_collector.h
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 18 de abril de 2008
+// Creado por Mariano M. Chouza | Creado el 15 de mayo de 2008
 //=============================================================================
 
-#ifndef GP_FWD_H
-#define GP_FWD_H
+#ifndef STATS_COLLECTOR_H
+#define STATS_COLLECTOR_H
 
 namespace GP
 {
-	// Forwards
-	class Evolver;
-	class EvolverStrategy;
-	class StatsCollector;
+	/// Clase base de los recolectores de estadísticas
+	class StatsCollector
+	{
+	public:
+		/// Imprime el encabezado de las estadísticas por generación
+		virtual void printStatsByGenHeader(std::ostream& os) const = 0;
+
+		/// Imprime las últimas estadísticas por generación recolectadas
+		virtual void printStatsByGenRow(std::ostream& os) const = 0;
+
+		/// Imprime las estadísticas globales del proceso
+		virtual void printGlobalStats(std::ostream& os) const = 0;
+	};
 }
 
 #endif
