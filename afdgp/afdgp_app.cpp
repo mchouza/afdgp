@@ -83,8 +83,12 @@ public:
 		while (!need2Exit_)
 		{
 			// Avanzo un paso
-			pJob_->step();
+			if (!pJob_->step())
+				break;
 		}
+
+		// Muestro resultados
+		pJob_->printResults();
 
 		// Antes de salir, guardo
 		pJob_->makeCheckPoint();

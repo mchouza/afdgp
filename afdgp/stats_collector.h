@@ -44,6 +44,9 @@ namespace GP
 	class StatsCollector
 	{
 	public:
+		/// Imprime generalidades
+		virtual void printGeneralParameters(std::ostream& os) const = 0;
+
 		/// Imprime el encabezado de las estadísticas por generación
 		virtual void printStatsByGenHeader(std::ostream& os) const = 0;
 

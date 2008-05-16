@@ -225,6 +225,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\afdgp\escape.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\afdgp\evolver_strategy_factory.cpp"
 					>
 				</File>

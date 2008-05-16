@@ -52,14 +52,23 @@ namespace GP
 		/// Parámetros de configuración
 		std::map<std::string, std::string> configParams_;
 
+		/// Número de ejecución
+		unsigned run_;
+
+		/// Generación
+		unsigned gen_;
+
 		/// Generador de números aleatoriso con distribución exponencial
 		Util::ExpRandomGenerator expRandomGen_;
 
 		/// Generador de números aleatoriso con distribución uniforme
 		Util::UniformRandomGenerator uniformRandomGen_;
 
+		/// Clase del recolector de estadísticas
+		class StatsCollector;
+
 		/// Recolector de estadísticas
-		boost::scoped_ptr<StatsCollector> pSC_;
+		boost::scoped_ptr<EvolverStrategyStandard::StatsCollector> pSC_;
 
 	public:
 		/// Constructor
@@ -74,7 +83,10 @@ namespace GP
 			OpsModule& opsMod);
 
 		/// Obtiene el recolector de estadísticas
-		virtual const StatsCollector& getStatsCollector() const;
+		virtual const GP::StatsCollector& getStatsCollector() const;
+
+		/// Reinicializa la estrategia
+		virtual void reset();
 	};
 }
 

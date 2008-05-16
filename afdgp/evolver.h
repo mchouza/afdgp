@@ -77,6 +77,9 @@ namespace GP
 		/// Obtiene el recolector de estadísticas
 		const StatsCollector& getStatsCollector() const;
 
+		/// Nueva run
+		void newRun();
+
 		/// Serializa todo
 		void serialize(std::ostream& os) const;
 

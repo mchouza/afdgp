@@ -37,11 +37,14 @@
 
 #include "evolver_strategy_standard.h"
 #include "config.h"
+#include "escape.h"
 #include "evolver_strategy_factory.h"
 #include "registrator.h"
 #include "stats_collector.h"
 #include <boost/lexical_cast.hpp>
 #include <cassert>
+#include <ctime>
+#include <sstream>
 
 using namespace GP;
 
@@ -62,7 +65,21 @@ namespace
 	// Registra la clase
 	Util::Registrator<EvolverStrategyFactory, EvolverStrategyStandard>
 		r("Standard");
-	
+
+	/// Calcula el promedio de una serie de valores
+	template <typename RetType, typename InIt>
+	RetType average(InIt it, InIt end)
+	{
+		RetType ret = RetType(0);
+		size_t num = 0;
+		for (; it != end; ++it)
+		{
+			ret += RetType(*it);
+			++num;
+		}
+		return ret / RetType(num);
+	}
+
 	/// Evalúa la población y devuelve sus puntajes ordenados
 	vector<pair<double, size_t> > evalPop(const TPop& pop, 
 		const EvalModule& evalMod)
@@ -151,26 +168,194 @@ namespace
 
 		return ret;
 	}
-
-	/// Recolector de estadísticas para la estrategia estándar
-	class StandardStrategyStatsCollector : public StatsCollector
-	{
-		virtual void printStatsByGenHeader(std::ostream& os) const
-		{
-		}
-		virtual void printStatsByGenRow(std::ostream& os) const
-		{
-		}
-		virtual void printGlobalStats(std::ostream& os) const
-		{
-		}
-	};
 }
+
+/// Recolector de estadísticas para la estrategia estándar
+class EvolverStrategyStandard::StatsCollector : public GP::StatsCollector
+{
+	/// Referencia a la fuente de datos
+	const EvolverStrategyStandard& dataSrc_;
+
+	/// Datos recolectados por generación
+	std::map<std::string, std::string> genData_;
+
+	/// Datos recolectados globalmente
+	std::map<std::string, std::string> globalData_;
+
+	/// Ejecución de la que tengo datos recolectados
+	int dataRun_;
+
+	/// Generación de la que tengo datos recolectados
+	int dataGen_;
+
+	/// Revisa los datos recolectados para ver si hay que tirarlos
+	void checkGenData()
+	{
+		using boost::lexical_cast;
+		using std::map;
+		using std::string;
+		
+		if (dataSrc_.gen_ != dataGen_ || dataSrc_.run_ != dataRun_)
+		{
+			map<string, string>::iterator it(genData_.begin()), 
+				itEnd(genData_.end());
+			for (; it != itEnd; ++it)
+				it->second = "X";
+		}
+		
+		dataGen_ = dataSrc_.gen_;
+		dataRun_ = dataSrc_.run_;
+
+		genData_["Run"] = lexical_cast<std::string>(dataRun_);
+		genData_["Gen"] = lexical_cast<std::string>(dataGen_);
+	}
+
+public:
+	/// Constructor
+	StatsCollector(const EvolverStrategyStandard& dataSrc) :
+	dataGen_(-1),
+	dataRun_(-1),
+	dataSrc_(dataSrc)
+	{
+#define PUT_HEADER(h) genData_[h] = "X"
+		
+		PUT_HEADER("Run");
+		PUT_HEADER("Gen");
+		PUT_HEADER("MaxLen");
+		PUT_HEADER("MinLen");
+		PUT_HEADER("AvgLen");
+		PUT_HEADER("MaxScore");
+		PUT_HEADER("MinScore");
+		PUT_HEADER("AvgScore");
+		PUT_HEADER("TimeToNext");
+
+#undef PUT_HEADER
+	}
+
+	virtual void printGeneralParameters(std::ostream& os) const
+	{
+		using std::map;
+		using std::string;
+
+		// Imprimo todos los pares clave-valor de la configuración
+		const map<string, string>& c = dataSrc_.configParams_;
+		map<string, string>::const_iterator it(c.begin()), itEnd(c.end());
+		for (; it != itEnd; ++it)
+			os << it->first << ": " << it->second << "\n";
+	}
+
+	virtual void printStatsByGenHeader(std::ostream& os) const
+	{
+		using std::map;
+		using std::string;
+
+		map<string, string>::const_iterator it(genData_.begin()), 
+			itEnd(genData_.end());
+		while (it != itEnd)
+		{
+			os << it->first;
+			++it;
+			if (it != itEnd)
+				os << '\t';
+		}
+		os << '\n';
+	}
+
+	virtual void printStatsByGenRow(std::ostream& os) const
+	{
+		using std::map;
+		using std::string;
+
+		map<string, string>::const_iterator it(genData_.begin()), 
+			itEnd(genData_.end());
+		while (it != itEnd)
+		{
+			os << it->second;
+			++it;
+			if (it != itEnd)
+				os << '\t';
+		}
+		os << '\n';
+	}
+
+	virtual void printGlobalStats(std::ostream& os) const
+	{
+		map<string, string>::const_iterator it(globalData_.begin()),
+			itEnd(globalData_.end());
+		for (; it != itEnd; ++it)
+			os << it->first << ": " << it->second << "\n";
+	}
+
+	template <typename T>
+	void sendGenData(const std::string& key, T value)
+	{
+		using std::map;
+		using std::string;
+		
+		// Borro lo que tengo si no está al día
+		checkGenData();
+
+		// Si no está la clave, salgo
+		map<string, string>::iterator it = genData_.find(key);
+		if (it == genData_.end())
+			throw; // FIXME: Lanzar algo más específico
+
+		// Si está, guardo los datos
+		it->second = boost::lexical_cast<std::string>(value);
+	}
+
+	void sendScores(const std::vector<std::pair<double, size_t> >&
+		sortedScores)
+	{
+		std::vector<double> onlyScores(sortedScores.size());
+		for (size_t i = 0; i < sortedScores.size(); i++)
+			onlyScores[i] = sortedScores[i].first;
+
+		sendGenData("MinScore", onlyScores.front());
+		sendGenData("MaxScore", onlyScores.back());
+		sendGenData("AvgScore", average<double>(onlyScores.begin(),
+			onlyScores.end()));
+	}
+
+	void sendLengths(const TPop& sortedPop)
+	{
+		size_t acumPopSize = 0;
+		size_t minPopSize = sortedPop[0].size();
+		size_t maxPopSize = sortedPop[0].size();
+		
+		for (size_t i = 0; i < sortedPop.size(); i++)
+		{
+			size_t currSize = sortedPop[i].size();
+			minPopSize = std::min(minPopSize, currSize);
+			maxPopSize = std::max(maxPopSize, currSize);
+			acumPopSize += currSize;
+		}
+
+		sendGenData("MaxLen", maxPopSize);
+		sendGenData("MinLen", minPopSize);
+		sendGenData("AvgLen", double(acumPopSize) / sortedPop.size());
+	}
+
+	void sendBestIndividual(const std::string& indiv, double score)
+	{
+		using boost::lexical_cast;
+
+		if (globalData_.find("BestScoreSoFar") == globalData_.end() ||
+		score < lexical_cast<double>(globalData_["BestScoreSoFar"]))
+		{
+			globalData_["BestScoreSoFar"] = lexical_cast<std::string>(score);
+			globalData_["BestIndividual"] = Util::escapeString(indiv);
+		}
+	}
+};
 
 EvolverStrategyStandard::EvolverStrategyStandard(const Core::Config& c) :
 configParams_(c.getKeyValuePairs()),
-pSC_(new StandardStrategyStatsCollector())
+run_(0),
+gen_(0),
+pSC_()
 {
+	pSC_.reset(new EvolverStrategyStandard::StatsCollector(*this));
 }
 
 boost::shared_ptr<EvolverStrategy> 
@@ -183,14 +368,28 @@ EvolverStrategyStandard::create(const Core::Config& c)
 void EvolverStrategyStandard::evolutionaryStep(TPop& pop, EvalModule& evalMod,
 											   OpsModule& opsMod)
 {
+	// Inicio el timer
+	clock_t startT = clock();
+	
 	// Ordeno la población en forma de puntaje creciente
 	vector<pair<double, size_t> > sortedScores = evalPop(pop, evalMod);
 	sortPopByScores(pop, sortedScores);
+
+	// Hago el trabajo estadístico con los puntajes
+	pSC_->sendScores(sortedScores);
+
+	// Hago el trabajo estadístico con los largos
+	pSC_->sendLengths(pop);
 
 	// Armo la nueva población que siempre incorpora al mejor individuo de la
 	// anterior
 	TPop newPop(pop.size());
 	newPop[0] = pop[0];
+
+	// Mando al mejor individuo para fines estadísticos
+	std::ostringstream oss;
+	evalMod.showIndiv(oss, pop[0]);
+	pSC_->sendBestIndividual(oss.str(), sortedScores[0].first);
 
 	// Obtengo los parámetros
 	PopSelParams params(configParams_);
@@ -202,9 +401,23 @@ void EvolverStrategyStandard::evolutionaryStep(TPop& pop, EvalModule& evalMod,
 
 	// Me quedo con la nueva población
 	pop.swap(newPop);
+
+	// Mando el tiempo en cambiar a la próxima
+	double deltaT = double(clock() - startT) / CLOCKS_PER_SEC;
+	pSC_->sendGenData("TimeToNext", deltaT);
+
+	// Marco el cambio de generación
+	gen_++;
 }
 
 const StatsCollector& EvolverStrategyStandard::getStatsCollector() const
 {
 	return *pSC_;
+}
+
+void EvolverStrategyStandard::reset()
+{
+	// Actualizo contadores
+	run_++;
+	gen_ = 0;
 }

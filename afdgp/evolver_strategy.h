@@ -49,6 +49,9 @@ namespace GP
 	class EvolverStrategy
 	{
 	public:
+		/// Reinicializa el estado de la estrategia
+		virtual void reset() = 0;
+
 		/// Realiza un paso evolutivo
 		virtual void evolutionaryStep(TPop& pop, EvalModule& evalMod, 
 			OpsModule& opsMod) = 0;

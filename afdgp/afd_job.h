@@ -61,6 +61,18 @@ namespace Core
 		/// ID del trabajo
 		std::string id_;
 
+		/// Número de ejecuciones
+		unsigned numberOfRuns_;
+
+		/// Número de generaciones
+		unsigned numberOfGens_;
+
+		/// Número de ejecución
+		unsigned runNum_;
+
+		/// Número de generación
+		unsigned genNum_;
+
 		/// Stream para mostrar información estadística
 		std::ostream& statsStream_;
 
@@ -79,8 +91,12 @@ namespace Core
 		/// Guarda el estado de avance del trabajo
 		void makeCheckPoint() const;
 
-		/// Avanza un paso que debe ejecutarse "atómicamente" en el trabajo
-		void step();
+		/// Avanza un paso que debe ejecutarse "atómicamente" en el trabajo.
+		/// Devuelve 'false' para indicar que terminó de trabajar
+		bool step();
+
+		/// Imprime resultados parciales o totales
+		void printResults();
 	};
 }
 

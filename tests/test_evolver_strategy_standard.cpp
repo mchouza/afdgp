@@ -201,7 +201,8 @@ int main()
 		<< *max_element(scores.begin(), scores.end()) << ".\n";
 
 	HardcodedConfig c;
-	shared_ptr<EvolverStrategy> pES = EvolverStrategyFactory::make("Standard", c);
+	shared_ptr<EvolverStrategy> pES = EvolverStrategyFactory::make("Standard",
+		c);
 
 	cout << "Realizando un paso evolutivo...\n";
 	startTime = clock();
