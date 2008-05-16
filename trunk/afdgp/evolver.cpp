@@ -68,10 +68,10 @@ Evolver::Evolver(const Core::ModuleLibrary& lib,
 		shared_dynamic_cast<OpsModule>(lib.getModuleByName(opsModName));
 
 	// Si me indican usar el que incorpora caché, lo hago
-	if (lexical_cast<bool>(pCC->readValue("UseCachedEvalModule", "0")))
+	if (lexical_cast<bool>(pCC->readValue("EvalModule.UseCache", "0")))
 	{
 		size_t cacheSize =
-			lexical_cast<size_t>(pCC->readValue("CachedEvalModule.CacheSize"));
+			lexical_cast<size_t>(pCC->readValue("EvalModule.CacheSize"));
 		shared_ptr<EvalModule> pBaseModule = pEvalMod_;
 		pEvalMod_.reset(new CachedEvalModule(pBaseModule, cacheSize));
 	}
@@ -99,6 +99,16 @@ Evolver::Evolver(const Core::ModuleLibrary& lib,
 void Evolver::step()
 {
 	pEvSt_->evolutionaryStep(pop_, *pEvalMod_, *pOpsMod_);
+}
+
+void Evolver::newRun()
+{
+	// Inicializo aleatoriamente la población
+	for (size_t i = 0; i < pop_.size(); i++)
+		pOpsMod_->randomInit(pop_[i]);
+
+	// Reinicializo la estrategia (solo contadores)
+	pEvSt_->reset();
 }
 
 const StatsCollector& Evolver::getStatsCollector() const

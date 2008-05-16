@@ -243,6 +243,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\escape.h"
+					>
+				</File>
+				<File
 					RelativePath=".\exp_random_generator.h"
 					>
 				</File>
@@ -278,6 +282,10 @@
 			<Filter
 				Name="Source Files"
 				>
+				<File
+					RelativePath=".\escape.cpp"
+					>
+				</File>
 				<File
 					RelativePath=".\mm2_wrapper.cpp"
 					>

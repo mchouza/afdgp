@@ -49,6 +49,9 @@ using namespace GP;
 
 class NullStatsCollector : public StatsCollector
 {
+	virtual void printGeneralParameters(std::ostream& os) const
+	{
+	}
 	virtual void printStatsByGenHeader(std::ostream& os) const
 	{
 	}
@@ -84,6 +87,10 @@ public:
 	{
 		return nsc_;
 	}
+
+	virtual void reset()
+	{
+	}
 };
 
 class TestES2 : public EvolverStrategy
@@ -109,6 +116,10 @@ public:
 	virtual const StatsCollector& getStatsCollector() const
 	{
 		return nsc_;
+	}
+
+	virtual void reset()
+	{
 	}
 };
 

@@ -44,6 +44,7 @@
 #include "stats_collector.h"
 #include <boost/cstdint.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/lexical_cast.hpp>
 #include <fstream>
 
 using namespace Core;
@@ -64,13 +65,22 @@ AFDJob::AFDJob(const ModuleLibrary& lib,
 			   std::ostream& statsStream) :
 config_(baseConfig),
 filename_(filename),
+numberOfRuns_(0),
+numberOfGens_(0),
+runNum_(0),
+genNum_(0),
 statsStream_(statsStream)
 {
+	using boost::lexical_cast;
+
 	// Obtengo la configuración para este trabajo
 	Core::ConfigFile specConfig(filename);
 
 	// Creo el evolver con la configuración base y la específica a este trabajo
 	pEvolver_.reset(new GP::Evolver(lib, config_, specConfig));
+
+	// Muestro las generalidades
+	pEvolver_->getStatsCollector().printGeneralParameters(statsStream_);
 
 	// Muestro la fila de descripción de las estadísticas por generación
 	pEvolver_->getStatsCollector().printStatsByGenHeader(statsStream_);
@@ -78,8 +88,18 @@ statsStream_(statsStream)
 	// Obtengo el ID
 	id_ = specConfig.readValue("ID");
 
+	// Obtengo el número de ejecuciones
+	numberOfRuns_ = 
+		lexical_cast<unsigned>(specConfig.readValue("NumberOfRuns"));
+
+	// Obtengo el número de generaciones
+	numberOfGens_ = 
+		lexical_cast<unsigned>(specConfig.readValue("NumberOfGens"));
+
+
 	// Carga los datos de la ejecución anterior, si es necesario
-	resumeIfPossible();
+	// FIXME: Habilitar!!
+	//resumeIfPossible();
 }
 
 AFDJob::~AFDJob()
@@ -122,10 +142,34 @@ void AFDJob::makeCheckPoint() const
 	writeToBinStream(binOut, hash2Save);
 }
 
-void AFDJob::step()
+bool AFDJob::step()
 {
+	// Si se pasó de generación...
+	if (genNum_ >= numberOfGens_)
+	{
+		// Actualizo los contadores
+		genNum_ = 0;
+		runNum_++;
+
+		// Si se pasó de run, listo
+		if (runNum_ >= numberOfRuns_)
+			return false;
+
+		// Reinicializo el evolver
+		pEvolver_->newRun();
+	}
+
 	// Realiza el paso evolutivo
 	pEvolver_->step();
+
+	// Muestro las estadísitcas pertinentes
+	pEvolver_->getStatsCollector().printStatsByGenRow(statsStream_);
+
+	// Paso a la generación siguiente
+	genNum_++;
+
+	// Sigue trabajando
+	return true;
 }
 
 /// Continúa la ejecución anterior, si es posible
@@ -171,4 +215,9 @@ void AFDJob::resumeIfPossible()
 
 	// Deserializo los datos del evolver
 	pEvolver_->deserialize(binFile);
+}
+
+void AFDJob::printResults()
+{
+	pEvolver_->getStatsCollector().printGlobalStats(statsStream_);
 }

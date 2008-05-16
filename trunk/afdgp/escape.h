@@ -30,46 +30,23 @@
 //
 
 //=============================================================================
-// evolver_strategy_factory.h
+// escape.h
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 30 de abril de 2008
+// Creado por Mariano M. Chouza | Creado el 16 de mayo de 2008
 //=============================================================================
 
-#ifndef EVOLVER_STRATEGY_FACTORY_H
-#define EVOLVER_STRATEGY_FACTORY_H
+#ifndef ESCAPE_H
+#define ESCAPE_H
 
-#include <boost/shared_ptr.hpp>
-#include <map>
 #include <string>
-#include "core_fwd.h"
-#include "gp_fwd.h"
 
-namespace GP
+namespace Util
 {
-	/// Se ocupa de crear la estrategia que corresponda para manejar el proceso
-	/// evolutivo
-	class EvolverStrategyFactory
-	{
-		/// Tipo de la "línea de productos", o sea un mapa que asocia los 
-		/// nombres con los punteros a las "factory functions"
-		typedef std::map<std::string,
-			boost::shared_ptr<EvolverStrategy> (*)(const Core::Config&)>
-			TProductLine;
+	/// Elimina caracteres de escape
+	std::string unescapeString(const std::string& input);
 
-		/// Obtiene la línea de productos
-		static TProductLine& getProductLine();
-
-	public:
-		/// Crea el que esté registrado con ese nombre o devuelve 0 si no lo 
-		/// está
-		static boost::shared_ptr<EvolverStrategy> 
-			make(const std::string& name, const Core::Config& config);
-
-		/// Registra uno nuevo
-		static void registrate(const std::string& name, 
-			boost::shared_ptr<EvolverStrategy>
-			(*factoryFunc)(const Core::Config&));
-	};
+	/// Agrega caracteres de escape
+	std::string escapeString(const std::string& input);
 }
 
 #endif

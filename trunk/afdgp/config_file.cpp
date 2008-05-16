@@ -36,52 +36,13 @@
 //=============================================================================
 
 #include "config_file.h"
+#include "escape.h"
 #include <algorithm>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/regex.hpp>
 #include <fstream>
 
 using namespace Core;
-
-namespace
-{
-	/// Elimina caracteres de escape
-	std::string unescapeString(const std::string& input)
-	{
-		using std::string;
-		string::const_iterator it(input.begin()), itEnd(input.end());
-		string ret(itEnd - it, ' ');
-		string::iterator outIt(ret.begin());
-		for (; it != itEnd; ++it, ++outIt)
-		{
-			if (*it != '\\')
-			{
-				*outIt = *it;
-			}
-			else
-			{
-				if (++it == itEnd)
-					break;
-				switch (*it)
-				{
-				case 'n':
-					*outIt = '\n';
-					break;
-				case 't':
-					*outIt = '\t';
-					break;
-				case '\\':
-					*outIt = '\\';
-					break;
-				default:
-					throw; // FIXME: Lanzar algo más específico
-				}
-			}
-		}
-		ret.resize(outIt - ret.begin());
-		return ret;
-	}
-}
 
 ConfigFile::ConfigFile(const std::string& filename)
 {
@@ -137,6 +98,7 @@ void ConfigFile::loadFromPropertiesFile(const std::string& filename)
 	using boost::regex;
 	using boost::regex_match;
 	using boost::smatch;
+	using Util::unescapeString;
 	
 	// Trato de abrir el archivo y lanzo una excepción si no está
 	std::ifstream propFile(filename.c_str());
