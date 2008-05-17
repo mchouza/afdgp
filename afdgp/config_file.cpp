@@ -50,6 +50,12 @@ ConfigFile::ConfigFile(const std::string& filename)
 	loadFromPropertiesFile(filename);
 }
 
+ConfigFile::ConfigFile(std::istream& propertiesStream)
+{
+	// Desde una stream en formato .properties
+	loadFromPropertiesStream(propertiesStream);
+}
+
 std::string ConfigFile::readValue(const std::string& key) const
 {
 	TConfigMap::const_iterator it = configMap_.find(key);
@@ -92,18 +98,13 @@ std::map<std::string, std::string> ConfigFile::getKeyValuePairs() const
 	return configMap_;
 }
 
-void ConfigFile::loadFromPropertiesFile(const std::string& filename)
+void ConfigFile::loadFromPropertiesStream(std::istream& propStream)
 {
 	using boost::algorithm::trim;
 	using boost::regex;
 	using boost::regex_match;
 	using boost::smatch;
 	using Util::unescapeString;
-	
-	// Trato de abrir el archivo y lanzo una excepción si no está
-	std::ifstream propFile(filename.c_str());
-	if (!propFile.is_open())
-		throw; // FIXME: Lanzar algo más significativo
 
 	// Expresiones regulares para distintos tipos de líneas
 	regex reBlankOrCom("^(#.*)|(?:)$");
@@ -116,7 +117,7 @@ void ConfigFile::loadFromPropertiesFile(const std::string& filename)
 
 	// Lo leo línea a línea
 	std::string line;
-	while (std::getline(propFile, line))
+	while (std::getline(propStream, line))
 	{
 		// Saco espacios al principio y al final
 		trim(line);
@@ -133,6 +134,17 @@ void ConfigFile::loadFromPropertiesFile(const std::string& filename)
 		// Guardo ese par en el mapa (no me preocupo de pisar pares anteriores)
 		configMap_[matchRes.str(1)] = unescapeString(matchRes.str(2));
 	}
+}
+
+void ConfigFile::loadFromPropertiesFile(const std::string& filename)
+{
+	// Trato de abrir el archivo y lanzo una excepción si no está
+	std::ifstream propFileStream(filename.c_str());
+	if (!propFileStream.is_open())
+			throw; // FIXME: Lanzar algo más significativo
+
+	// Cargo a partir de la stream
+	loadFromPropertiesStream(propFileStream);
 }
 
 void ConfigFile::saveToPropertiesFile(const std::string &filename) const

@@ -54,12 +54,18 @@ namespace Core
 		/// Carga el mapa con los datos desde un archivo .properties
 		void loadFromPropertiesFile(const std::string& filename);
 
+		/// Carga el mapa con los datos desde una stream en formato .properties
+		void loadFromPropertiesStream(std::istream& propStream);
+
 		/// Guarda el mapa en un archivo .properties
 		void saveToPropertiesFile(const std::string& filename) const;
 
 	public:
 		/// Constructor a partir de un archivo
 		ConfigFile(const std::string& filename);
+
+		/// Constructor a partir de una istream
+		ConfigFile(std::istream& is);
 
 		/// Lee un valor dada su clave
 		virtual std::string readValue(const std::string& key) const;

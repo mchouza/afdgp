@@ -69,12 +69,15 @@ public:
 	modules_(config_.readValue("ModulesPath")),
 	need2Exit_(false) // No necesita salir cuando empieza!
 	{
-		// Si tiene más o menos de un argumento, sale
-		if (argc != 2)
+		// Si tiene más de un argumento, sale
+		if (argc > 2)
 			throw; // FIXME: Lanzar algo más específico
 
 		// Crea el trabajo
-		pJob_.reset(new AFDJob(modules_, config_, argv[1], std::cout));
+		if (argc == 2)
+			pJob_.reset(new AFDJob(modules_, config_, argv[1], std::cout));
+		else
+			pJob_.reset(new AFDJob(modules_, config_, std::cin, std::cout));
 	}
 
 	void run()
