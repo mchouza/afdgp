@@ -55,9 +55,6 @@ namespace Core
 		/// Evolver para realizar el trabajo
 		boost::scoped_ptr<GP::Evolver> pEvolver_;
 
-		/// Nombre del trabajo
-		std::string filename_;
-
 		/// ID del trabajo
 		std::string id_;
 
@@ -79,11 +76,21 @@ namespace Core
 		/// Carga los datos de una ejecución anterior si es posible
 		void resumeIfPossible();
 
+		/// Construcción en común
+		void commonConstruction(const ModuleLibrary& lib, 
+			const Config& baseConfig, const Config& specConfig,
+			std::ostream& statsStream);
+
 	public:
 		/// Lo construye en base a una configuración base y un nombre de 
 		/// archivo
 		AFDJob(const ModuleLibrary& lib, const Config& baseConfig, 
 			const std::string& filename, std::ostream& statsStream);
+
+		/// Lo construye en base a una configuración base y una stream de
+		/// configuración
+		AFDJob(const ModuleLibrary& lib, const Config& baseConfig, 
+			std::istream& configStream, std::ostream& statsStream);
 
 		/// Destructor
 		virtual ~AFDJob();

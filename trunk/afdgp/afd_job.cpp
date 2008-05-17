@@ -59,22 +59,11 @@ namespace
 	}
 }
 
-AFDJob::AFDJob(const ModuleLibrary& lib,
-			   const Config& baseConfig, 
-			   const std::string& filename,
-			   std::ostream& statsStream) :
-config_(baseConfig),
-filename_(filename),
-numberOfRuns_(0),
-numberOfGens_(0),
-runNum_(0),
-genNum_(0),
-statsStream_(statsStream)
+void AFDJob::commonConstruction(const ModuleLibrary& lib, const Config& baseConfig,
+								const Config& specConfig,
+								std::ostream& statsStream)
 {
 	using boost::lexical_cast;
-
-	// Obtengo la configuración para este trabajo
-	Core::ConfigFile specConfig(filename);
 
 	// Creo el evolver con la configuración base y la específica a este trabajo
 	pEvolver_.reset(new GP::Evolver(lib, config_, specConfig));
@@ -96,10 +85,45 @@ statsStream_(statsStream)
 	numberOfGens_ = 
 		lexical_cast<unsigned>(specConfig.readValue("NumberOfGens"));
 
-
 	// Carga los datos de la ejecución anterior, si es necesario
 	// FIXME: Habilitar!!
 	//resumeIfPossible();
+}
+
+AFDJob::AFDJob(const ModuleLibrary& lib,
+			   const Config& baseConfig, 
+			   const std::string& filename,
+			   std::ostream& statsStream) :
+config_(baseConfig),
+numberOfRuns_(0),
+numberOfGens_(0),
+runNum_(0),
+genNum_(0),
+statsStream_(statsStream)
+{
+	// Obtengo la configuración para este trabajo
+	Core::ConfigFile specConfig(filename);
+
+	// Termino de inicializar
+	commonConstruction(lib, baseConfig, specConfig, statsStream);
+}
+
+AFDJob::AFDJob(const ModuleLibrary& lib,
+			   const Config& baseConfig, 
+			   std::istream& configStream,
+			   std::ostream& statsStream) :
+config_(baseConfig),
+numberOfRuns_(0),
+numberOfGens_(0),
+runNum_(0),
+genNum_(0),
+statsStream_(statsStream)
+{
+	// Obtengo la configuración para este trabajo
+	Core::ConfigFile specConfig(configStream);
+
+	// Termino de inicializar
+	commonConstruction(lib, baseConfig, specConfig, statsStream);
 }
 
 AFDJob::~AFDJob()
