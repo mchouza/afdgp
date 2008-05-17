@@ -176,6 +176,9 @@ class EvolverStrategyStandard::StatsCollector : public GP::StatsCollector
 	/// Referencia a la fuente de datos
 	const EvolverStrategyStandard& dataSrc_;
 
+	/// Encabezados en orden
+	std::vector<std::string> genDataHeaders_;
+
 	/// Datos recolectados por generación
 	std::map<std::string, std::string> genData_;
 
@@ -210,6 +213,13 @@ class EvolverStrategyStandard::StatsCollector : public GP::StatsCollector
 		genData_["Gen"] = lexical_cast<std::string>(dataGen_);
 	}
 
+	/// Agrega un encabezado a los datos por generación
+	void addHeader(const std::string& header)
+	{
+		genDataHeaders_.push_back(header);
+		genData_[header] = "X";
+	}
+
 public:
 	/// Constructor
 	StatsCollector(const EvolverStrategyStandard& dataSrc) :
@@ -217,19 +227,15 @@ public:
 	dataRun_(-1),
 	dataSrc_(dataSrc)
 	{
-#define PUT_HEADER(h) genData_[h] = "X"
-		
-		PUT_HEADER("Run");
-		PUT_HEADER("Gen");
-		PUT_HEADER("MaxLen");
-		PUT_HEADER("MinLen");
-		PUT_HEADER("AvgLen");
-		PUT_HEADER("MaxScore");
-		PUT_HEADER("MinScore");
-		PUT_HEADER("AvgScore");
-		PUT_HEADER("TimeToNext");
-
-#undef PUT_HEADER
+		addHeader("Run");
+		addHeader("Gen");
+		addHeader("MaxLen");
+		addHeader("MinLen");
+		addHeader("AvgLen");
+		addHeader("MaxScore");
+		addHeader("MinScore");
+		addHeader("AvgScore");
+		addHeader("TimeToNext");
 	}
 
 	virtual void printGeneralParameters(std::ostream& os) const
@@ -246,14 +252,14 @@ public:
 
 	virtual void printStatsByGenHeader(std::ostream& os) const
 	{
-		using std::map;
 		using std::string;
+		using std::vector;
 
-		map<string, string>::const_iterator it(genData_.begin()), 
-			itEnd(genData_.end());
+		vector<string>::const_iterator it(genDataHeaders_.begin()), 
+			itEnd(genDataHeaders_.end());
 		while (it != itEnd)
 		{
-			os << it->first;
+			os << *it;
 			++it;
 			if (it != itEnd)
 				os << '\t';
@@ -265,12 +271,18 @@ public:
 	{
 		using std::map;
 		using std::string;
+		using std::vector;
 
-		map<string, string>::const_iterator it(genData_.begin()), 
-			itEnd(genData_.end());
+		vector<string>::const_iterator it(genDataHeaders_.begin()),
+			itEnd(genDataHeaders_.end());
+		map<string, string>::const_iterator itM;
+
 		while (it != itEnd)
 		{
-			os << it->second;
+			itM = genData_.find(*it);
+			if (itM == genData_.end())
+				throw; // FIXME: Lanzar algo más específico
+			os << itM->second;
 			++it;
 			if (it != itEnd)
 				os << '\t';
