@@ -218,7 +218,7 @@ void AFDJob::resumeIfPossible()
 	// Si están, contiúo cargando...
 	ifstream binFile(binFileName.c_str(), std::ios::binary);
 	if (!binFile.is_open())
-		throw; // FIXME: Lanzar algo más específico
+		throw 0; // FIXME: Lanzar algo más específico
 
 	// Leo el hash
 	uint64_t savedHash = readFromBinStream<uint64_t>(binFile);
@@ -231,7 +231,7 @@ void AFDJob::resumeIfPossible()
 	
 	// Si no coinciden es un error
 	if (savedHash != calcHash)
-		throw; // FIXME: Lanzar algo más específico
+		throw 0; // FIXME: Lanzar algo más específico
 
 	// Pongo en posición al stream
 	binFile.clear();

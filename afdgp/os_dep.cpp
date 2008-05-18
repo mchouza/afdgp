@@ -68,7 +68,7 @@ namespace
 		{
 			handle_ = ::LoadLibrary(path.c_str());
 			if (!handle_)
-				throw; // FIXME: Lanzar algo más descriptivo
+				throw 0; // FIXME: Lanzar algo más descriptivo
 		}
 
 		/// Destruye una biblioteca compartida

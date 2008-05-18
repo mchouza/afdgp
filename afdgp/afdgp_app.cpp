@@ -71,7 +71,11 @@ public:
 	{
 		// Si tiene más de un argumento, sale
 		if (argc > 2)
-			throw; // FIXME: Lanzar algo más específico
+			throw 0; // FIXME: Lanzar algo más específico
+
+		// Pongo std::cout como unbuffered para evitar dejar "colgados" a los
+		// scripts de testing
+		std::cout.setf(std::ios_base::unitbuf);
 
 		// Crea el trabajo
 		if (argc == 2)

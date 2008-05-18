@@ -115,7 +115,7 @@ namespace
 	{
 		map<string, string>::const_iterator it = m.find(key);
 		if (it == m.end())
-			throw; // FIXME: Lanzar algo más específico...
+			throw 0; // FIXME: Lanzar algo más específico...
 		return lexical_cast<T>(it->second);
 	}
 
@@ -281,7 +281,7 @@ public:
 		{
 			itM = genData_.find(*it);
 			if (itM == genData_.end())
-				throw; // FIXME: Lanzar algo más específico
+				throw 0; // FIXME: Lanzar algo más específico
 			os << itM->second;
 			++it;
 			if (it != itEnd)
@@ -310,7 +310,7 @@ public:
 		// Si no está la clave, salgo
 		map<string, string>::iterator it = genData_.find(key);
 		if (it == genData_.end())
-			throw; // FIXME: Lanzar algo más específico
+			throw 0; // FIXME: Lanzar algo más específico
 
 		// Si está, guardo los datos
 		it->second = boost::lexical_cast<std::string>(value);

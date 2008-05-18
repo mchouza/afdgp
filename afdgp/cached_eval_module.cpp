@@ -53,7 +53,7 @@ cache_(new TCacheEntry[cacheSize]),
 cacheSize_(cacheSize)
 {
 	if (cacheSize_ < 1024)
-		throw; // FIXME: Lanzar algo más específico
+		throw 0; // FIXME: Lanzar algo más específico
 
 	std::fill(cache_.get(), cache_.get() + cacheSize_, 
 		TCacheEntry(INVALID_HASH, 0.0));
