@@ -60,7 +60,7 @@ std::string ConfigFile::readValue(const std::string& key) const
 {
 	TConfigMap::const_iterator it = configMap_.find(key);
 	if (it == configMap_.end())
-		throw; // FIXME: Lanzar algo con cierto sentido
+		throw 0; // FIXME: Lanzar algo con cierto sentido
 	return it->second;
 }
 
@@ -129,7 +129,7 @@ void ConfigFile::loadFromPropertiesStream(std::istream& propStream)
 		// Uso una expresión regular para partirlo en un par clave-valor
 		if (!regex_match(line, matchRes, reAssignment))
 			// No es ni comentario, ni línea en blanco ni asignación
-			throw; // FIXME: Lanzar algo más significativo
+			throw 0; // FIXME: Lanzar algo más significativo
 
 		// Guardo ese par en el mapa (no me preocupo de pisar pares anteriores)
 		configMap_[matchRes.str(1)] = unescapeString(matchRes.str(2));
@@ -141,7 +141,7 @@ void ConfigFile::loadFromPropertiesFile(const std::string& filename)
 	// Trato de abrir el archivo y lanzo una excepción si no está
 	std::ifstream propFileStream(filename.c_str());
 	if (!propFileStream.is_open())
-			throw; // FIXME: Lanzar algo más significativo
+			throw 0; // FIXME: Lanzar algo más significativo
 
 	// Cargo a partir de la stream
 	loadFromPropertiesStream(propFileStream);
@@ -152,7 +152,7 @@ void ConfigFile::saveToPropertiesFile(const std::string &filename) const
 	// Abro el archivo de salida
 	std::ofstream out(filename.c_str());
 	if (!out.is_open())
-		throw; // FIXME: Lanzar algo más significativo
+		throw 0; // FIXME: Lanzar algo más significativo
 
 	// Indico que fue generado automáticamente
 	out << "# Archivo generado automáticamente\n";

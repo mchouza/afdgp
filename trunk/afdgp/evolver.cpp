@@ -83,7 +83,7 @@ Evolver::Evolver(const Core::ModuleLibrary& lib,
 	retOM = pOpsMod_->giveConfigData(
 		pCC->getView("OpsModule")->getKeyValuePairs());
 	if (!(retOM && retEM))
-		throw; // FIXME: Lanzar algo más específico
+		throw 0; // FIXME: Lanzar algo más específico
 
 	// Inicializo la población
 	size_t popSize = lexical_cast<size_t>(pCC->readValue("PopulationSize"));

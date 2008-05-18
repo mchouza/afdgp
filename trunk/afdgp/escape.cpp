@@ -111,13 +111,13 @@ namespace Util
 			{
 				*outIt = unEscTable[*++it];
 				if (!*outIt)
-					throw; // FIXME: Lanzar algo más específico
+					throw 0; // FIXME: Lanzar algo más específico
 			}
 			else
 			{
 				*outIt = *it;
 				if (!isprint(*outIt))
-					throw; // FIXME: Lanzar algo más específico
+					throw 0; // FIXME: Lanzar algo más específico
 			}
 		}
 
@@ -146,7 +146,7 @@ namespace Util
 				ret.push_back('\\');
 				char c = escTable[*it];
 				if (!c)
-					throw; // FIXME: Lanzar algo más específico
+					throw 0; // FIXME: Lanzar algo más específico
 				ret.push_back(c);
 			}
 		}

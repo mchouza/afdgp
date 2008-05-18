@@ -138,7 +138,7 @@ namespace
 			else if (baseConfig_.hasKey(key))
 				return baseConfig_.readValue(key);
 			else
-				throw; // FIXME: Lanzar algo más específico
+				throw 0; // FIXME: Lanzar algo más específico
 		}
 
 		/// Lee un valor dada su clave con un valor por defecto

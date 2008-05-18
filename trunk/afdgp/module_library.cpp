@@ -55,7 +55,7 @@ ModuleLibrary::ModuleLibrary(const std::string& pathStr)
 
 	// Si el path no existe, es un error
 	if (!exists(dirPath))
-		throw; // FIXME: Lanzar algo más específico
+		throw 0; // FIXME: Lanzar algo más específico
 
 	// Recorro el directorio
 	directory_iterator it(dirPath);
@@ -214,6 +214,6 @@ void ModuleLibrary::fixDependencies()
 
 		// Lo entrego al módulo
 		if (!it->second->giveReqMods(reqs))
-			throw; // FIXME: Lanzar algo más específico
+			throw 0; // FIXME: Lanzar algo más específico
 	}
 }
