@@ -69,7 +69,8 @@ void AFDJob::commonConstruction(const ModuleLibrary& lib, const Config& baseConf
 	pEvolver_.reset(new GP::Evolver(lib, config_, specConfig));
 
 	// Muestro las generalidades
-	pEvolver_->getStatsCollector().printGeneralParameters(statsStream_);
+	// FIXME: No muestra suficiente...
+	//pEvolver_->getStatsCollector().printGeneralParameters(statsStream_);
 
 	// Muestro la fila de descripción de las estadísticas por generación
 	pEvolver_->getStatsCollector().printStatsByGenHeader(statsStream_);

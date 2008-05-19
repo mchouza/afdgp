@@ -105,7 +105,10 @@ void Evolver::newRun()
 {
 	// Inicializo aleatoriamente la población
 	for (size_t i = 0; i < pop_.size(); i++)
+	{
+		pop_[i].clear();
 		pOpsMod_->randomInit(pop_[i]);
+	}
 
 	// Reinicializo la estrategia (solo contadores)
 	pEvSt_->reset();
