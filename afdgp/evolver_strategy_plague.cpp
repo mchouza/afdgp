@@ -35,27 +35,45 @@
 // Creado por Mariano M. Chouza | Creado el 11 de mayo de 2008
 //=============================================================================
 
+#include "config.h"
 #include "evolver_strategy.h"
 #include "evolver_strategy_factory.h"
+#include "evolver_strategy_standard.h"
 #include "registrator.h"
+#include <boost/lexical_cast.hpp>
 
 namespace GP {
 
 /// Clase de la estrategia derivada
-class EvolverStrategyPlague : public EvolverStrategy
+class EvolverStrategyPlague : public EvolverStrategyStandard
 {
-public:
-	/// Crea una nueva instancia
-	static boost::shared_ptr<EvolverStrategy> create(const Core::Config&)
+	/// Cantidad de individuos a eliminar por generación
+	unsigned plagueDeathsByGen_;
+
+	/// Constructor
+	EvolverStrategyPlague(const Core::Config& c) : 
+	EvolverStrategyStandard(c),
+		plagueDeathsByGen_(
+			boost::lexical_cast<unsigned>(c.readValue("PlagueDeathsByGen")))
 	{
-		return boost::shared_ptr<EvolverStrategy>(new EvolverStrategyPlague());
 	}
 
-	/// Realiza un paso evolutivo
-	virtual void evolutionaryStep(TPop& pop, EvalModule& evalMod, 
-		OpsModule& opsMod)
+public:
+	/// Crea una nueva instancia
+	static boost::shared_ptr<EvolverStrategy> create(const Core::Config& c)
 	{
-		// FIXME: Implementar!!
+		return boost::shared_ptr<EvolverStrategy>(
+			new EvolverStrategyPlague(c));
+	}
+
+	/// Define un nuevo paso post ordenamiento
+	virtual void postSortAction(TPop& pop)
+	{
+		// Elimino la cantidad pedida, si es posible
+		if (plagueDeathsByGen_ + 1 < pop.size())
+		{
+			pop.resize(pop.size() - plagueDeathsByGen_);
+		}
 	}
 };
 

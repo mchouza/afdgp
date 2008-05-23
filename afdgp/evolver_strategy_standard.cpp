@@ -370,6 +370,10 @@ pSC_()
 	pSC_.reset(new EvolverStrategyStandard::StatsCollector(*this));
 }
 
+EvolverStrategyStandard::~EvolverStrategyStandard()
+{
+}
+
 boost::shared_ptr<EvolverStrategy> 
 EvolverStrategyStandard::create(const Core::Config& c)
 {
@@ -386,6 +390,9 @@ void EvolverStrategyStandard::evolutionaryStep(TPop& pop, EvalModule& evalMod,
 	// Ordeno la población en forma de puntaje creciente
 	vector<pair<double, size_t> > sortedScores = evalPop(pop, evalMod);
 	sortPopByScores(pop, sortedScores);
+
+	// Realizo la acción "post-sort"
+	postSortAction(pop);
 
 	// Hago el trabajo estadístico con los puntajes
 	pSC_->sendScores(sortedScores);
@@ -420,6 +427,11 @@ void EvolverStrategyStandard::evolutionaryStep(TPop& pop, EvalModule& evalMod,
 
 	// Marco el cambio de generación
 	gen_++;
+}
+
+void EvolverStrategyStandard::postSortAction(TPop& pop)
+{
+	// Al ser la estrategia estándar, no realizo ninguna acción acá
 }
 
 const StatsCollector& EvolverStrategyStandard::getStatsCollector() const

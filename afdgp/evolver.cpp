@@ -86,8 +86,8 @@ Evolver::Evolver(const Core::ModuleLibrary& lib,
 		throw 0; // FIXME: Lanzar algo más específico
 
 	// Inicializo la población
-	size_t popSize = lexical_cast<size_t>(pCC->readValue("PopulationSize"));
-	pop_.resize(popSize);
+	popSize_ = lexical_cast<size_t>(pCC->readValue("PopulationSize"));
+	pop_.resize(popSize_);
 	for (size_t i = 0; i < pop_.size(); i++)
 		pOpsMod_->randomInit(pop_[i]);
 
@@ -104,7 +104,8 @@ void Evolver::step()
 void Evolver::newRun()
 {
 	// Inicializo aleatoriamente la población
-	for (size_t i = 0; i < pop_.size(); i++)
+	pop_.resize(popSize_);
+	for (size_t i = 0; i < popSize_; i++)
 	{
 		pop_[i].clear();
 		pOpsMod_->randomInit(pop_[i]);

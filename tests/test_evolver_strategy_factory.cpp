@@ -91,6 +91,10 @@ public:
 	virtual void reset()
 	{
 	}
+
+	virtual void postSortAction(TPop& pop)
+	{
+	}
 };
 
 class TestES2 : public EvolverStrategy
@@ -119,6 +123,10 @@ public:
 	}
 
 	virtual void reset()
+	{
+	}
+
+	virtual void postSortAction(TPop& pop)
 	{
 	}
 };
