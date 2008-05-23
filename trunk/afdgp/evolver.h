@@ -55,6 +55,9 @@ namespace GP
 		/// Población
 		TPop pop_;
 
+		/// Tamaño de la población
+		size_t popSize_;
+
 		/// Módulo para realizar operaciones con la población
 		boost::shared_ptr<OpsModule> pOpsMod_;
 

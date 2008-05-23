@@ -70,9 +70,16 @@ namespace GP
 		/// Recolector de estadísticas
 		boost::scoped_ptr<EvolverStrategyStandard::StatsCollector> pSC_;
 
+	protected:
+		/// Realiza una acción depués del sort (nula porque es Standard)
+		virtual void postSortAction(TPop& pop);
+
 	public:
 		/// Constructor
 		EvolverStrategyStandard(const Core::Config& c);
+
+		/// Destructor
+		virtual ~EvolverStrategyStandard();
 
 		/// Crea una nueva instancia
 		static boost::shared_ptr<EvolverStrategy> 

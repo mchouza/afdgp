@@ -48,7 +48,14 @@ namespace GP
 	/// Clase base abstracta de las distintas estrategias que adopta el Evolver
 	class EvolverStrategy
 	{
+	protected:
+		/// Realiza una acción después de ordenar a la población por puntaje
+		virtual void postSortAction(TPop& pop) = 0;
+
 	public:
+		/// Destructor
+		virtual ~EvolverStrategy() {}
+
 		/// Reinicializa el estado de la estrategia
 		virtual void reset() = 0;
 
