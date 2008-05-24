@@ -45,35 +45,51 @@
 namespace GP {
 
 /// Clase de la estrategia derivada
-class EvolverStrategyDynAdj : public EvolverStrategy
+class EvolverStrategyDynAdj : public EvolverStrategyStandard
 {
 	/// Probabilidad de ejecución para los individuos por encima del límite
 	double tarpeianExecProb_;
 
-	/// Evolver standard para el manejo general
-	EvolverStrategyStandard standardEvSt_;
-
-public:
 	/// Constructor
 	EvolverStrategyDynAdj(const Core::Config& c) :
-	  tarpeianExecProb_(
-		  boost::lexical_cast<double>(c.readValue("tarpeianExecProb"))),
-	  standardEvSt_(c)
+	EvolverStrategyStandard(c),
+	tarpeianExecProb_(
+		boost::lexical_cast<double>(c.readValue("TarpeianExecProb")))
 	{
 	}
 
+protected:
+	/// Define un nuevo paso post ordenamiento
+	virtual void preSortAction(TPop& pop, 
+			std::vector<std::pair<double, size_t> >& sortedScores)
+	{
+		// Obtiene el tamaño promedio de los individuos
+		size_t acum = 0;
+		for (size_t i = 0; i < pop.size(); i++)
+			acum += pop[i].size();
+		double avgSize = static_cast<double>(acum) / pop.size();
+
+		// Le da puntaje infinito a los que superen el tamaño promedio con 
+		// probabilidad dada
+		for (size_t i = 0; i < sortedScores.size(); i++)
+		{
+			if (pop[sortedScores[i].second].size() <= avgSize)
+				continue;
+			if (uniformRandomGen_.getRandomFloat<double>() <= tarpeianExecProb_)
+				sortedScores[i].first = 
+					std::numeric_limits<double>::infinity();
+		}
+
+		// Reordeno los puntajes
+		std::sort(sortedScores.begin(), sortedScores.end());
+	}
+
+public:
 	/// Crea una nueva instancia
 	static boost::shared_ptr<EvolverStrategy> create(const Core::Config& c)
 	{
 		return boost::shared_ptr<EvolverStrategy>(
 			new EvolverStrategyDynAdj(c));
-	}
-
-	/// Realiza un paso evolutivo
-	virtual void evolutionaryStep(TPop& pop, EvalModule& evalMod, 
-		OpsModule& opsMod)
-	{
-		// FIXME: Implementar!!
 	}
 };
 

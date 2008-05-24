@@ -58,7 +58,7 @@ namespace Util
 		/// Obtiene un  número en el rango [min, max) con una distribución 
 		/// uniforme
 		template <typename FloatType>
-		FloatType getRandomFloat(FloatType min, FloatType max)
+		FloatType getRandomFloat(FloatType min = 0.0, FloatType max = 1.0)
 		{
 			using boost::uniform_real;
 

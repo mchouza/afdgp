@@ -72,8 +72,8 @@ namespace Core
 		void tryToLoad(const std::string& modulePath);
 
 	public:
-		/// Construye a partir de un path de directorio
-		ModuleLibrary(const std::string& path);
+		/// Construye a partir de una serie de paths de directorio
+		ModuleLibrary(const std::string& paths);
 
 		/// Obtiene un módulo según el nombre
 		boost::shared_ptr<Module> 
