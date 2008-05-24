@@ -387,8 +387,13 @@ void EvolverStrategyStandard::evolutionaryStep(TPop& pop, EvalModule& evalMod,
 	// Inicio el timer
 	clock_t startT = clock();
 	
-	// Ordeno la población en forma de puntaje creciente
+	// Obtengo los puntajes
 	vector<pair<double, size_t> > sortedScores = evalPop(pop, evalMod);
+
+	// Realizo la ación "pre-sort"
+	preSortAction(pop, sortedScores);
+
+	// Ordeno la población en forma de puntaje creciente
 	sortPopByScores(pop, sortedScores);
 
 	// Realizo la acción "post-sort"
@@ -427,6 +432,12 @@ void EvolverStrategyStandard::evolutionaryStep(TPop& pop, EvalModule& evalMod,
 
 	// Marco el cambio de generación
 	gen_++;
+}
+
+void EvolverStrategyStandard::preSortAction(TPop& pop,
+	std::vector<std::pair<double, size_t> >& sortedScores)
+{
+	// Al ser la estrategia estándar, no realizo ninguna acción acá
 }
 
 void EvolverStrategyStandard::postSortAction(TPop& pop)

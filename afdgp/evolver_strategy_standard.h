@@ -58,12 +58,6 @@ namespace GP
 		/// Generación
 		unsigned gen_;
 
-		/// Generador de números aleatoriso con distribución exponencial
-		Util::ExpRandomGenerator expRandomGen_;
-
-		/// Generador de números aleatoriso con distribución uniforme
-		Util::UniformRandomGenerator uniformRandomGen_;
-
 		/// Clase del recolector de estadísticas
 		class StatsCollector;
 
@@ -71,6 +65,16 @@ namespace GP
 		boost::scoped_ptr<EvolverStrategyStandard::StatsCollector> pSC_;
 
 	protected:
+		/// Generador de números aleatorios con distribución exponencial
+		Util::ExpRandomGenerator expRandomGen_;
+
+		/// Generador de números aleatoriso con distribución uniforme
+		Util::UniformRandomGenerator uniformRandomGen_;
+
+		/// Realiza una acción antes del sort (nula proque es Standard)
+		virtual void preSortAction(TPop& pop, 
+			std::vector<std::pair<double, size_t> >& sortedScores);
+
 		/// Realiza una acción depués del sort (nula porque es Standard)
 		virtual void postSortAction(TPop& pop);
 

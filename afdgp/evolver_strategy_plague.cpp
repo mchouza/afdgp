@@ -58,14 +58,7 @@ class EvolverStrategyPlague : public EvolverStrategyStandard
 	{
 	}
 
-public:
-	/// Crea una nueva instancia
-	static boost::shared_ptr<EvolverStrategy> create(const Core::Config& c)
-	{
-		return boost::shared_ptr<EvolverStrategy>(
-			new EvolverStrategyPlague(c));
-	}
-
+protected:
 	/// Define un nuevo paso post ordenamiento
 	virtual void postSortAction(TPop& pop)
 	{
@@ -74,6 +67,14 @@ public:
 		{
 			pop.resize(pop.size() - plagueDeathsByGen_);
 		}
+	}
+
+public:
+	/// Crea una nueva instancia
+	static boost::shared_ptr<EvolverStrategy> create(const Core::Config& c)
+	{
+		return boost::shared_ptr<EvolverStrategy>(
+			new EvolverStrategyPlague(c));
 	}
 };
 

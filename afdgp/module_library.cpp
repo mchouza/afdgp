@@ -37,35 +37,47 @@
 
 #include "module_library.h"
 #include "os_dep.h"
+#include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/split.hpp>
 #include <boost/filesystem.hpp>
 #include <map>
 #include <set>
 
 using namespace Core;
 
-ModuleLibrary::ModuleLibrary(const std::string& pathStr)
+ModuleLibrary::ModuleLibrary(const std::string& pathsStr)
 {
+	using boost::algorithm::is_any_of;
+	using boost::algorithm::split;
 	using boost::filesystem::directory_iterator;
 	using boost::filesystem::exists;
 	using boost::filesystem::extension;
 	using boost::filesystem::path;
+	using std::string;
+	using std::vector;
 	using Util::OSDep::getModulesFileExtension;
 
-	path dirPath(pathStr);
+	vector<string> pathsVec;
+	split(pathsVec, pathsStr, is_any_of(";"));
 
-	// Si el path no existe, es un error
-	if (!exists(dirPath))
-		throw 0; // FIXME: Lanzar algo más específico
-
-	// Recorro el directorio
-	directory_iterator it(dirPath);
-	directory_iterator itEnd;
-	for (; it != itEnd; ++it)
+	for (size_t i = 0; i < pathsVec.size(); i++)
 	{
-		// Si es un archivo...
-		if (extension(it->path()) == getModulesFileExtension())
-			// ...trato de cargarlo
-			tryToLoad(it->path().string());
+		path dirPath(pathsVec[i]);
+
+		// Si el path no existe, es un error
+		if (!exists(dirPath))
+			throw 0; // FIXME: Lanzar algo más específico
+
+		// Recorro el directorio
+		directory_iterator it(dirPath);
+		directory_iterator itEnd;
+		for (; it != itEnd; ++it)
+		{
+			// Si es un archivo...
+			if (extension(it->path()) == getModulesFileExtension())
+				// ...trato de cargarlo
+				tryToLoad(it->path().string());
+		}
 	}
 
 	// Completo las dependencias

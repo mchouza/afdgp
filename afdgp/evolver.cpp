@@ -94,6 +94,8 @@ Evolver::Evolver(const Core::ModuleLibrary& lib,
 	// Creo la estrategia evolutiva
 	pEvSt_ = EvolverStrategyFactory::make(pCC->readValue("PopStrategy.Name",
 		"Standard"), *pCC->getView("PopStrategy"));
+	if (!pEvSt_)
+		throw 0; // FIXME: Lanzar algo más específico
 }
 
 void Evolver::step()
