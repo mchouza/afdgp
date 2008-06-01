@@ -64,9 +64,9 @@ ModuleLibrary::ModuleLibrary(const std::string& pathsStr)
 	{
 		path dirPath(pathsVec[i]);
 
-		// Si el path no existe, es un error
+		// Si el path no existe, lo ignoro
 		if (!exists(dirPath))
-			throw 0; // FIXME: Lanzar algo más específico
+			continue;
 
 		// Recorro el directorio
 		directory_iterator it(dirPath);

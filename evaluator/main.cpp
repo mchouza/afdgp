@@ -30,26 +30,72 @@
 //
 
 //=============================================================================
-// eval_module.h
+// main.cpp
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Agregado a AFDGP el 8 de abril de 2008
+// Creado por Mariano M. Chouza | Creado el 30 de mayo de 2008
 //=============================================================================
 
-#ifndef EVAL_MODULE_H
-#define EVAL_MODULE_H
+#include <boost/shared_ptr.hpp>
+#include <cassert>
+#include <iostream>
+#include <string>
+#include <vector>
+#include "escape.h"
+#include "i_mod_spice.h"
+#include "module_library.h"
 
-#include "module.h"
-#include "population.h"
-
-/// Base abstracta de las clases de los módulos de evaluación
-class MODULE_API EvalModule : public Module
+namespace
 {
-public:
-	/// Evalúa un genoma
-	virtual double evaluateGenome(const TGenome& genome) const = 0;
+	using std::string;
+	using std::vector;
 
-	/// Muestra un individuo en una forma útil para su aplicación
-	virtual void showIndiv(std::ostream& os, const TGenome& genome) const = 0;
-};
+	/// Evalúa una netlist "escaped", devolviendo el resultado de dicha 
+	/// evaluación
+	string evalEscNetlist(IModSpice& sm, const string& escNetlist)
+	{
+		vector<char> result;
+		bool ret = sm.procNetlist(Util::unescapeString(escNetlist), 
+			result, false);
+		assert(ret);
+		return string(&result[0], result.size());
+	}
+}
 
-#endif
+/// Entry point
+int main(int argc, char* argv[])
+{
+	// Me fijo que no pasen argumentos
+	if (argc != 1)
+	{
+		std::cerr << "Sintaxis: evaluator\n";
+		return 1;
+	}
+
+	// Atrapo cualquier excepción que pudiera ocurrir
+	try
+	{
+		// Armo la biblioteca de módulos y obtengo el módulo del SPICE
+		Core::ModuleLibrary lib(".;..\\debug;..\\release;..\\dontexist");
+		boost::shared_ptr<Module> pSM = lib.getModuleByName("Spice");
+		IModSpice& sm = dynamic_cast<IModSpice&>(*pSM);
+
+		// Evalúo cada netlist que se pase por entrada estándar mostrando los
+		// resultados por salida estándar
+		std::string escNetlist;
+		while (std::getline(std::cin, escNetlist))
+			std::cout << evalEscNetlist(sm, escNetlist);
+	}
+	catch (std::exception& e)
+	{
+		std::cerr << "Excepción: " << e.what() << "\n";
+		return 2;
+	}
+	catch (...)
+	{
+		std::cerr << "Excepción desconocida\n";
+		return 3;
+	}
+
+	// OK
+	return 0;
+}
