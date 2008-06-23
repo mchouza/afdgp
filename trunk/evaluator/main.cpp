@@ -56,8 +56,10 @@ namespace
 		vector<char> result;
 		bool ret = sm.procNetlist(Util::unescapeString(escNetlist), 
 			result, false);
-		assert(ret);
-		return string(&result[0], result.size());
+		if (ret)
+			return string(&result[0], result.size());
+		else
+			return "ERROR";
 	}
 }
 

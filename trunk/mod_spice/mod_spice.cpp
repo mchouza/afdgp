@@ -106,7 +106,7 @@ bool ModSpice::procNetlist(const string& netlist, vector<char>& result,
 	free_allocated_memory();
 	
 	// OK
-	return true;
+	return errCode == 0;
 }
 
 ModSpice::ModSpice()
