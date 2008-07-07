@@ -25,7 +25,7 @@ unsigned int MurmurHash2 ( const void * key, int len, unsigned int seed )
 
 	// Initialize the hash to a 'random' value
 
-	unsigned int h = seed ^ len;
+	unsigned int h = seed ^ (len * m);
 
 	// Mix 4 bytes at a time into the hash
 

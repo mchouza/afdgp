@@ -45,6 +45,9 @@ uint64_t Util::mmHash2(const void* buffer, size_t len)
 {
 	using Util::Aux::MurmurHash2;
 	
+	if (len == 0)
+		return static_cast<__int64>(HASH_SEED_HI) << 32 | HASH_SEED_LO;
+	
 	uint64_t hash = MurmurHash2(buffer, static_cast<int>(len), HASH_SEED_HI);
 	hash <<= 32;
 	hash |= MurmurHash2(buffer, static_cast<int>(len), HASH_SEED_LO);
