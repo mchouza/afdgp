@@ -30,28 +30,61 @@
 //
 
 //=============================================================================
-// common.h
+// testing_cached_eval_module.h
 //-----------------------------------------------------------------------------
-// Creado por Mariano M. Chouza | Creado el 19 de abril de 2008
+// Creado por Mariano M. Chouza | Creado el 8 de julio de 2008
 //=============================================================================
 
-#ifndef COMMON_H
-#define COMMON_H
+#ifndef TESTING_CACHED_EVAL_MODULE_H
+#define TESTING_CACHED_EVAL_MODULE_H
 
-//#define TEST_HASH
-//#define TEST_CACHED_EVAL
-//#define TEST_ESF
-//#define TEST_POP_SERIALIZER
-//#define TEST_EVOLVER_STRATEGY_STANDARD
-#define TEST_HASH_REAL_POP
+#include "common.h"
+#include "eval_module.h"
 
-typedef unsigned __int8 uint8_t;
-typedef __int8 int8_t;
-typedef unsigned __int16 uint16_t;
-typedef __int16 int16_t;
-typedef unsigned __int32 uint32_t;
-typedef __int32 int32_t;
-typedef unsigned __int64 uint64_t;
-typedef __int64 int64_t;
+#include <boost/scoped_array.hpp>
+
+class MODULE_API TestingCachedEvalModule : public EvalModule
+{
+	/// Módulo normal
+	boost::shared_ptr<EvalModule> pEvalMod_;
+
+	/// Tipo de la entrada en la tabla de resultados anteriores
+	typedef std::pair<uint64_t, double> TCacheEntry;
+
+	/// Tipo de la tabla de resultados anteriores
+	typedef boost::scoped_array<TCacheEntry> TCache;
+
+	/// Tabla de resultados anteriores
+	mutable TCache cache_;
+
+	/// Tamaño de la tabla de resultados anteriores
+	size_t cacheSize_;
+
+	/// Función de hash
+	uint64_t (*pHF_)(const std::vector<unsigned char>&);
+
+public:
+	/// Construye a partir de un módulo de evaluación normal, 
+	/// dándole el tamaño del caché
+	TestingCachedEvalModule(boost::shared_ptr<EvalModule> pEvalMod,
+		size_t cacheSize, 
+		uint64_t (*hf)(const std::vector<unsigned char>&));
+
+	/// Destructor
+	virtual ~TestingCachedEvalModule();
+
+	// De las clases base
+	virtual double evaluateGenome(const TGenome& genome) const;
+	virtual void showIndiv(std::ostream& os, const TGenome& genome) const;
+	virtual const std::string& getName() const;
+	virtual unsigned int getVersion() const;
+	virtual const std::vector<Req>& getReqMods() const;
+	virtual bool
+		giveConfigData(const std::map<std::string, std::string>& 
+			configData);
+	virtual bool 
+		giveReqMods(const std::vector<boost::shared_ptr<Module> >&
+			reqMods);
+};
 
 #endif

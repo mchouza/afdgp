@@ -310,6 +310,30 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Test HashRealPop"
+			>
+			<File
+				RelativePath=".\fnv1a_64_hash.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\hsieh_hash.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\test_hash_real_pop.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\testing_cached_eval_module.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\testing_cached_eval_module.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\common.h"
 			>
