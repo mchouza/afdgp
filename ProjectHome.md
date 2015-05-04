@@ -1,0 +1,1 @@
+It's a simpler version of NGPD, specifically adapted to analog filter design and running as a console application.
